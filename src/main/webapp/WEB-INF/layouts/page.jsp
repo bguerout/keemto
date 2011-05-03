@@ -23,7 +23,7 @@
           <a href="#"><span class="xebia-logo">X</span>events</a>
         </h1>
 
-        <p>Stackoverflow Aggregator for Xebian's Questions</p>
+        <p>Xebian's Events Aggregator</p>
       </div>
       <div id="menu">
         <ul>
