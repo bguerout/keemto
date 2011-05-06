@@ -393,7 +393,11 @@ a:hover {
 }
 
 .posted img {
-    margin-right: 20px;
+    margin-left: 10px;
+}
+
+.user {
+    margin-top: 8px;
 }
 
 .tags a {

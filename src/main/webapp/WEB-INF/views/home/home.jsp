@@ -13,8 +13,8 @@
     <div class="question">
         <p class="meta">
           <span class="date"><abbr class="timeago" title="${event.timestamp}">${event.timestamp}</abbr></span>
-          <span class="posted"><img width="30" height="30" src="http://www.gravatar.com/avatar/${event.user}" /></a>
-          <span class="posted">Posted by ${event.user}</span>
+          <span class="posted"><img width="30" height="30" src="http://www.gravatar.com/avatar/${event.user}" /></span>
+          <span class="posted user">Posted by ${event.user}</span>
         </p>
         <div class="entry"><p>${event.message}</p></div>
         <p class="links">

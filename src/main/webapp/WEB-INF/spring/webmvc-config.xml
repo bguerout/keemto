@@ -6,10 +6,7 @@
 
   <context:property-placeholder location="classpath*:META-INF/spring/*.properties" />
 
-  <!-- The controllers are autodetected POJOs labeled with the @Controller annotation. -->
-  <context:component-scan base-package="fr.xevents" use-default-filters="false">
-    <context:include-filter expression="org.springframework.stereotype.Controller" type="annotation" />
-  </context:component-scan>
+
 
   <!-- Turns on support for mapping requests to Spring MVC @Controller methods. -->
   <mvc:annotation-driven />

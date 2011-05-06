@@ -5,7 +5,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 
-  <title>Events</title>
+  <title>XEvents</title>
 
   <script src="http://code.jquery.com/jquery-1.4.4.js" type="text/javascript"></script>
   <script src="resources/js/jquery.timeago-0.9.2.js" type="text/javascript"></script>
