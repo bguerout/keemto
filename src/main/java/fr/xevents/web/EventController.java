@@ -6,12 +6,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class HomeController {
+public class EventController {
 
     private final EventRepository eventRepository;
 
     @Autowired
-    public HomeController(EventRepository repository) {
+    public EventController(EventRepository repository) {
         this.eventRepository = repository;
     }
 

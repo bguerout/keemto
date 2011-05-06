@@ -25,7 +25,7 @@ import com.google.common.collect.Lists;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "file:src/main/webapp/WEB-INF/spring/webmvc-config.xml",
         "classpath*:/spring-tests.xml" })
-public class HomeControllerTest {
+public class EventControllerTest {
 
     @Autowired
     private AnnotationMethodHandlerAdapter handlerAdapter;
@@ -33,7 +33,7 @@ public class HomeControllerTest {
     @Mock
     private EventRepository eventRepository;
 
-    private HomeController controller;
+    private EventController controller;
 
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
@@ -43,7 +43,7 @@ public class HomeControllerTest {
         initMocks(this);
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
-        controller = new HomeController(eventRepository);
+        controller = new EventController(eventRepository);
     }
 
     @Test
