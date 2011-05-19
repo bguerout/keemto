@@ -6,13 +6,11 @@
 
   <context:property-placeholder location="classpath*:META-INF/spring/*.properties" />
 
-
-
   <!-- Turns on support for mapping requests to Spring MVC @Controller methods. -->
   <mvc:annotation-driven />
 
   <!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources -->
-  <mvc:resources location="/, classpath:/META-INF/web-resources/" mapping="/resources/**" />
+  <mvc:resources mapping="/resources/**" location="/resources/" />
 
   <!-- Allows for mapping the DispatcherServlet to "/" by forwarding static resource requests to the container's default
     Servlet -->
@@ -20,7 +18,7 @@
 
   <!-- Resolves localized messages*.properties and application.properties files in the application to allow for internationalization. -->
   <bean class="org.springframework.context.support.ReloadableResourceBundleMessageSource" id="messageSource"
-    p:basenames="WEB-INF/i18n/messages,META-INF/spring/*.properties" p:fallbackToSystemLocale="false" />
+  p:basenames="WEB-INF/i18n/messages,META-INF/spring/*.properties" p:fallbackToSystemLocale="false" />
 
   <!-- Maps view names to Tiles Definitions -->
   <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
@@ -34,6 +32,7 @@
     </property>
     <property name="checkRefresh" value="true" />
   </bean>
+
 
 
 </beans>

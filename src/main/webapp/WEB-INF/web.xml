@@ -14,7 +14,7 @@
 
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>classpath*:META-INF/spring/applicationContext*.xml</param-value>
+    <param-value>classpath*:META-INF/spring/applicationContext*.xml, WEB-INF/spring/*-config.xml</param-value>
   </context-param>
 
   <listener>
@@ -31,13 +31,28 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
+  <!-- Secures the application -->
+  <filter>
+    <filter-name>securityFilter</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    <init-param>
+      <param-name>targetBeanName</param-name>
+      <param-value>springSecurityFilterChain</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>securityFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+
   <!-- Handles Spring requests -->
   <servlet>
     <servlet-name>dispatcher-servlet</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
     <init-param>
       <param-name>contextConfigLocation</param-name>
-      <param-value>/WEB-INF/spring/webmvc-*config.xml</param-value>
+      <param-value>/WEB-INF/spring/*-config.xml</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>

@@ -1,4 +1,4 @@
-package fr.xevents.web;
+package fr.xevents;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
@@ -27,7 +27,7 @@ public class JdbcEventRepositoryTest {
     }
 
     @Test
-    public void whenEventExistsShouldReturnAllEvents() throws Exception {
+    public void whenEventsExistShouldReturnAllEvents() throws Exception {
 
         List<Event> events = repository.getAllEvents();
         assertThat(events, hasItem(new Event(1, "tester", "eventTest")));

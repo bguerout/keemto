@@ -22,6 +22,9 @@ import org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAda
 
 import com.google.common.collect.Lists;
 
+import fr.xevents.Event;
+import fr.xevents.EventRepository;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "file:src/main/webapp/WEB-INF/spring/webmvc-config.xml",
         "classpath*:/spring-tests.xml" })

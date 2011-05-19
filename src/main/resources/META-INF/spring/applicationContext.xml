@@ -9,10 +9,11 @@
   <tx:annotation-driven mode="aspectj" transaction-manager="transactionManager" />
 
   <context:component-scan base-package="fr.xevents">
-    <context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation" />
+    <context:exclude-filter type="regex" expression="fr.xevents.web.*" />
   </context:component-scan>
 
   <jdbc:embedded-database id="dataSource" type="H2">
+    <jdbc:script location="classpath:/org/springframework/social/connect/jdbc/JdbcUsersConnectionRepository.sql" />
     <jdbc:script location="classpath:/META-INF/db/ddl-and-datas.sql" />
   </jdbc:embedded-database>
 
@@ -25,6 +26,25 @@
   <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
     <constructor-arg ref="dataSource" />
   </bean>
+
+  <bean id="usersConnectionRepository" class="org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository">
+    <constructor-arg ref="dataSource" />
+    <constructor-arg ref="connectionFactoryLocator" />
+    <constructor-arg ref="textEncryptor" />
+  </bean>
+
+  <bean id="connectionFactoryLocator" class="org.springframework.social.connect.support.ConnectionFactoryRegistry">
+    <property name="connectionFactories">
+      <list>
+        <bean class="org.springframework.social.twitter.connect.TwitterConnectionFactory">
+          <constructor-arg value="${twitter.consumerKey}" />
+          <constructor-arg value="${twitter.consumerSecret}" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="textEncryptor" class="org.springframework.security.crypto.encrypt.Encryptors" factory-method="noOpText" />
 
 
 
