@@ -11,6 +11,12 @@
     <level value="DEBUG" />
   </logger>
 
+  <logger name="org.springframework.jdbc.datasource.embedded">
+    <level value="DEBUG" />
+  </logger>
+
+
+
   <root>
     <level value="WARN" />
     <appender-ref ref="STDOUT" />
