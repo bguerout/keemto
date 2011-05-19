@@ -10,7 +10,7 @@
   </context:component-scan>
 
   <bean class="org.springframework.social.connect.web.ConnectController">
-    <constructor-arg value="http://localhost:8080/xevents-web" />
+    <constructor-arg value="http://localhost:8080/xevents" />
   </bean>
 
 </beans>

@@ -12,7 +12,3 @@
   <input type="hidden" name="_method" value="delete" />
 </form>
 
-<p>
-  <a href="<c:url value="/twitter" />">View your Twitter profile</a>
-</p>
-

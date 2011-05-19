@@ -25,7 +25,5 @@
     <ul>
         <li>stnevex/test</li>
     </ul>
-
-    <p>Or you can <a href="<c:url value="/signup"/>">signup</a> with a new account.</p>
 </form>
 

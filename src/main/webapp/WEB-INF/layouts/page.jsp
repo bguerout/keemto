@@ -20,7 +20,7 @@
       <div id="header">
         <div id="logo">
           <h1>
-            <a href="#"><span class="xebia-logo">X</span>events</a>
+            <a href="<c:url value="/"/>"><span class="xebia-logo">X</span>events</a>
           </h1>
 
           <p>Xebian's Events Aggregator</p>
