@@ -8,7 +8,7 @@
   <mvc:view-controller path="/signin" />
 
   <security:http use-expressions="true">
-    <security:form-login login-page="/signin" login-processing-url="/signin/authenticate" />
+    <security:form-login login-page="/signin" login-processing-url="/signin/authenticate" default-target-url="/"/>
     <security:logout logout-url="/signout" delete-cookies="JSESSIONID" />
     <security:intercept-url pattern="/favicon.ico" access="permitAll" />
     <security:intercept-url pattern="/resources/**" access="permitAll" />
