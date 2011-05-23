@@ -27,7 +27,7 @@ import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.UsersConnectionRepository;
 
 @Configuration
-public class ConnectionRepositoryConfig {
+public class ConnectionRepositoryConfiguration {
 
     @Inject
     protected UsersConnectionRepository usersConnectionRepository;
@@ -36,7 +36,9 @@ public class ConnectionRepositoryConfig {
     @Scope(value = "request")
     public ConnectionRepository connectionRepository(@Value("#{request.userPrincipal}") Principal principal) {
         if (principal == null) {
-            throw new IllegalStateException("Unable to get a ConnectionRepository: no user logged in");
+            throw new IllegalStateException(
+                    "Unable to get a ConnectionRepository because no principal is attached to this request "
+                            + " or this method has been called outside a web container.");
         }
         return usersConnectionRepository.createConnectionRepository(principal.getName());
     }

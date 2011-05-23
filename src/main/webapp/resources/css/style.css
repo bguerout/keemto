@@ -17,7 +17,6 @@ h1, h2, h3 {
     margin: 0;
     padding: 0;
     font-weight: normal;
-    color: #FF3000;
 }
 
 h1 {
@@ -42,7 +41,6 @@ ul, ol {
 
 a {
     text-decoration: underline;
-    color: #FFD4F4;
 }
 
 a:hover {
@@ -82,7 +80,6 @@ a:hover {
     padding: 20px 0px 0px 0px;
     letter-spacing: -1px;
     font-size: 3.8em;
-    color: #FF3000;
 }
 
 #logo h1 a {
@@ -424,3 +421,4 @@ a:hover {
 .links .noanswer{
     color: red;
 }
+

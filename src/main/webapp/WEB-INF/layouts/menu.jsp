@@ -5,7 +5,8 @@
 <h2>Menu</h2>
 <ul class="menu">
   <sec:authorize access="isAuthenticated()">
-    <li><a href="<c:url value="/connect/twitter"/>">Manage your Accounts</a></li>
+    <li><a href="<c:url value="/connections"/>">Manage your Connections</a></li>
+     <li><a href="<c:url value="/signout"/>">Sign Out</a></li>
   </sec:authorize>
   <sec:authorize access="isAnonymous()">
     <li><a href="<c:url value="/signin"/>">Sign In</a></li>

@@ -4,7 +4,9 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
 <%@ page session="false"%>
 
-<p>Welcome, <sec:authentication property="principal.username" />!</p>
+<sec:authorize access="isAuthenticated()">
+  <p>Welcome, <sec:authentication property="principal.username" />!</p>
+</sec:authorize>
 <ul>
   <c:forEach items="${events}" var="event">
 
