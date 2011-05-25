@@ -1,1 +1,8 @@
 /target
+
+/.classpath
+/.project
+/.springBeans
+/xevents.iml
+/xevents.ipr
+/xevents.iws
