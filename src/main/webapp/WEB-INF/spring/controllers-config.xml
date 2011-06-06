@@ -5,9 +5,7 @@
 
   <!-- Scanning controller annotations are externalize in a dedicated file to allow Functional Testing. Controllers will
     not be automatically instanciated during testing phase. -->
-  <context:component-scan base-package="fr.xevents.web" use-default-filters="false">
-    <context:include-filter type="regex" expression="fr.xevents.web.*" />
-  </context:component-scan>
+  <context:component-scan base-package="fr.xevents.web" use-default-filters="false" />
 
   <bean class="org.springframework.social.connect.web.ConnectController">
     <constructor-arg value="http://localhost:8080/xevents" />

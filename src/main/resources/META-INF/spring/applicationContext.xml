@@ -8,24 +8,22 @@
 
   <tx:annotation-driven mode="aspectj" transaction-manager="transactionManager" />
 
-  <context:component-scan base-package="fr.xevents">
-    <context:exclude-filter type="regex" expression="fr.xevents.web.*" />
-  </context:component-scan>
+  <context:component-scan base-package="fr.xevents.core" />
 
   <jdbc:embedded-database id="dataSource" type="H2">
     <jdbc:script location="classpath:/org/springframework/social/connect/jdbc/JdbcUsersConnectionRepository.sql" />
     <jdbc:script location="classpath:/META-INF/db/ddl-and-datas.sql" />
   </jdbc:embedded-database>
 
-  <!-- Local, JDBC-based TransactionManager -->
+  <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+    <constructor-arg ref="dataSource" />
+  </bean>
+
   <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
     <property name="dataSource" ref="dataSource" />
   </bean>
 
-  <!-- Shared JDBC Data Access Template -->
-  <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-    <constructor-arg ref="dataSource" />
-  </bean>
+  <bean id="textEncryptor" class="org.springframework.security.crypto.encrypt.Encryptors" factory-method="noOpText" />
 
   <bean id="usersConnectionRepository" class="org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository">
     <constructor-arg ref="dataSource" />
@@ -44,8 +42,9 @@
     </property>
   </bean>
 
-  <bean id="textEncryptor" class="org.springframework.security.crypto.encrypt.Encryptors" factory-method="noOpText" />
-
-
+  <bean id="twitterApiResolver" class="fr.xevents.core.ApiResolver">
+    <constructor-arg value="org.springframework.social.twitter.api.TwitterApi" />
+    <constructor-arg ref="usersConnectionRepository" />
+  </bean>
 
 </beans>

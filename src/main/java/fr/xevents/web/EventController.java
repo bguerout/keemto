@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import fr.xevents.EventRepository;
+import fr.xevents.core.EventRepository;
 
 @Controller
 public class EventController {

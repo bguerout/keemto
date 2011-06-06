@@ -1,4 +1,4 @@
-package fr.xevents;
+package fr.xevents.core;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

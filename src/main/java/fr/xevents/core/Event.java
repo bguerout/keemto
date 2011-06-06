@@ -1,4 +1,4 @@
-package fr.xevents;
+package fr.xevents.core;
 
 import com.google.common.base.Objects;
 

@@ -14,8 +14,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.common.collect.Lists;
 
-import fr.xevents.Event;
-import fr.xevents.EventRepository;
+import fr.xevents.core.Event;
+import fr.xevents.core.EventRepository;
 
 public class EventControllerTest extends ControllerTestCase {
 
