@@ -27,9 +27,13 @@ public class ApiResolver<T> {
     }
 
     private List<Connection<T>> getConnectionsFor(User user) {
-        ConnectionRepository connectionRepository =
-                        usersConnectionRepository.createConnectionRepository(user.getUsername());
+        ConnectionRepository connectionRepository = usersConnectionRepository.createConnectionRepository(user
+                .getUsername());
         return connectionRepository.findConnectionsToApi(apiClass);
+    }
+
+    Class<T> getApiClass() {
+        return apiClass;
     }
 
 }

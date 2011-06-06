@@ -3,19 +3,26 @@ package fr.xevents;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.social.twitter.api.TimelineOperations;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.springframework.social.twitter.api.Tweet;
+import org.springframework.social.twitter.api.TwitterApi;
+import org.springframework.stereotype.Service;
 
-public class TwitterFetcher extends AbstractFetcher<TimelineOperations> {
+@Service
+public class TwitterFetcher extends SocialFetcher<TwitterApi> {
 
-    public TwitterFetcher(ApiResolver<TimelineOperations> apiResolver) {
+    @Inject
+    @Named("twitterApiResolver")
+    public TwitterFetcher(ApiResolver<TwitterApi> apiResolver) {
         super(apiResolver);
     }
 
     @Override
-    protected List<Event> getEventsForApi(TimelineOperations api) {
+    protected List<Event> fetchApiEvents(TwitterApi api) {
         List<Event> events = new ArrayList<Event>();
-        List<Tweet> tweets = api.getUserTimeline();
+        List<Tweet> tweets = api.timelineOperations().getUserTimeline();
         for (Tweet tweet : tweets) {
             Event event = convertToEvent(tweet);
             events.add(event);
