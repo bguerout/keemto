@@ -11,7 +11,7 @@ import org.springframework.social.twitter.api.TwitterApi;
 public class MultipleTypeArgumentsTest {
 
     @Test
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void genericType() throws Exception {
         ClassWithTypeArguments typor = new ClassWithTypeArguments();
 
