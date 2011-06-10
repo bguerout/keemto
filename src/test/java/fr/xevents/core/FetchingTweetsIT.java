@@ -26,7 +26,7 @@ public class FetchingTweetsIT {
         User user = new User("stnevex");
 
         // when
-        List<Event> events = fetcher.fetch(user);
+        List<Event> events = fetcher.fetch(user, 0);
 
         // then
         assertThat(events.size(), greaterThan(0));

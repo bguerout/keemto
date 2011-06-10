@@ -22,6 +22,7 @@ public class SocialFetcherTest {
     private StringFetcher fetcher;
     private ApiResolver<String> apiResolver;
     private User user;
+    private long since;
 
     @Before
     public void initBeforeTest() throws Exception {
@@ -30,6 +31,7 @@ public class SocialFetcherTest {
         apiResolver = mock(ApiResolver.class);
         fetcher = new StringFetcher(apiResolver);
         user = new User("bguerout");
+        since = System.currentTimeMillis();
 
         when(apiResolver.getApis(eq(user))).thenReturn(Lists.newArrayList("string-api"));
     }
@@ -41,7 +43,7 @@ public class SocialFetcherTest {
         }
 
         @Override
-        protected List<Event> fetchApiEvents(String api) {
+        protected List<Event> fetchApiEvents(String api, long lastFetchedEventTime) {
             return Lists.newArrayList(new Event(1, user.getUsername(), api.toString()));
         }
 
@@ -50,7 +52,7 @@ public class SocialFetcherTest {
     @Test
     public void whenNoEventCanBeFoundThenANonNullListMustBeReturned() {
         // when
-        List<Event> events = fetcher.fetch(user);
+        List<Event> events = fetcher.fetch(user, since);
 
         // then
         assertThat(events, notNullValue());
@@ -60,7 +62,7 @@ public class SocialFetcherTest {
     public void shouldConvertAllFetchedItemsToEvents() {
 
         // when
-        List<Event> events = fetcher.fetch(user);
+        List<Event> events = fetcher.fetch(user, since);
 
         // then
         assertThat(events.size(), greaterThan(0));
@@ -78,7 +80,7 @@ public class SocialFetcherTest {
         when(apiResolver.getApis(eq(user))).thenReturn(multipleApis);
 
         // when
-        List<Event> events = fetcherWithManyApis.fetch(user);
+        List<Event> events = fetcherWithManyApis.fetch(user, since);
 
         // then
         assertThat(events.size(), equalTo(2));
