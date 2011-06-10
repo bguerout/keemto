@@ -17,17 +17,8 @@ public abstract class SocialFetcher<T> {
         this.apiResolver = apiResolver;
     }
 
-    public final List<Event> fetch(List<User> users) {
-        List<Event> fetchedEvents = new ArrayList<Event>();
-        for (User user : users) {
-            List<Event> events = fetchUserEvent(user);
-            fetchedEvents.addAll(events);
-        }
-        return fetchedEvents;
-    }
-
-    private List<Event> fetchUserEvent(User user) {
-        List<Event> userEvents = new ArrayList<Event>();
+    public final List<Event> fetch(User user) {
+        List<Event> events = new ArrayList<Event>();
         List<T> apis = apiResolver.getApis(user);
 
         if (apis.isEmpty()) {
@@ -36,11 +27,11 @@ public abstract class SocialFetcher<T> {
 
         for (T api : apis) {
             List<Event> apiEvents = fetchApiEvents(api);
-            userEvents.addAll(apiEvents);
+            events.addAll(apiEvents);
 
             log.info(apiEvents.size() + " event(s) has been fetched from api: " + api + " owned by: " + user);
         }
-        return userEvents;
+        return events;
     }
 
     protected abstract List<Event> fetchApiEvents(T api);

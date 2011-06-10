@@ -18,16 +18,10 @@ import org.springframework.social.twitter.api.TwitterApi;
 
 import com.google.common.collect.Lists;
 
-import fr.xevents.core.ApiResolver;
-import fr.xevents.core.Event;
-import fr.xevents.core.TwitterFetcher;
-import fr.xevents.core.User;
-
 public class TwitterFetcherTest {
 
     private TwitterFetcher fetcher;
     private User user;
-    private List<User> users;
     private Tweet tweet1;
     private Tweet tweet2;
 
@@ -43,7 +37,6 @@ public class TwitterFetcherTest {
         timelineOperations = mock(TimelineOperations.class);
         fetcher = new TwitterFetcher(apiResolver);
         user = new User("bguerout");
-        users = Lists.newArrayList(user);
         tweet1 = createTweet("a tweet", user);
         tweet2 = createTweet("a second tweet", user);
 
@@ -60,7 +53,7 @@ public class TwitterFetcherTest {
 
     @Test
     public void shouldFetchEventsUsingUserTimeline() {
-        fetcher.fetch(users);
+        fetcher.fetch(user);
 
         verify(api).timelineOperations();
         verify(timelineOperations).getUserTimeline();
@@ -68,7 +61,7 @@ public class TwitterFetcherTest {
 
     @Test
     public void shouldConvertTweetsToEvents() {
-        List<Event> events = fetcher.fetch(users);
+        List<Event> events = fetcher.fetch(user);
 
         assertThat(events.size(), equalTo(2));
 

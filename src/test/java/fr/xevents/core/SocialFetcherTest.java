@@ -6,8 +6,6 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -19,17 +17,11 @@ import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
-import fr.xevents.core.ApiResolver;
-import fr.xevents.core.Event;
-import fr.xevents.core.SocialFetcher;
-import fr.xevents.core.User;
-
 public class SocialFetcherTest {
 
     private StringFetcher fetcher;
     private ApiResolver<String> apiResolver;
-    private User bguerout;
-    private List<User> users;
+    private User user;
 
     @Before
     public void initBeforeTest() throws Exception {
@@ -37,10 +29,9 @@ public class SocialFetcherTest {
 
         apiResolver = mock(ApiResolver.class);
         fetcher = new StringFetcher(apiResolver);
-        bguerout = new User("bguerout");
-        users = Lists.newArrayList(bguerout);
+        user = new User("bguerout");
 
-        when(apiResolver.getApis(eq(bguerout))).thenReturn(Lists.newArrayList("string-api"));
+        when(apiResolver.getApis(eq(user))).thenReturn(Lists.newArrayList("string-api"));
     }
 
     private class StringFetcher extends SocialFetcher<String> {
@@ -51,7 +42,7 @@ public class SocialFetcherTest {
 
         @Override
         protected List<Event> fetchApiEvents(String api) {
-            return Lists.newArrayList(new Event(1, bguerout.getUsername(), api.toString()));
+            return Lists.newArrayList(new Event(1, user.getUsername(), api.toString()));
         }
 
     }
@@ -59,7 +50,7 @@ public class SocialFetcherTest {
     @Test
     public void whenNoEventCanBeFoundThenANonNullListMustBeReturned() {
         // when
-        List<Event> events = fetcher.fetch(users);
+        List<Event> events = fetcher.fetch(user);
 
         // then
         assertThat(events, notNullValue());
@@ -69,7 +60,7 @@ public class SocialFetcherTest {
     public void shouldConvertAllFetchedItemsToEvents() {
 
         // when
-        List<Event> events = fetcher.fetch(users);
+        List<Event> events = fetcher.fetch(user);
 
         // then
         assertThat(events.size(), greaterThan(0));
@@ -84,29 +75,15 @@ public class SocialFetcherTest {
         // given
         StringFetcher fetcherWithManyApis = new StringFetcher(apiResolver);
         ArrayList<String> multipleApis = Lists.newArrayList("string-api", "another-api");
-        when(apiResolver.getApis(eq(bguerout))).thenReturn(multipleApis);
+        when(apiResolver.getApis(eq(user))).thenReturn(multipleApis);
 
         // when
-        List<Event> events = fetcherWithManyApis.fetch(users);
+        List<Event> events = fetcherWithManyApis.fetch(user);
 
         // then
         assertThat(events.size(), equalTo(2));
         assertThat(events.get(0).getMessage(), equalTo("string-api"));
         assertThat(events.get(1).getMessage(), equalTo("another-api"));
-    }
-
-    @Test
-    public void shouldFetchEveryAllUsers() {
-        // given
-        User stnevex = new User("stnevex");
-        List<User> manyUsers = Lists.newArrayList(bguerout, stnevex);
-
-        // when
-        fetcher.fetch(manyUsers);
-
-        // then
-        verify(apiResolver, times(1)).getApis(bguerout);
-        verify(apiResolver, times(1)).getApis(stnevex);
     }
 
 }
