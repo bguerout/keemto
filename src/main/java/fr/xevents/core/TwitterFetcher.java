@@ -25,7 +25,7 @@ public class TwitterFetcher extends SocialFetcher<TwitterApi> {
     }
 
     @Override
-    protected List<Event> fetchApiEvents(TwitterApi api, final long lastFetchedEventTime) {
+    protected List<Event> fetchApiEvents(TwitterApi api, long lastFetchedEventTime) {
         List<Event> events = new ArrayList<Event>();
         List<Tweet> tweets = api.timelineOperations().getUserTimeline();
 
@@ -34,6 +34,11 @@ public class TwitterFetcher extends SocialFetcher<TwitterApi> {
             events.add(event);
         }
         return events;
+    }
+
+    @Override
+    public String getHandledProviderId() {
+        return "twitter";
     }
 
     private Collection<Tweet> filterTweetsByDate(List<Tweet> tweets, final long lastFetchedEventTime) {

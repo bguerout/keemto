@@ -6,7 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class SocialFetcher<T> {
+public abstract class SocialFetcher<T> implements Fetcher<T> {
 
     private static final Logger log = LoggerFactory.getLogger(SocialFetcher.class);
 
@@ -17,6 +17,7 @@ public abstract class SocialFetcher<T> {
         this.apiResolver = apiResolver;
     }
 
+    @Override
     public final List<Event> fetch(User user, long lastFetchedEventTime) {
         List<Event> events = new ArrayList<Event>();
         List<T> apis = apiResolver.getApis(user);
