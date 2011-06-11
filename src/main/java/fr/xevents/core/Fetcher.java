@@ -6,6 +6,6 @@ public interface Fetcher<T> {
 
     List<Event> fetch(User user, long lastFetchedEventTime);
 
-    String getHandledProviderId();
+    String getProviderId();
 
 }

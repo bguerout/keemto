@@ -37,7 +37,7 @@ public class TwitterFetcher extends SocialFetcher<TwitterApi> {
     }
 
     @Override
-    public String getHandledProviderId() {
+    public String getProviderId() {
         return "twitter";
     }
 
