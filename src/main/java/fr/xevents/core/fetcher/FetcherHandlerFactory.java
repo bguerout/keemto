@@ -23,7 +23,7 @@ public class FetcherHandlerFactory {
 
     public List<FetcherHandler> createHandlers(List<Fetcher<?>> fetchers) {
         List<FetcherHandler> handlers = new ArrayList<FetcherHandler>();
-        for (User user : userResolver.getAllUsers()) {// TODO we should create handler only for users with account.
+        for (User user : userResolver.getAllUsers()) {// TODO we should create handler only for users with accounts.
             for (Fetcher<?> fetcher : fetchers) {
                 handlers.add(createHandler(fetcher, user));
             }
