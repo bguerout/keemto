@@ -2,7 +2,6 @@ package fr.xevents.core;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -19,9 +18,6 @@ import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.social.twitter.api.TwitterApi;
 
 import com.google.common.collect.Lists;
-
-import fr.xevents.core.ApiResolver;
-import fr.xevents.core.User;
 
 public class ApiResolverTest {
 

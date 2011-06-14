@@ -43,6 +43,11 @@ public class SocialFetcherTest {
         }
 
         @Override
+        public String getProviderId() {
+            return "provider";
+        }
+
+        @Override
         protected List<Event> fetchApiEvents(String api, long lastFetchedEventTime) {
             return Lists.newArrayList(new Event(1, user.getUsername(), api.toString()));
         }

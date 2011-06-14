@@ -16,20 +16,20 @@ import org.junit.Test;
 import org.springframework.social.twitter.api.TimelineOperations;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.TwitterApi;
+import org.springframework.web.client.ResourceAccessException;
 
 import com.google.common.collect.Lists;
 
 public class TwitterFetcherTest {
 
     private TwitterFetcher fetcher;
-    private User user;
     private Tweet tweet1;
     private Tweet tweet2;
-
+    private User user;
+    private long since;
     private ApiResolver<TwitterApi> apiResolver;
     private TwitterApi api;
     private TimelineOperations timelineOperations;
-    private long since;
 
     @Before
     public void initBeforeTest() throws Exception {
@@ -78,16 +78,24 @@ public class TwitterFetcherTest {
     }
 
     @Test
-    public void shouldIgnoreTweetsSinceLastFetchedEventTime() {
+    public void shouldIgnoreTweetsBeforeLastFetchedEventTime() {
 
         long tweet1CreationTime = tweet1.getCreatedAt().getTime();
 
         List<Event> events = fetcher.fetch(user, tweet1CreationTime);
 
         assertThat(events.size(), greaterThan(0));
-
         for (Event event : events) {
             assertThat(event.getTimestamp(), greaterThan(tweet1CreationTime));
         }
+    }
+
+    @Test(expected = FetchingException.class)
+    public void whenFetchingFailsShouldThrowAnException() {
+
+        when(timelineOperations.getUserTimeline()).thenThrow(new ResourceAccessException("timeout"));
+
+        fetcher.fetch(user, since);
+
     }
 }
