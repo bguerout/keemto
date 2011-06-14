@@ -11,4 +11,6 @@ public interface Fetcher<T> {
 
     String getProviderId();
 
+    long getDelay();
+
 }

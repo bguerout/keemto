@@ -54,8 +54,10 @@ public class JdbcEventRepository implements EventRepository {
     }
 
     private Event createInitializationEvent(User user) {
-        log.info("User: " + user + " hasn't event yet. "
-                + "This is propably the first time this user is fetched. Creating an initialization event.");
+        log.info("User: "
+                + user
+                + " hasn't event yet. "
+                + "This is propably the first time application tried to fetch user's connections. An initialization event is created.");
         return new InitializationEvent(user.getUsername());
     }
 

@@ -43,6 +43,11 @@ public class TwitterFetcher extends SocialFetcher<TwitterApi> {
         return "twitter";
     }
 
+    @Override
+    public long getDelay() {
+        return 2000;
+    }
+
     private Collection<Tweet> filterTweetsByDate(List<Tweet> tweets, final long lastFetchedEventTime) {
         return Collections2.filter(tweets, new Predicate<Tweet>() {
 

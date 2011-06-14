@@ -51,6 +51,11 @@ public class SocialFetcherTest {
         }
 
         @Override
+        public long getDelay() {
+            return 0;
+        }
+
+        @Override
         protected List<Event> fetchApiEvents(String api, long lastFetchedEventTime) {
             return Lists.newArrayList(new Event(1, user.getUsername(), api.toString()));
         }
