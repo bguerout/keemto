@@ -7,7 +7,7 @@
         </encoder>
     </appender>
 
-    <logger name="fr.xebia">
+    <logger name="fr.xevents">
         <level value="DEBUG" />
     </logger>
 
