@@ -42,7 +42,7 @@ public class FetcherHandlerTest {
     @Test
     public void shouldUseEventRepositoryToObtainLastFetchedEventTime() {
 
-        handler.fetch();
+        handler.run();
 
         verify(eventRepository).getMostRecentEvent(user);
         verify(fetcher).fetch(eq(user), eq(mostRecentEvent.getTimestamp()));
@@ -54,7 +54,7 @@ public class FetcherHandlerTest {
         ArrayList<Event> events = Lists.newArrayList(fetchedEvent);
         when(fetcher.fetch(eq(user), anyLong())).thenReturn(events);
 
-        handler.fetch();
+        handler.run();
 
         verify(eventRepository).persist(events);
     }
@@ -64,7 +64,7 @@ public class FetcherHandlerTest {
 
         when(fetcher.fetch(eq(user), anyLong())).thenThrow(new RuntimeException());
 
-        handler.fetch();
+        handler.run();
 
     }
 
@@ -73,7 +73,7 @@ public class FetcherHandlerTest {
 
         doThrow(new DataRetrievalFailureException("")).when(eventRepository).persist(anyList());
 
-        handler.fetch();
+        handler.run();
     }
 
 }

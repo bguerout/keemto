@@ -6,7 +6,7 @@ import fr.xevents.core.Event;
 import fr.xevents.core.EventRepository;
 import fr.xevents.core.User;
 
-public class FetcherHandler {
+public class FetcherHandler implements Runnable {
 
     private final Fetcher<?> fetcher;
     private final User user;
@@ -18,9 +18,14 @@ public class FetcherHandler {
         this.eventRepository = eventRepository;
     }
 
-    public void fetch() throws FetchingException {
+    @Override
+    public void run() throws FetchingException {
         Event mostRecentEvent = eventRepository.getMostRecentEvent(user);
         fetchAndPersist(mostRecentEvent.getTimestamp());
+    }
+
+    public long getDelay() {
+        return fetcher.getDelay();
     }
 
     private void fetchAndPersist(long lastFetchedEventTime) {
