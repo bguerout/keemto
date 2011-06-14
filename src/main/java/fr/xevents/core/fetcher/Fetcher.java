@@ -1,6 +1,9 @@
-package fr.xevents.core;
+package fr.xevents.core.fetcher;
 
 import java.util.List;
+
+import fr.xevents.core.Event;
+import fr.xevents.core.User;
 
 public interface Fetcher<T> {
 

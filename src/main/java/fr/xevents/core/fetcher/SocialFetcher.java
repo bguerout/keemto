@@ -1,10 +1,13 @@
-package fr.xevents.core;
+package fr.xevents.core.fetcher;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import fr.xevents.core.Event;
+import fr.xevents.core.User;
 
 public abstract class SocialFetcher<T> implements Fetcher<T> {
 

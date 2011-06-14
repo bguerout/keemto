@@ -1,4 +1,4 @@
-package fr.xevents.core;
+package fr.xevents.core.fetcher;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -18,6 +18,8 @@ import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.social.twitter.api.TwitterApi;
 
 import com.google.common.collect.Lists;
+
+import fr.xevents.core.User;
 
 public class ApiResolverTest {
 

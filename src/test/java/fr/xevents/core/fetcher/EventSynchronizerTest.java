@@ -1,4 +1,4 @@
-package fr.xevents.core;
+package fr.xevents.core.fetcher;
 
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -19,6 +19,10 @@ import org.junit.Test;
 import org.springframework.dao.DataRetrievalFailureException;
 
 import com.google.common.collect.Lists;
+
+import fr.xevents.core.Event;
+import fr.xevents.core.EventRepository;
+import fr.xevents.core.User;
 
 public class EventSynchronizerTest {
 

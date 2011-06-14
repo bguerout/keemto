@@ -1,4 +1,4 @@
-package fr.xevents.core;
+package fr.xevents.core.fetcher;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -19,6 +19,9 @@ import org.springframework.social.twitter.api.TwitterApi;
 import org.springframework.web.client.ResourceAccessException;
 
 import com.google.common.collect.Lists;
+
+import fr.xevents.core.Event;
+import fr.xevents.core.User;
 
 public class TwitterFetcherTest {
 

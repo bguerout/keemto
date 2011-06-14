@@ -42,7 +42,7 @@
     </property>
   </bean>
 
-  <bean id="twitterApiResolver" class="fr.xevents.core.ApiResolver">
+  <bean id="twitterApiResolver" class="fr.xevents.core.fetcher.ApiResolver">
     <constructor-arg value="org.springframework.social.twitter.api.TwitterApi" />
     <constructor-arg ref="usersConnectionRepository" />
   </bean>

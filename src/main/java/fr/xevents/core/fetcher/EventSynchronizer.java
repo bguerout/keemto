@@ -1,4 +1,4 @@
-package fr.xevents.core;
+package fr.xevents.core.fetcher;
 
 import java.util.Collection;
 import java.util.List;
@@ -8,6 +8,11 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+
+import fr.xevents.core.Event;
+import fr.xevents.core.EventRepository;
+import fr.xevents.core.JdbcEventRepository;
+import fr.xevents.core.User;
 
 public class EventSynchronizer {
 

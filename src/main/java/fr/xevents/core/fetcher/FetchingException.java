@@ -1,4 +1,4 @@
-package fr.xevents.core;
+package fr.xevents.core.fetcher;
 
 public class FetchingException extends RuntimeException {
 
