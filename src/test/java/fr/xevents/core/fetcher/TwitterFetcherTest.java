@@ -16,7 +16,6 @@ import org.junit.Test;
 import org.springframework.social.twitter.api.TimelineOperations;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.TwitterApi;
-import org.springframework.web.client.ResourceAccessException;
 
 import com.google.common.collect.Lists;
 
@@ -93,12 +92,4 @@ public class TwitterFetcherTest {
         }
     }
 
-    @Test(expected = FetchingException.class)
-    public void whenFetchingFailsShouldThrowAnException() {
-
-        when(timelineOperations.getUserTimeline()).thenThrow(new ResourceAccessException("timeout"));
-
-        fetcher.fetch(user, since);
-
-    }
 }

@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.xevents.core.Event;
 import fr.xevents.core.User;
-import fr.xevents.core.fetcher.TwitterFetcher;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:/META-INF/spring/applicationContext.xml" })
@@ -24,7 +23,7 @@ public class FetchingTweetsIT {
     @Inject
     private TwitterFetcher fetcher;
 
-    @Test
+    @Test(timeout = 3000)
     public void fetchTweets() {
         // given
         User user = new User("stnevex");

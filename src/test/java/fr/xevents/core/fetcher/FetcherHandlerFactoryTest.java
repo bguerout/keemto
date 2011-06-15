@@ -2,11 +2,13 @@ package fr.xevents.core.fetcher;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -16,62 +18,58 @@ import com.google.common.collect.Lists;
 
 import fr.xevents.core.EventRepository;
 import fr.xevents.core.User;
-import fr.xevents.core.UserResolver;
 
 public class FetcherHandlerFactoryTest {
 
     private FetcherHandlerFactory factory;
     private EventRepository eventRepository;
-    private UserResolver userResolver;
+    private Fetcher<?> fetcher;
 
     @Before
     public void initBeforeTest() throws Exception {
         eventRepository = mock(EventRepository.class);
-        userResolver = mock(UserResolver.class);
-        factory = new FetcherHandlerFactory(eventRepository, userResolver);
+        List<Fetcher<?>> fetchers = new ArrayList<Fetcher<?>>();
+        fetcher = mock(Fetcher.class);
+        fetchers.add(fetcher);
+        factory = new FetcherHandlerFactory(eventRepository, fetchers);
+
+        when(fetcher.canFetch(any(User.class))).thenReturn(true);
     }
 
     @Test
-    public void shouldCreateANonNullFetcher() throws Exception {
-        Fetcher<?> fetcher = mock(Fetcher.class);
-        User user = new User("username");
+    public void shouldCreateHandlerWithUser() throws Exception {
 
-        FetcherHandler handler = factory.createHandler(fetcher, user);
+        User user = new User("user");
 
-        assertThat(handler, notNullValue());
+        List<FetcherHandler> handlers = factory.createHandlers(user);
+
+        assertThat(handlers, notNullValue());
+        assertThat(handlers.size(), equalTo(1));
     }
 
     @Test
-    public void shouldCreateHandler() throws Exception {
-        Fetcher<?> fetcher = mock(Fetcher.class);
-        User user = new User("username");
-
-        FetcherHandler handler = factory.createHandler(fetcher, user);
-
-        assertThat(handler, notNullValue());
-    }
-
-    @Test
-    public void shouldCreateHandlers() throws Exception {
-        Fetcher<?> fetcher = mock(Fetcher.class);
+    public void shouldCreateHandlersWithUser() throws Exception {
+        User user = new User("user");
         Fetcher<?> fetcher2 = mock(Fetcher.class);
-        when(userResolver.getAllUsers()).thenReturn(Lists.newArrayList(new User("user")));
+        when(fetcher2.canFetch(any(User.class))).thenReturn(true);
+        List<Fetcher<?>> fetchers = Lists.newArrayList(fetcher, fetcher2);
+        factory = new FetcherHandlerFactory(eventRepository, fetchers);
 
-        List<FetcherHandler> handlers = factory.createHandlers(Lists.newArrayList(fetcher, fetcher2));
+        List<FetcherHandler> handlers = factory.createHandlers(user);
 
         assertThat(handlers, notNullValue());
         assertThat(handlers.size(), equalTo(2));
     }
 
     @Test
-    public void shouldResolveUserToCreateHandlers() throws Exception {
-        Fetcher<?> fetcher = mock(Fetcher.class);
-        Fetcher<?> fetcher2 = mock(Fetcher.class);
-        when(userResolver.getAllUsers()).thenReturn(Lists.newArrayList(new User("user")));
+    public void shouldIgnoreFetcherThatDoesNotSupportUser() throws Exception {
+        User user = new User("user");
 
-        factory.createHandlers(Lists.newArrayList(fetcher, fetcher2));
+        when(fetcher.canFetch(user)).thenReturn(false);
 
-        verify(userResolver).getAllUsers();
+        List<FetcherHandler> handlers = factory.createHandlers(user);
+
+        assertThat(handlers.isEmpty(), is(true));
     }
 
 }

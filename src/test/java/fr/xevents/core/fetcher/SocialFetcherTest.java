@@ -3,9 +3,11 @@ package fr.xevents.core.fetcher;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -99,6 +101,15 @@ public class SocialFetcherTest {
         assertThat(events.size(), equalTo(2));
         assertThat(events.get(0).getMessage(), equalTo("string-api"));
         assertThat(events.get(1).getMessage(), equalTo("another-api"));
+    }
+
+    @Test
+    public void shouldCheckIfUserCanBeFetched() throws Exception {
+
+        boolean canFetch = fetcher.canFetch(user);
+
+        assertThat(canFetch, is(true));
+        verify(apiResolver).getApis(user);
     }
 
 }

@@ -13,4 +13,6 @@ public interface Fetcher<T> {
 
     long getDelay();
 
+    boolean canFetch(User user);
+
 }

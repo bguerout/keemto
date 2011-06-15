@@ -3,29 +3,37 @@ package fr.xevents.core.fetcher;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.xevents.core.EventRepository;
 import fr.xevents.core.User;
-import fr.xevents.core.UserResolver;
 
 public class FetcherHandlerFactory {
 
-    private final EventRepository eventRepository;
-    private final UserResolver userResolver;
+    private static final Logger log = LoggerFactory.getLogger(FetcherHandlerFactory.class);
 
-    public FetcherHandlerFactory(EventRepository eventRepository, UserResolver userResolver) {
+    private final EventRepository eventRepository;
+    private final List<Fetcher<?>> fetchers;
+
+    public FetcherHandlerFactory(EventRepository eventRepository, List<Fetcher<?>> fetchers) {
         this.eventRepository = eventRepository;
-        this.userResolver = userResolver;
+        this.fetchers = fetchers;
     }
 
-    public FetcherHandler createHandler(Fetcher<?> fetcher, User user) {
+    protected FetcherHandler createHandler(Fetcher<?> fetcher, User user) {
         return new FetcherHandler(fetcher, user, eventRepository);
     }
 
-    public List<FetcherHandler> createHandlers(List<Fetcher<?>> fetchers) {
+    public List<FetcherHandler> createHandlers(User user) {
         List<FetcherHandler> handlers = new ArrayList<FetcherHandler>();
-        for (User user : userResolver.getAllUsers()) {// TODO we should create handler only for users with accounts.
-            for (Fetcher<?> fetcher : fetchers) {
-                handlers.add(createHandler(fetcher, user));
+        for (Fetcher<?> fetcher : fetchers) {
+            if (fetcher.canFetch(user)) {
+                FetcherHandler handler = createHandler(fetcher, user);
+                handlers.add(handler);
+            } else {
+                log.debug("Fetcher" + fetcher.getProviderId()
+                        + " is ignored because fetcher cannot fetch events for user: " + user + ".");
             }
         }
         return handlers;

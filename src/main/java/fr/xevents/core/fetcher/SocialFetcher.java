@@ -38,6 +38,11 @@ public abstract class SocialFetcher<T> implements Fetcher<T> {
         return events;
     }
 
+    @Override
+    public boolean canFetch(User user) {
+        return !apiResolver.getApis(user).isEmpty();
+    }
+
     protected abstract List<Event> fetchApiEvents(T api, long lastFetchedEventTime);
 
 }
