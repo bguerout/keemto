@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ public class ScheduledTaskRegistrarIT {
     private final CountDownLatch latch = new CountDownLatch(10);
 
     @Test
+    @Ignore
     public void registerAScheduledTaskWithRegistrar() throws Exception {
         CountDownTask task = new CountDownTask();
         Map<Runnable, Long> fixedDelayTasks = new HashMap<Runnable, Long>();
@@ -41,23 +43,6 @@ public class ScheduledTaskRegistrarIT {
             latch.countDown();
             log.debug("DummyTask has been triggered, CountDownLatch is decreased.");
         }
-
-        // private final EventSynchronizer synchronizer;
-        // private final String providerId;
-        // private final UserRepository userRepository;
-        //
-        // public DummyTask(EventSynchronizer synchronizer, UserRepository userRepository, String providerId) {
-        // this.synchronizer = synchronizer;
-        // this.userRepository = userRepository;
-        // this.providerId = providerId;
-        // }
-        //
-        // @Override
-        // public void run() {
-        // System.out.println("jhjkhhjklhjklhkl");
-        // // List<User> users = userRepository.getAllUsers();
-        // // synchronizer.updateEvents(users, providerId);
-        // }
     }
 
 }
