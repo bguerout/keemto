@@ -1,6 +1,8 @@
 package fr.xevents.core.fetcher;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -33,9 +35,19 @@ public abstract class SocialFetcher<T> implements Fetcher<T> {
             List<Event> apiEvents = fetchApiEvents(api, lastFetchedEventTime);
             events.addAll(apiEvents);
 
-            log.info(apiEvents.size() + " event(s) has been fetched from api: " + api + " owned by: " + user);
+            logFetchResult(user, lastFetchedEventTime, apiEvents.size());
         }
         return events;
+    }
+
+    private void logFetchResult(User user, long lastFetchedEventTime, int nbEvents) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        String lastEventDate = format.format(new Date(lastFetchedEventTime));
+        if (nbEvents == 0) {
+            log.info("No event has been fetched because user hasn't update his connection since " + lastEventDate);
+        } else {
+            log.info(nbEvents + " event(s) have been fetched for " + user);
+        }
     }
 
     @Override

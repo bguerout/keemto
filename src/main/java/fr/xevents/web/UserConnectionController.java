@@ -15,7 +15,6 @@ public class UserConnectionController {
 
     @Autowired
     public UserConnectionController(ConnectionRepository connectionRepository) {
-        super();
         this.connectionRepository = connectionRepository;
     }
 

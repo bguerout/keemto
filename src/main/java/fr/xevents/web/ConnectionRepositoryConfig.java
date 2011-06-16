@@ -27,7 +27,7 @@ import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.UsersConnectionRepository;
 
 @Configuration
-public class ConnectionRepositoryConfi {
+public class ConnectionRepositoryConfig {
 
     @Inject
     protected UsersConnectionRepository usersConnectionRepository;

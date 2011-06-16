@@ -45,7 +45,7 @@ public class TwitterFetcher extends SocialFetcher<TwitterApi> {
 
     @Override
     public long getDelay() {
-        return 2000;
+        return 20000;
     }
 
     private Collection<Tweet> filterTweetsByDate(List<Tweet> tweets, final long lastFetchedEventTime) {

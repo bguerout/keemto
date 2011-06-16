@@ -14,9 +14,9 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.UsersConnectionRepository;
 
-public class ConnectionRepositoryConfiTest {
+public class ConnectionRepositoryConfigTest {
 
-    private ConnectionRepositoryConfi connectionRepositoryConfi;
+    private ConnectionRepositoryConfig connectionRepositoryConfig;
 
     @Mock
     private UsersConnectionRepository usersConnectionRepository;
@@ -24,8 +24,8 @@ public class ConnectionRepositoryConfiTest {
     @Before
     public void prepare() throws Exception {
         initMocks(this);
-        connectionRepositoryConfi = new ConnectionRepositoryConfi();
-        connectionRepositoryConfi.usersConnectionRepository = usersConnectionRepository;
+        connectionRepositoryConfig = new ConnectionRepositoryConfig();
+        connectionRepositoryConfig.usersConnectionRepository = usersConnectionRepository;
     }
 
     @Test
@@ -35,7 +35,7 @@ public class ConnectionRepositoryConfiTest {
         when(usersConnectionRepository.createConnectionRepository("user")).thenReturn(connectionRepository);
         TestingAuthenticationToken principal = new TestingAuthenticationToken("user", null);
 
-        ConnectionRepository repo = connectionRepositoryConfi.connectionRepository(principal);
+        ConnectionRepository repo = connectionRepositoryConfig.connectionRepository(principal);
 
         assertThat(repo, equalTo(connectionRepository));
         verify(usersConnectionRepository).createConnectionRepository("user");
@@ -43,7 +43,7 @@ public class ConnectionRepositoryConfiTest {
 
     @Test(expected = IllegalStateException.class)
     public void shouldThrowExceptionWhenPrincipalCannotBeRetrieved() {
-        connectionRepositoryConfi.connectionRepository(null);
+        connectionRepositoryConfig.connectionRepository(null);
     }
 
 }

@@ -3,12 +3,16 @@ package fr.xevents.core.fetcher;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import fr.xevents.core.EventRepository;
 import fr.xevents.core.User;
 
+@Component
 public class FetcherHandlerFactory {
 
     private static final Logger log = LoggerFactory.getLogger(FetcherHandlerFactory.class);
@@ -16,6 +20,7 @@ public class FetcherHandlerFactory {
     private final EventRepository eventRepository;
     private final List<Fetcher<?>> fetchers;
 
+    @Inject
     public FetcherHandlerFactory(EventRepository eventRepository, List<Fetcher<?>> fetchers) {
         this.eventRepository = eventRepository;
         this.fetchers = fetchers;

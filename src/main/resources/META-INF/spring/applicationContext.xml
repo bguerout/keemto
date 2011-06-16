@@ -34,7 +34,7 @@
   <bean id="connectionFactoryLocator" class="org.springframework.social.connect.support.ConnectionFactoryRegistry">
     <property name="connectionFactories">
       <list>
-        <bean class="org.springframework.social.twitter.connect.TwitterConnectionFactory">
+        <bean class="fr.xevents.social.HttpTwitterConnectionFactory">
           <constructor-arg value="${twitter.consumerKey}" />
           <constructor-arg value="${twitter.consumerSecret}" />
         </bean>
@@ -42,9 +42,15 @@
     </property>
   </bean>
 
-  <bean id="twitterApiResolver" class="fr.xevents.core.fetcher.ApiResolver">
-    <constructor-arg value="org.springframework.social.twitter.api.TwitterApi" />
-    <constructor-arg ref="usersConnectionRepository" />
+
+  <bean id="twitterFetcher" class="fr.xevents.core.fetcher.TwitterFetcher">
+    <constructor-arg>
+      <bean class="fr.xevents.core.fetcher.ApiResolver">
+        <constructor-arg value="org.springframework.social.twitter.api.TwitterApi" />
+        <constructor-arg ref="usersConnectionRepository" />
+      </bean>
+    </constructor-arg>
   </bean>
+
 
 </beans>
