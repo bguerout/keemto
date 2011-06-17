@@ -28,6 +28,10 @@ public class FetcherHandler implements Runnable {
         return fetcher.getDelay();
     }
 
+    public User getUser() {
+        return user;
+    }
+
     private void fetchAndPersist(long lastFetchedEventTime) {
 
         try {

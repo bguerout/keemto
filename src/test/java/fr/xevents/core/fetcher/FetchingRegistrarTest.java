@@ -1,96 +1,68 @@
 package fr.xevents.core.fetcher;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ScheduledFuture;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.scheduling.TaskScheduler;
 
 import com.google.common.collect.Lists;
 
 import fr.xevents.core.User;
-import fr.xevents.core.UserResolver;
 
 public class FetchingRegistrarTest {
 
     private FetchingRegistrar registrar;
-    private FetcherHandlerFactory factory;
-    private UserResolver userResolver;
+    private TaskScheduler scheduler;
+    private User user;
 
     @Before
     public void initBeforeTest() throws Exception {
-        factory = mock(FetcherHandlerFactory.class);
-        userResolver = mock(UserResolver.class);
-        registrar = new FetchingRegistrar(factory, userResolver);
+        user = new User("bguerout");
+        scheduler = mock(TaskScheduler.class);
+        registrar = new FetchingRegistrar(scheduler);
+
     }
 
     @Test
-    public void shouldCreateHandlersForUser() throws Exception {
-        User user = new User("bguerout");
+    public void shouldAutomaticallyRegisterHandlerToScheduler() throws Exception {
         FetcherHandler handler = mock(FetcherHandler.class);
-        when(userResolver.getAllUsers()).thenReturn(Lists.newArrayList(user));
-        when(factory.createHandlers(user)).thenReturn(Lists.newArrayList(handler));
-        when(handler.getDelay()).thenReturn((long) 50);
+        when(handler.getUser()).thenReturn(user);
 
-        registrar.afterPropertiesSet();
+        registrar.registerHandler(handler);
 
-        verify(factory).createHandlers(user);
+        verify(scheduler).scheduleWithFixedDelay(handler, handler.getDelay());
     }
 
     @Test
-    public void shouldAutomaticallyAddCreatedHandlerToTasksMap() throws Exception {
-        User user = new User("bguerout");
+    public void shouldRegisterAllHandlers() throws Exception {
         FetcherHandler handler = mock(FetcherHandler.class);
-        when(userResolver.getAllUsers()).thenReturn(Lists.newArrayList(user));
-        when(factory.createHandlers(user)).thenReturn(Lists.newArrayList(handler));
-        when(handler.getDelay()).thenReturn((long) 50);
+        when(handler.getUser()).thenReturn(user);
+        FetcherHandler anotherHandler = mock(FetcherHandler.class);
+        when(anotherHandler.getUser()).thenReturn(user);
 
-        registrar.afterPropertiesSet();
+        registrar.registerHandlers(Lists.newArrayList(handler, anotherHandler));
 
-        Map<Runnable, Long> fixedDelayTasks = registrar.getFixedDelayTasks();
-        assertThat(fixedDelayTasks.size(), equalTo(1));
-        assertThat(fixedDelayTasks.get(handler), equalTo((long) 50));
+        verify(scheduler, timeout(2)).scheduleWithFixedDelay(handler, handler.getDelay());
     }
 
     @Test
-    public void shouldStartRegistrarTaskCron() throws Exception {
-        User user = new User("bguerout");
-        CountDownLatch latch = new CountDownLatch(10);
-        FetcherHandler handler = new CountDownHandler(latch);
-        when(userResolver.getAllUsers()).thenReturn(Lists.newArrayList(user));
-        when(factory.createHandlers(user)).thenReturn(Lists.newArrayList(handler));
+    public void shouldCancelHandlersForUser() throws Exception {
+        FetcherHandler handler = mock(FetcherHandler.class);
+        when(handler.getUser()).thenReturn(user);
+        ScheduledFuture<?> future = mock(ScheduledFuture.class);
+        when(scheduler.scheduleWithFixedDelay(handler, handler.getDelay())).thenReturn(future);
 
-        registrar.afterPropertiesSet();
-        latch.await(2000, TimeUnit.MILLISECONDS);
+        registrar.registerHandler(handler);
+        registrar.cancelHandlers(user);
 
-        assertThat(latch.getCount(), equalTo((long) 0));
-    }
+        verify(future).cancel(false);
 
-    public class CountDownHandler extends FetcherHandler {
-
-        private final CountDownLatch latch;
-
-        public CountDownHandler(CountDownLatch latch) {
-            super(null, null, null);
-            this.latch = latch;
-        }
-
-        @Override
-        public long getDelay() {
-            return 100;
-        }
-
-        @Override
-        public void run() {
-            latch.countDown();
-        }
     }
 
 }
