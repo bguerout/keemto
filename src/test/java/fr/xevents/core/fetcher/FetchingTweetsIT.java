@@ -25,13 +25,10 @@ public class FetchingTweetsIT {
 
     @Test(timeout = 3000)
     public void fetchTweets() {
-        // given
         User user = new User("stnevex");
 
-        // when
         List<Event> events = fetcher.fetch(user, 0);
 
-        // then
         assertThat(events.size(), greaterThan(0));
         for (Event event : events) {
             assertThat(event.getUser(), equalTo("stnevex"));
