@@ -21,7 +21,7 @@ public class FetchingRegistrar {
     private static final Logger log = LoggerFactory.getLogger(FetchingRegistrar.class);
 
     private final TaskScheduler scheduler;
-    private final List<ScheduledHandlerManager> manageableFutures = new ArrayList<FetchingRegistrar.ScheduledHandlerManager>();
+    private final List<HandlerTaskMonitor> manageableFutures = new ArrayList<FetchingRegistrar.HandlerTaskMonitor>();
 
     @Inject
     public FetchingRegistrar(TaskScheduler scheduler) {
@@ -35,7 +35,7 @@ public class FetchingRegistrar {
     }
 
     public void registerHandler(FetcherHandler handler) {
-        ScheduledHandlerManager manager = getOrCreateManager(handler.getUser());
+        HandlerTaskMonitor manager = getOrCreateManager(handler.getUser());
         ScheduledFuture<?> future = scheduler.scheduleWithFixedDelay(handler, handler.getDelay());
         manager.addFuture(future);
         manageableFutures.add(manager);
@@ -44,27 +44,27 @@ public class FetchingRegistrar {
     }
 
     public void cancelHandlers(User user) {
-        for (ScheduledHandlerManager manager : manageableFutures) {
+        for (HandlerTaskMonitor manager : manageableFutures) {
             if (manager.isOwnedBy(user)) {
                 manager.cancellAllFutures();
             }
         }
     }
 
-    private ScheduledHandlerManager getOrCreateManager(User user) {
-        ScheduledHandlerManager manager = new ScheduledHandlerManager(user);
+    private HandlerTaskMonitor getOrCreateManager(User user) {
+        HandlerTaskMonitor manager = new HandlerTaskMonitor(user);
         if (manageableFutures.contains(manager)) {
             return manageableFutures.get(manageableFutures.indexOf(manager));
         }
         return manager;
     }
 
-    private final class ScheduledHandlerManager {
+    private final class HandlerTaskMonitor {
 
         private final Set<ScheduledFuture<?>> scheduledFutures = new LinkedHashSet<ScheduledFuture<?>>();
         private final User user;
 
-        public ScheduledHandlerManager(User user) {
+        public HandlerTaskMonitor(User user) {
             this.user = user;
         }
 
