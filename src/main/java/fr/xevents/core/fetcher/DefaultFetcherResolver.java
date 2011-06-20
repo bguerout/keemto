@@ -12,14 +12,14 @@ import org.springframework.stereotype.Service;
 import fr.xevents.core.User;
 
 @Service
-public class SpringFetcherResolver implements FetcherResolver {
+public class DefaultFetcherResolver implements FetcherResolver {
 
-    private static final Logger log = LoggerFactory.getLogger(SpringFetcherResolver.class);
+    private static final Logger log = LoggerFactory.getLogger(DefaultFetcherResolver.class);
 
     private final List<Fetcher> fetchers;
 
     @Autowired
-    public SpringFetcherResolver(List<Fetcher> fetchers) {
+    public DefaultFetcherResolver(List<Fetcher> fetchers) {
         this.fetchers = fetchers;
         handleEmptyFetchersList();
     }

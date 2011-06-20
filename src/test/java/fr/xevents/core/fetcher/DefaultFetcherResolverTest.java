@@ -16,7 +16,7 @@ import com.google.common.collect.Lists;
 
 import fr.xevents.core.User;
 
-public class SpringFetcherResolverTest {
+public class DefaultFetcherResolverTest {
 
     private User user;
     private FetcherResolver resolver;
@@ -30,7 +30,7 @@ public class SpringFetcherResolverTest {
     public void shouldResolveANonNullFetcherList() throws Exception {
 
         List<Fetcher> fetchers = Lists.newArrayList();
-        FetcherResolver resolver = new SpringFetcherResolver(fetchers);
+        FetcherResolver resolver = new DefaultFetcherResolver(fetchers);
 
         List<Fetcher> result = resolver.resolve(user);
 
@@ -42,7 +42,7 @@ public class SpringFetcherResolverTest {
     public void shouldResolveAllFetchers() throws Exception {
 
         List<Fetcher> fetchers = Lists.newArrayList();
-        FetcherResolver resolver = new SpringFetcherResolver(fetchers);
+        FetcherResolver resolver = new DefaultFetcherResolver(fetchers);
 
         List<Fetcher> result = resolver.resolveAll();
 
@@ -55,7 +55,7 @@ public class SpringFetcherResolverTest {
 
         Fetcher fetcher = mock(Fetcher.class);
         List<Fetcher> fetchers = Lists.newArrayList(fetcher);
-        resolver = new SpringFetcherResolver(fetchers);
+        resolver = new DefaultFetcherResolver(fetchers);
         when(fetcher.canFetch(user)).thenReturn(true);
 
         List<Fetcher> fetcherForUser = resolver.resolve(user);
@@ -70,7 +70,7 @@ public class SpringFetcherResolverTest {
 
         Fetcher invalidFetcher = mock(Fetcher.class);
         List<Fetcher> fetchers = Lists.newArrayList(invalidFetcher);
-        resolver = new SpringFetcherResolver(fetchers);
+        resolver = new DefaultFetcherResolver(fetchers);
         when(invalidFetcher.canFetch(user)).thenReturn(false);
 
         List<Fetcher> fetcherForUser = resolver.resolve(user);
@@ -84,7 +84,7 @@ public class SpringFetcherResolverTest {
         Fetcher fetcher = mock(Fetcher.class);
         Fetcher invalidFetcher = mock(Fetcher.class);
         List<Fetcher> fetchers = Lists.newArrayList(fetcher, invalidFetcher);
-        resolver = new SpringFetcherResolver(fetchers);
+        resolver = new DefaultFetcherResolver(fetchers);
         when(fetcher.canFetch(user)).thenReturn(true);
         when(invalidFetcher.canFetch(user)).thenReturn(false);
 
