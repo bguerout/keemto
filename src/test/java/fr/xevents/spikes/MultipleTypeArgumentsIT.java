@@ -9,7 +9,7 @@ import org.springframework.core.GenericTypeResolver;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.twitter.api.TwitterApi;
 
-public class MultipleTypeArgumentsTest {
+public class MultipleTypeArgumentsIT {
 
     @Test
     public void genericType() throws Exception {
