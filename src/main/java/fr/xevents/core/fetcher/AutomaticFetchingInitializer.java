@@ -14,7 +14,7 @@ public class AutomaticFetchingInitializer implements InitializingBean {
 
     private UserResolver userResolver;
     private FetcherHandlerFactory handlerFactory;
-    private FetcherRegistrar registrar;
+    private FetchingRegistrar registrar;
     private FetcherResolver fetcherResolver;
 
     @Override
@@ -41,7 +41,7 @@ public class AutomaticFetchingInitializer implements InitializingBean {
     }
 
     @Autowired
-    public void setRegistrar(FetcherRegistrar registrar) {
+    public void setRegistrar(FetchingRegistrar registrar) {
         this.registrar = registrar;
     }
 
