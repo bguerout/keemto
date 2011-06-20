@@ -48,7 +48,7 @@ public class FetcherHandler implements Runnable {
         message.append(user);
         message.append(" with fetcher: ");
         message.append(fetcher.getProviderId());
-        message.append(". Same fetching task will be executed again during next handler invocation. Next estimated fetch in  : "
+        message.append(". This task will be executed again during next handler invocation. Next estimated fetch in  : "
                 + fetcher.getDelay() + "ms");
         throw new FetchingException(message.toString(), e);
     }

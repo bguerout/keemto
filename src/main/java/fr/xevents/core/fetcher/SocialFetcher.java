@@ -44,7 +44,7 @@ public abstract class SocialFetcher<T> implements Fetcher {
         SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         String lastEventDate = format.format(new Date(lastFetchedEventTime));
         if (nbEvents == 0) {
-            log.info("No event has been fetched because user hasn't update his connection since " + lastEventDate);
+            log.info("No event has been fetched because application is up to date since " + lastEventDate);
         } else {
             log.info(nbEvents + " event(s) have been fetched for " + user);
         }
