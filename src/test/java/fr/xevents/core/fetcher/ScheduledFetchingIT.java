@@ -19,7 +19,7 @@ import fr.xevents.core.User;
 public class ScheduledFetchingIT {
 
     @Autowired
-    private FetchingRegistrar registrar;
+    private FetcherRegistrar registrar;
 
     @Test
     public void shouldExecuteFetcherAsychronouslyWithDelay() throws Exception {

@@ -15,15 +15,15 @@ import org.springframework.stereotype.Component;
 import fr.xevents.core.User;
 
 @Component
-public class FetchingRegistrar {
+public class FetcherRegistrar {
 
-    private static final Logger log = LoggerFactory.getLogger(FetchingRegistrar.class);
+    private static final Logger log = LoggerFactory.getLogger(FetcherRegistrar.class);
 
     private final TaskScheduler scheduler;
-    private final List<HandlerTaskMonitor> manageableFutures = new ArrayList<FetchingRegistrar.HandlerTaskMonitor>();
+    private final List<HandlerTaskMonitor> manageableFutures = new ArrayList<FetcherRegistrar.HandlerTaskMonitor>();
 
     @Autowired
-    public FetchingRegistrar(TaskScheduler scheduler) {
+    public FetcherRegistrar(TaskScheduler scheduler) {
         this.scheduler = scheduler;
     }
 

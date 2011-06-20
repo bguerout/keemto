@@ -15,9 +15,9 @@ import com.google.common.collect.Lists;
 
 import fr.xevents.core.User;
 
-public class FetchingRegistrarTest {
+public class FetcherRegistrarTest {
 
-    private FetchingRegistrar registrar;
+    private FetcherRegistrar registrar;
     private TaskScheduler scheduler;
     private User user;
 
@@ -25,7 +25,7 @@ public class FetchingRegistrarTest {
     public void initBeforeTest() throws Exception {
         user = new User("bguerout");
         scheduler = mock(TaskScheduler.class);
-        registrar = new FetchingRegistrar(scheduler);
+        registrar = new FetcherRegistrar(scheduler);
 
     }
 

@@ -21,7 +21,7 @@ public class AutomaticFetchingInitializerTest {
     private AutomaticFetchingInitializer initializer;
     private UserResolver userResolver;
     private FetcherHandlerFactory handlerFactory;
-    private FetchingRegistrar registrar;
+    private FetcherRegistrar registrar;
     private List<Fetcher> fetchers;
 
     @Before
@@ -29,7 +29,7 @@ public class AutomaticFetchingInitializerTest {
         initMocks(this);
         userResolver = mock(UserResolver.class);
         handlerFactory = mock(FetcherHandlerFactory.class);
-        registrar = mock(FetchingRegistrar.class);
+        registrar = mock(FetcherRegistrar.class);
         initializer = new AutomaticFetchingInitializer();
         initializer.setRegistrar(registrar);
         initializer.setHandlerFactory(handlerFactory);
