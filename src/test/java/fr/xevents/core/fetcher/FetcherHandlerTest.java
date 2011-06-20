@@ -25,7 +25,7 @@ public class FetcherHandlerTest {
 
     private FetcherHandler handler;
     private EventRepository eventRepository;
-    private Fetcher<?> fetcher;
+    private Fetcher fetcher;
     private User user;
     private final Event mostRecentEvent = new Event(9999, "user", "message");
 

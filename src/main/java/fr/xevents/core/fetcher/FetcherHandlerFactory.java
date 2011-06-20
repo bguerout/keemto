@@ -27,14 +27,14 @@ public class FetcherHandlerFactory {
 
     }
 
-    private FetcherHandler createHandler(Fetcher<?> fetcher, User user) {
+    private FetcherHandler createHandler(Fetcher fetcher, User user) {
         return new FetcherHandler(fetcher, user, eventRepository);
     }
 
     public List<FetcherHandler> createHandlers(User user) {
 
         List<FetcherHandler> handlers = new ArrayList<FetcherHandler>();
-        for (Fetcher<?> fetcher : fetcherResolver.resolve(user)) {
+        for (Fetcher fetcher : fetcherResolver.resolve(user)) {
             FetcherHandler handler = createHandler(fetcher, user);
             handlers.add(handler);
         }

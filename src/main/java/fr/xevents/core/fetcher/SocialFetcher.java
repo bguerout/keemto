@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import fr.xevents.core.Event;
 import fr.xevents.core.User;
 
-public abstract class SocialFetcher<T> implements Fetcher<T> {
+public abstract class SocialFetcher<T> implements Fetcher {
 
     private static final Logger log = LoggerFactory.getLogger(SocialFetcher.class);
 

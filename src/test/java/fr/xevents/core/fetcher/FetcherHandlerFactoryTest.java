@@ -20,7 +20,7 @@ public class FetcherHandlerFactoryTest {
 
     private FetcherHandlerFactory factory;
     private EventRepository eventRepository;
-    private Fetcher<?> fetcher;
+    private Fetcher fetcher;
     private List<Fetcher> fetchers;
     private final User user = new User("user");
 
@@ -50,7 +50,7 @@ public class FetcherHandlerFactoryTest {
     @Test
     public void shouldCreateHandlersWithUser() throws Exception {
 
-        Fetcher<?> fetcher2 = mock(Fetcher.class);
+        Fetcher fetcher2 = mock(Fetcher.class);
         when(fetcher2.canFetch(any(User.class))).thenReturn(true);
         fetchers.add(fetcher2);
 

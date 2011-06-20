@@ -8,11 +8,11 @@ import fr.xevents.core.User;
 
 public class FetcherHandler implements Runnable {
 
-    private final Fetcher<?> fetcher;
+    private final Fetcher fetcher;
     private final User user;
     private final EventRepository eventRepository;
 
-    FetcherHandler(Fetcher<?> fetcher, User user, EventRepository eventRepository) {
+    FetcherHandler(Fetcher fetcher, User user, EventRepository eventRepository) {
         this.fetcher = fetcher;
         this.user = user;
         this.eventRepository = eventRepository;
