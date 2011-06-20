@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,12 +16,13 @@ import com.google.common.collect.Lists;
 import fr.xevents.core.User;
 import fr.xevents.core.UserResolver;
 
-public class SpringAutoFetchingInitializerTest {
+public class AutomaticFetchingInitializerTest {
 
-    private SpringAutoFetchingInitializer initializer;
+    private AutomaticFetchingInitializer initializer;
     private UserResolver userResolver;
     private FetcherHandlerFactory handlerFactory;
     private FetchingRegistrar registrar;
+    private List<Fetcher> fetchers;
 
     @Before
     public void initBeforeTest() throws Exception {
@@ -28,17 +30,24 @@ public class SpringAutoFetchingInitializerTest {
         userResolver = mock(UserResolver.class);
         handlerFactory = mock(FetcherHandlerFactory.class);
         registrar = mock(FetchingRegistrar.class);
-        initializer = new SpringAutoFetchingInitializer(userResolver, handlerFactory, registrar);
+        initializer = new AutomaticFetchingInitializer();
+        initializer.setRegistrar(registrar);
+        initializer.setHandlerFactory(handlerFactory);
+        initializer.setUserResolver(userResolver);
+
+        fetchers = new ArrayList<Fetcher>();
+        fetchers.add(mock(Fetcher.class));
     }
 
     @Test
     public void shouldRegisterHandler() throws Exception {
         User user = new User("bguerout");
+
         ArrayList<FetcherHandler> handlers = Lists.newArrayList(mock(FetcherHandler.class));
         when(handlerFactory.createHandlers(user)).thenReturn(handlers);
         when(userResolver.getAllUsers()).thenReturn(Lists.newArrayList(user));
 
-        initializer.afterPropertiesSet();
+        initializer.registerAllHandlers(fetchers);
 
         verify(registrar).registerHandlers(handlers);
 
@@ -48,17 +57,30 @@ public class SpringAutoFetchingInitializerTest {
     public void shouldRegisterHandlerForAllUsers() throws Exception {
         User bguerout = new User("bguerout");
         User stnevex = new User("stnevex");
-        when(userResolver.getAllUsers()).thenReturn(Lists.newArrayList(bguerout, stnevex));
         ArrayList<FetcherHandler> bgueroutHandlers = Lists.newArrayList(mock(FetcherHandler.class));
-        when(handlerFactory.createHandlers(bguerout)).thenReturn(bgueroutHandlers);
         ArrayList<FetcherHandler> stnevexHandlers = Lists.newArrayList(mock(FetcherHandler.class));
+        when(userResolver.getAllUsers()).thenReturn(Lists.newArrayList(bguerout, stnevex));
+        when(handlerFactory.createHandlers(bguerout)).thenReturn(bgueroutHandlers);
         when(handlerFactory.createHandlers(stnevex)).thenReturn(stnevexHandlers);
 
-        initializer.afterPropertiesSet();
+        initializer.registerAllHandlers(fetchers);
 
+        verify(userResolver).getAllUsers();
         verify(registrar).registerHandlers(bgueroutHandlers);
         verify(registrar).registerHandlers(stnevexHandlers);
 
+    }
+
+    @Test
+    public void shouldResolveFetcherWithResolver() throws Exception {
+
+        FetcherResolver resolver = mock(FetcherResolver.class);
+        initializer.setFetcherResolver(resolver);
+        when(resolver.resolveAll()).thenReturn(fetchers);
+
+        initializer.afterPropertiesSet();
+
+        verify(resolver).resolveAll();
     }
 
 }

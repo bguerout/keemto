@@ -6,10 +6,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +22,7 @@ public class FetchingRegistrar {
     private final TaskScheduler scheduler;
     private final List<HandlerTaskMonitor> manageableFutures = new ArrayList<FetchingRegistrar.HandlerTaskMonitor>();
 
-    @Inject
+    @Autowired
     public FetchingRegistrar(TaskScheduler scheduler) {
         this.scheduler = scheduler;
     }

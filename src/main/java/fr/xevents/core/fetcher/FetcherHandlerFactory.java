@@ -3,10 +3,9 @@ package fr.xevents.core.fetcher;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.xevents.core.EventRepository;
@@ -18,29 +17,28 @@ public class FetcherHandlerFactory {
     private static final Logger log = LoggerFactory.getLogger(FetcherHandlerFactory.class);
 
     private final EventRepository eventRepository;
-    private final List<Fetcher<?>> fetchers;
 
-    @Inject
-    public FetcherHandlerFactory(EventRepository eventRepository, List<Fetcher<?>> fetchers) {
+    private final FetcherResolver fetcherResolver;
+
+    @Autowired
+    public FetcherHandlerFactory(EventRepository eventRepository, FetcherResolver fetcherResolver) {
         this.eventRepository = eventRepository;
-        this.fetchers = fetchers;
+        this.fetcherResolver = fetcherResolver;
+
     }
 
-    protected FetcherHandler createHandler(Fetcher<?> fetcher, User user) {
+    private FetcherHandler createHandler(Fetcher<?> fetcher, User user) {
         return new FetcherHandler(fetcher, user, eventRepository);
     }
 
     public List<FetcherHandler> createHandlers(User user) {
+
         List<FetcherHandler> handlers = new ArrayList<FetcherHandler>();
-        for (Fetcher<?> fetcher : fetchers) {
-            if (fetcher.canFetch(user)) {
-                FetcherHandler handler = createHandler(fetcher, user);
-                handlers.add(handler);
-            } else {
-                log.debug("Fetcher" + fetcher.getProviderId()
-                        + " is ignored because fetcher cannot fetch events for user: " + user + ".");
-            }
+        for (Fetcher<?> fetcher : fetcherResolver.resolve(user)) {
+            FetcherHandler handler = createHandler(fetcher, user);
+            handlers.add(handler);
         }
         return handlers;
     }
+
 }
