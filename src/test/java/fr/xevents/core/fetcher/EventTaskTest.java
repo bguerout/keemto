@@ -21,9 +21,9 @@ import fr.xevents.core.Event;
 import fr.xevents.core.EventRepository;
 import fr.xevents.core.User;
 
-public class FetcherHandlerTest {
+public class EventTaskTest {
 
-    private FetcherHandler handler;
+    private EventTask task;
     private EventRepository eventRepository;
     private Fetcher fetcher;
     private User user;
@@ -34,7 +34,7 @@ public class FetcherHandlerTest {
         fetcher = mock(Fetcher.class);
         eventRepository = mock(EventRepository.class);
         user = new User("user");
-        handler = new FetcherHandler(fetcher, user, eventRepository);
+        task = new EventTask(fetcher, user, eventRepository);
 
         when(eventRepository.getMostRecentEvent(any(User.class))).thenReturn(mostRecentEvent);
     }
@@ -42,7 +42,7 @@ public class FetcherHandlerTest {
     @Test
     public void shouldUseEventRepositoryToObtainLastFetchedEventTime() {
 
-        handler.run();
+        task.run();
 
         verify(eventRepository).getMostRecentEvent(user);
         verify(fetcher).fetch(eq(user), eq(mostRecentEvent.getTimestamp()));
@@ -54,7 +54,7 @@ public class FetcherHandlerTest {
         ArrayList<Event> events = Lists.newArrayList(fetchedEvent);
         when(fetcher.fetch(eq(user), anyLong())).thenReturn(events);
 
-        handler.run();
+        task.run();
 
         verify(eventRepository).persist(events);
     }
@@ -64,7 +64,7 @@ public class FetcherHandlerTest {
 
         when(fetcher.fetch(eq(user), anyLong())).thenThrow(new RuntimeException());
 
-        handler.run();
+        task.run();
 
     }
 
@@ -73,7 +73,7 @@ public class FetcherHandlerTest {
 
         doThrow(new DataRetrievalFailureException("")).when(eventRepository).persist(anyList());
 
-        handler.run();
+        task.run();
     }
 
 }

@@ -13,20 +13,20 @@ import fr.xevents.core.UserResolver;
 public class AutomaticFetchingInitializer implements InitializingBean {
 
     private UserResolver userResolver;
-    private FetcherHandlerFactory handlerFactory;
+    private EventTaskFactory eventTaskFactory;
     private FetchingRegistrar registrar;
     private FetcherResolver fetcherResolver;
 
     @Override
     public void afterPropertiesSet() throws Exception {
         List<Fetcher> fetchers = fetcherResolver.resolveAll();
-        registerAllHandlers(fetchers);
+        registerAllTasks(fetchers);
     }
 
-    protected void registerAllHandlers(List<Fetcher> fetchers) {
+    protected void registerAllTasks(List<Fetcher> fetchers) {
         for (User user : userResolver.getAllUsers()) {
-            List<FetcherHandler> handlers = handlerFactory.createHandlers(user);
-            registrar.registerHandlers(handlers);
+            List<EventTask> tasks = eventTaskFactory.createTasks(user);
+            registrar.registerTasks(tasks);
         }
     }
 
@@ -36,8 +36,8 @@ public class AutomaticFetchingInitializer implements InitializingBean {
     }
 
     @Autowired
-    public void setHandlerFactory(FetcherHandlerFactory handlerFactory) {
-        this.handlerFactory = handlerFactory;
+    public void setEventTaskFactory(EventTaskFactory eventTaskFactory) {
+        this.eventTaskFactory = eventTaskFactory;
     }
 
     @Autowired

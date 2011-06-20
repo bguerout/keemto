@@ -12,33 +12,33 @@ import fr.xevents.core.EventRepository;
 import fr.xevents.core.User;
 
 @Component
-public class FetcherHandlerFactory {
+public class EventTaskFactory {
 
-    private static final Logger log = LoggerFactory.getLogger(FetcherHandlerFactory.class);
+    private static final Logger log = LoggerFactory.getLogger(EventTaskFactory.class);
 
     private final EventRepository eventRepository;
 
     private final FetcherResolver fetcherResolver;
 
     @Autowired
-    public FetcherHandlerFactory(EventRepository eventRepository, FetcherResolver fetcherResolver) {
+    public EventTaskFactory(EventRepository eventRepository, FetcherResolver fetcherResolver) {
         this.eventRepository = eventRepository;
         this.fetcherResolver = fetcherResolver;
 
     }
 
-    private FetcherHandler createHandler(Fetcher fetcher, User user) {
-        return new FetcherHandler(fetcher, user, eventRepository);
+    private EventTask createTask(Fetcher fetcher, User user) {
+        return new EventTask(fetcher, user, eventRepository);
     }
 
-    public List<FetcherHandler> createHandlers(User user) {
+    public List<EventTask> createTasks(User user) {
 
-        List<FetcherHandler> handlers = new ArrayList<FetcherHandler>();
+        List<EventTask> tasks = new ArrayList<EventTask>();
         for (Fetcher fetcher : fetcherResolver.resolve(user)) {
-            FetcherHandler handler = createHandler(fetcher, user);
-            handlers.add(handler);
+            EventTask task = createTask(fetcher, user);
+            tasks.add(task);
         }
-        return handlers;
+        return tasks;
     }
 
 }

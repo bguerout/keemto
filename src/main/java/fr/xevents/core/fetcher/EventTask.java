@@ -6,13 +6,13 @@ import fr.xevents.core.Event;
 import fr.xevents.core.EventRepository;
 import fr.xevents.core.User;
 
-public class FetcherHandler implements Runnable {
+public class EventTask implements Runnable {
 
     private final Fetcher fetcher;
     private final User user;
     private final EventRepository eventRepository;
 
-    FetcherHandler(Fetcher fetcher, User user, EventRepository eventRepository) {
+    EventTask(Fetcher fetcher, User user, EventRepository eventRepository) {
         this.fetcher = fetcher;
         this.user = user;
         this.eventRepository = eventRepository;
@@ -48,7 +48,7 @@ public class FetcherHandler implements Runnable {
         message.append(user);
         message.append(" with fetcher: ");
         message.append(fetcher.getProviderId());
-        message.append(". This task will be executed again during next handler invocation. Next estimated fetch in  : "
+        message.append(". This task will be executed again during next scheduled invocation. Next estimated fetch in  : "
                 + fetcher.getDelay() + "ms");
         throw new FetchingException(message.toString(), e);
     }

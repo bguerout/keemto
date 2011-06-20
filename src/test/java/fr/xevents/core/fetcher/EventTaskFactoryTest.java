@@ -16,9 +16,9 @@ import org.junit.Test;
 import fr.xevents.core.EventRepository;
 import fr.xevents.core.User;
 
-public class FetcherHandlerFactoryTest {
+public class EventTaskFactoryTest {
 
-    private FetcherHandlerFactory factory;
+    private EventTaskFactory factory;
     private EventRepository eventRepository;
     private Fetcher fetcher;
     private List<Fetcher> fetchers;
@@ -34,30 +34,30 @@ public class FetcherHandlerFactoryTest {
         when(fetcherResolver.resolve(user)).thenReturn(fetchers);
 
         eventRepository = mock(EventRepository.class);
-        factory = new FetcherHandlerFactory(eventRepository, fetcherResolver);
+        factory = new EventTaskFactory(eventRepository, fetcherResolver);
 
     }
 
     @Test
-    public void shouldCreateHandlerWithUser() throws Exception {
+    public void shouldCreateTaskWithUser() throws Exception {
 
-        List<FetcherHandler> handlers = factory.createHandlers(user);
+        List<EventTask> tasks = factory.createTasks(user);
 
-        assertThat(handlers, notNullValue());
-        assertThat(handlers.size(), equalTo(1));
+        assertThat(tasks, notNullValue());
+        assertThat(tasks.size(), equalTo(1));
     }
 
     @Test
-    public void shouldCreateHandlersWithUser() throws Exception {
+    public void shouldCreateTasksWithUser() throws Exception {
 
         Fetcher fetcher2 = mock(Fetcher.class);
         when(fetcher2.canFetch(any(User.class))).thenReturn(true);
         fetchers.add(fetcher2);
 
-        List<FetcherHandler> handlers = factory.createHandlers(user);
+        List<EventTask> tasks = factory.createTasks(user);
 
-        assertThat(handlers, notNullValue());
-        assertThat(handlers.size(), equalTo(2));
+        assertThat(tasks, notNullValue());
+        assertThat(tasks.size(), equalTo(2));
     }
 
 }

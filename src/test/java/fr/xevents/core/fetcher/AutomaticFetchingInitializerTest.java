@@ -20,7 +20,7 @@ public class AutomaticFetchingInitializerTest {
 
     private AutomaticFetchingInitializer initializer;
     private UserResolver userResolver;
-    private FetcherHandlerFactory handlerFactory;
+    private EventTaskFactory taskFactory;
     private FetchingRegistrar registrar;
     private List<Fetcher> fetchers;
 
@@ -28,11 +28,11 @@ public class AutomaticFetchingInitializerTest {
     public void initBeforeTest() throws Exception {
         initMocks(this);
         userResolver = mock(UserResolver.class);
-        handlerFactory = mock(FetcherHandlerFactory.class);
+        taskFactory = mock(EventTaskFactory.class);
         registrar = mock(FetchingRegistrar.class);
         initializer = new AutomaticFetchingInitializer();
         initializer.setRegistrar(registrar);
-        initializer.setHandlerFactory(handlerFactory);
+        initializer.setEventTaskFactory(taskFactory);
         initializer.setUserResolver(userResolver);
 
         fetchers = new ArrayList<Fetcher>();
@@ -40,34 +40,34 @@ public class AutomaticFetchingInitializerTest {
     }
 
     @Test
-    public void shouldRegisterHandler() throws Exception {
+    public void shouldRegisterTask() throws Exception {
         User user = new User("bguerout");
 
-        ArrayList<FetcherHandler> handlers = Lists.newArrayList(mock(FetcherHandler.class));
-        when(handlerFactory.createHandlers(user)).thenReturn(handlers);
+        ArrayList<EventTask> tasks = Lists.newArrayList(mock(EventTask.class));
+        when(taskFactory.createTasks(user)).thenReturn(tasks);
         when(userResolver.getAllUsers()).thenReturn(Lists.newArrayList(user));
 
-        initializer.registerAllHandlers(fetchers);
+        initializer.registerAllTasks(fetchers);
 
-        verify(registrar).registerHandlers(handlers);
+        verify(registrar).registerTasks(tasks);
 
     }
 
     @Test
-    public void shouldRegisterHandlerForAllUsers() throws Exception {
+    public void shouldRegisterTaskForAllUsers() throws Exception {
         User bguerout = new User("bguerout");
         User stnevex = new User("stnevex");
-        ArrayList<FetcherHandler> bgueroutHandlers = Lists.newArrayList(mock(FetcherHandler.class));
-        ArrayList<FetcherHandler> stnevexHandlers = Lists.newArrayList(mock(FetcherHandler.class));
+        ArrayList<EventTask> bgueroutTasks = Lists.newArrayList(mock(EventTask.class));
+        ArrayList<EventTask> stnevexTasks = Lists.newArrayList(mock(EventTask.class));
         when(userResolver.getAllUsers()).thenReturn(Lists.newArrayList(bguerout, stnevex));
-        when(handlerFactory.createHandlers(bguerout)).thenReturn(bgueroutHandlers);
-        when(handlerFactory.createHandlers(stnevex)).thenReturn(stnevexHandlers);
+        when(taskFactory.createTasks(bguerout)).thenReturn(bgueroutTasks);
+        when(taskFactory.createTasks(stnevex)).thenReturn(stnevexTasks);
 
-        initializer.registerAllHandlers(fetchers);
+        initializer.registerAllTasks(fetchers);
 
         verify(userResolver).getAllUsers();
-        verify(registrar).registerHandlers(bgueroutHandlers);
-        verify(registrar).registerHandlers(stnevexHandlers);
+        verify(registrar).registerTasks(bgueroutTasks);
+        verify(registrar).registerTasks(stnevexTasks);
 
     }
 

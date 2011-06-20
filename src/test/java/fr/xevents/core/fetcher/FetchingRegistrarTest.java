@@ -30,36 +30,36 @@ public class FetchingRegistrarTest {
     }
 
     @Test
-    public void shouldAutomaticallyRegisterHandlerToScheduler() throws Exception {
-        FetcherHandler handler = mock(FetcherHandler.class);
-        when(handler.getUser()).thenReturn(user);
+    public void shouldAutomaticallyRegisterTaskToScheduler() throws Exception {
+        EventTask task = mock(EventTask.class);
+        when(task.getUser()).thenReturn(user);
 
-        registrar.registerHandler(handler);
+        registrar.registerTask(task);
 
-        verify(scheduler).scheduleWithFixedDelay(handler, handler.getDelay());
+        verify(scheduler).scheduleWithFixedDelay(task, task.getDelay());
     }
 
     @Test
-    public void shouldRegisterAllHandlers() throws Exception {
-        FetcherHandler handler = mock(FetcherHandler.class);
-        when(handler.getUser()).thenReturn(user);
-        FetcherHandler anotherHandler = mock(FetcherHandler.class);
-        when(anotherHandler.getUser()).thenReturn(user);
+    public void shouldRegisterAllTasks() throws Exception {
+        EventTask task = mock(EventTask.class);
+        when(task.getUser()).thenReturn(user);
+        EventTask anotherTask = mock(EventTask.class);
+        when(anotherTask.getUser()).thenReturn(user);
 
-        registrar.registerHandlers(Lists.newArrayList(handler, anotherHandler));
+        registrar.registerTasks(Lists.newArrayList(task, anotherTask));
 
-        verify(scheduler, timeout(2)).scheduleWithFixedDelay(handler, handler.getDelay());
+        verify(scheduler, timeout(2)).scheduleWithFixedDelay(task, task.getDelay());
     }
 
     @Test
-    public void shouldCancelHandlersForUser() throws Exception {
-        FetcherHandler handler = mock(FetcherHandler.class);
-        when(handler.getUser()).thenReturn(user);
+    public void shouldCancelTAsksForUser() throws Exception {
+        EventTask task = mock(EventTask.class);
+        when(task.getUser()).thenReturn(user);
         ScheduledFuture<?> future = mock(ScheduledFuture.class);
-        when(scheduler.scheduleWithFixedDelay(handler, handler.getDelay())).thenReturn(future);
+        when(scheduler.scheduleWithFixedDelay(task, task.getDelay())).thenReturn(future);
 
-        registrar.registerHandler(handler);
-        registrar.cancelHandlers(user);
+        registrar.registerTask(task);
+        registrar.cancelTasks(user);
 
         verify(future).cancel(false);
 

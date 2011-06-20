@@ -20,50 +20,50 @@ public class FetchingRegistrar {
     private static final Logger log = LoggerFactory.getLogger(FetchingRegistrar.class);
 
     private final TaskScheduler scheduler;
-    private final List<HandlerTaskMonitor> manageableFutures = new ArrayList<FetchingRegistrar.HandlerTaskMonitor>();
+    private final List<TaskMonitor> manageableFutures = new ArrayList<FetchingRegistrar.TaskMonitor>();
 
     @Autowired
     public FetchingRegistrar(TaskScheduler scheduler) {
         this.scheduler = scheduler;
     }
 
-    public void registerHandlers(List<FetcherHandler> handlers) {
-        for (FetcherHandler handler : handlers) {
-            registerHandler(handler);
+    public void registerTasks(List<EventTask> tasks) {
+        for (EventTask task : tasks) {
+            registerTask(task);
         }
     }
 
-    public void registerHandler(FetcherHandler handler) {
-        HandlerTaskMonitor manager = getOrCreateManager(handler.getUser());
-        ScheduledFuture<?> future = scheduler.scheduleWithFixedDelay(handler, handler.getDelay());
-        manager.addFuture(future);
-        manageableFutures.add(manager);
-        log.info("A new fetching task has been registered for user: " + handler.getUser()
-                + ". This task will run every " + handler.getDelay() + "ms");
+    public void registerTask(EventTask task) {
+        TaskMonitor monitor = getOrCreateManager(task.getUser());
+        ScheduledFuture<?> future = scheduler.scheduleWithFixedDelay(task, task.getDelay());
+        monitor.addFuture(future);
+        manageableFutures.add(monitor);
+        log.info("A new fetching task has been registered for user: " + task.getUser()
+                + ". This task will run every " + task.getDelay() + "ms");
     }
 
-    public void cancelHandlers(User user) {
-        for (HandlerTaskMonitor manager : manageableFutures) {
+    public void cancelTasks(User user) {
+        for (TaskMonitor manager : manageableFutures) {
             if (manager.isOwnedBy(user)) {
                 manager.cancellAllFutures();
             }
         }
     }
 
-    private HandlerTaskMonitor getOrCreateManager(User user) {
-        HandlerTaskMonitor manager = new HandlerTaskMonitor(user);
+    private TaskMonitor getOrCreateManager(User user) {
+        TaskMonitor manager = new TaskMonitor(user);
         if (manageableFutures.contains(manager)) {
             return manageableFutures.get(manageableFutures.indexOf(manager));
         }
         return manager;
     }
 
-    private final class HandlerTaskMonitor {
+    private final class TaskMonitor {
 
         private final Set<ScheduledFuture<?>> scheduledFutures = new LinkedHashSet<ScheduledFuture<?>>();
         private final User user;
 
-        public HandlerTaskMonitor(User user) {
+        public TaskMonitor(User user) {
             this.user = user;
         }
 

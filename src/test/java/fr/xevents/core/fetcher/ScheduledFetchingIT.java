@@ -25,19 +25,19 @@ public class ScheduledFetchingIT {
     public void shouldExecuteFetcherAsychronouslyWithDelay() throws Exception {
         CountDownLatch latch = new CountDownLatch(10);
         User user = new User("bguerout");
-        FetcherHandler handler = new CountDownHandler(latch, user);
+        EventTask countDownTask = new CountDownTask(latch, user);
 
-        registrar.registerHandler(handler);
+        registrar.registerTask(countDownTask);
         latch.await(2000, TimeUnit.MILLISECONDS);
 
         assertThat(latch.getCount(), equalTo((long) 0));
     }
 
-    public class CountDownHandler extends FetcherHandler {
+    public class CountDownTask extends EventTask {
 
         private final CountDownLatch latch;
 
-        public CountDownHandler(CountDownLatch latch, User user) {
+        public CountDownTask(CountDownLatch latch, User user) {
             super(null, user, null);
             this.latch = latch;
         }
