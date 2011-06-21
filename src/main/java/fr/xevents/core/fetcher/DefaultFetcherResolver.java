@@ -37,8 +37,8 @@ public class DefaultFetcherResolver implements FetcherResolver {
             if (fetcher.canFetch(user)) {
                 validFetchers.add(fetcher);
             } else {
-                log.debug("Fetcher" + fetcher.getProviderId()
-                        + " is rejected because fetcher cannot fetch events for user: " + user + ".");
+                log.debug("Fetcher " + fetcher.getProviderId()
+                        + " is rejected because it cannot fetch events for user: " + user + ".");
             }
         }
         return validFetchers;

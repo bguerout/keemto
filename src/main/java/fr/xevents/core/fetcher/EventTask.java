@@ -2,11 +2,16 @@ package fr.xevents.core.fetcher;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.xevents.core.Event;
 import fr.xevents.core.EventRepository;
 import fr.xevents.core.User;
 
 public class EventTask implements Runnable {
+
+    private static final Logger log = LoggerFactory.getLogger(EventTask.class);
 
     private final Fetcher fetcher;
     private final User user;
@@ -20,6 +25,7 @@ public class EventTask implements Runnable {
 
     @Override
     public void run() throws FetchingException {
+        log.debug("Task execution has been triggered for " + user);
         Event mostRecentEvent = eventRepository.getMostRecentEvent(user);
         fetchAndPersist(mostRecentEvent.getTimestamp());
     }
@@ -37,8 +43,15 @@ public class EventTask implements Runnable {
         try {
             List<Event> events = fetcher.fetch(user, lastFetchedEventTime);
             eventRepository.persist(events);
+            logFetchedEvents(events);
         } catch (RuntimeException e) {
             handleFetchingException(e);
+        }
+    }
+
+    private void logFetchedEvents(List<Event> events) {
+        for (Event event : events) {
+            log.debug("A new Event has been fetched " + event);
         }
     }
 
