@@ -27,7 +27,7 @@ public class JdbcEventRepository implements EventRepository {
 
     @Override
     public List<Event> getAllEvents() {
-        return jdbcTemplate.query("select ts,username,message from events", new EventRowMapper());
+        return jdbcTemplate.query("select ts,username,message,providerId from events", new EventRowMapper());
     }
 
     @Override
@@ -38,34 +38,36 @@ public class JdbcEventRepository implements EventRepository {
     }
 
     private void persist(Event event) {
-        jdbcTemplate.update("insert into events (ts,username,message) values(?,?,?)",
-                new Object[] { event.getTimestamp(), event.getUser(), event.getMessage() });
+        jdbcTemplate.update("insert into events (ts,username,message,providerId) values(?,?,?,?)",
+                new Object[] { event.getTimestamp(), event.getUser(), event.getMessage(), event.getProviderId() });
     }
 
     @Override
-    public Event getMostRecentEvent(User user) {
-        String[] parameters = { user.getUsername() };
+    public Event getMostRecentEvent(User user, String providerId) {
+        String[] parameters = { user.getUsername(), providerId };
         try {
-            return jdbcTemplate.queryForObject(
-                    "select TOP 1 ts,username,message from events where username=? ORDER BY ts DESC", parameters,
-                    new EventRowMapper());
+            return jdbcTemplate
+                    .queryForObject(
+                            "select TOP 1 ts,username,message,providerId from events where username=? AND providerId=? ORDER BY ts DESC",
+                            parameters, new EventRowMapper());
         } catch (EmptyResultDataAccessException e) {
-            return createInitializationEvent(user);
+            return createInitializationEvent(user, providerId);
         }
     }
 
-    private Event createInitializationEvent(User user) {
+    private Event createInitializationEvent(User user, String providerId) {
         log.info("User: "
                 + user
                 + " hasn't event yet. "
                 + "This is propably the first time application tried to fetch user's connections. An initialization event is created.");
-        return new InitializationEvent(user.getUsername());
+        return new InitializationEvent(user.getUsername(), providerId);
     }
 
     private final class EventRowMapper implements RowMapper<Event> {
         @Override
         public Event mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new Event(rs.getLong("ts"), rs.getString("username"), rs.getString("message"));
+            return new Event(rs.getLong("ts"), rs.getString("username"), rs.getString("message"),
+                    rs.getString("providerId"));
         }
     }
 

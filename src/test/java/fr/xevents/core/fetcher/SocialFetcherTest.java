@@ -59,7 +59,7 @@ public class SocialFetcherTest {
 
         @Override
         protected List<Event> fetchApiEvents(String api, long lastFetchedEventTime) {
-            return Lists.newArrayList(new Event(1, user.getUsername(), api.toString()));
+            return Lists.newArrayList(new Event(1, user.getUsername(), api.toString(), "social"));
         }
 
     }

@@ -27,7 +27,7 @@ public class EventTaskTest {
     private EventRepository eventRepository;
     private Fetcher fetcher;
     private User user;
-    private final Event mostRecentEvent = new Event(9999, "user", "message");
+    private final Event mostRecentEvent = new Event(9999, "user", "message", "provider");
 
     @Before
     public void initBeforeTest() throws Exception {
@@ -36,7 +36,8 @@ public class EventTaskTest {
         user = new User("user");
         task = new EventTask(fetcher, user, eventRepository);
 
-        when(eventRepository.getMostRecentEvent(any(User.class))).thenReturn(mostRecentEvent);
+        when(fetcher.getProviderId()).thenReturn("provider");
+        when(eventRepository.getMostRecentEvent(any(User.class), eq("provider"))).thenReturn(mostRecentEvent);
     }
 
     @Test
@@ -44,13 +45,13 @@ public class EventTaskTest {
 
         task.run();
 
-        verify(eventRepository).getMostRecentEvent(user);
+        verify(eventRepository).getMostRecentEvent(user, "provider");
         verify(fetcher).fetch(eq(user), eq(mostRecentEvent.getTimestamp()));
     }
 
     @Test
     public void shouldPersitFetchedEvents() {
-        Event fetchedEvent = new Event(System.currentTimeMillis(), "bguerout", "message");
+        Event fetchedEvent = new Event(System.currentTimeMillis(), "bguerout", "message", "provider");
         ArrayList<Event> events = Lists.newArrayList(fetchedEvent);
         when(fetcher.fetch(eq(user), anyLong())).thenReturn(events);
 

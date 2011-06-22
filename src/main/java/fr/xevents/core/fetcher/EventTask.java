@@ -26,7 +26,7 @@ public class EventTask implements Runnable {
     @Override
     public void run() throws FetchingException {
         log.debug("Task execution has been triggered for " + user);
-        Event mostRecentEvent = eventRepository.getMostRecentEvent(user);
+        Event mostRecentEvent = eventRepository.getMostRecentEvent(user, fetcher.getProviderId());
         fetchAndPersist(mostRecentEvent.getTimestamp());
     }
 

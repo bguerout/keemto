@@ -6,8 +6,8 @@ package fr.xevents.core;
  */
 public class InitializationEvent extends Event {
 
-    public InitializationEvent(String owner) {
-        super(0, owner, "initialization event");
+    public InitializationEvent(String owner, String providerId) {
+        super(0, owner, "initialization event", providerId);
     }
 
 }

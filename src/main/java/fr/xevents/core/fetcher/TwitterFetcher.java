@@ -53,6 +53,6 @@ public class TwitterFetcher extends SocialFetcher<TwitterApi> {
     }
 
     private Event convertToEvent(Tweet tweet) {
-        return new Event(tweet.getCreatedAt().getTime(), tweet.getFromUser(), tweet.getText());
+        return new Event(tweet.getCreatedAt().getTime(), tweet.getFromUser(), tweet.getText(), getProviderId());
     }
 }

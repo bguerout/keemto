@@ -33,7 +33,7 @@ public class EventControllerIT extends ControllerTestCase {
 
     @Test
     public void shouldReturnHomeViewWithEvents() throws Exception {
-        ArrayList<Event> events = Lists.newArrayList(new Event(1, "user", "message"));
+        ArrayList<Event> events = Lists.newArrayList(new Event(1, "user", "message", "provider"));
         when(eventRepository.getAllEvents()).thenReturn(events);
 
         final ModelAndView mav = handlerAdapter.handle(request, response, controller);

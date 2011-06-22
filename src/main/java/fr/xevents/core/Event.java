@@ -10,12 +10,14 @@ public class Event {
 
     private final String message;
 
-    public Event(long timestamp, String owner, String message) {
-        super();
+    private final String providerId;
 
+    public Event(long timestamp, String owner, String message, String providerId) {
+        super();
         this.timestamp = timestamp;
         this.user = owner;
         this.message = message;
+        this.providerId = providerId;
     }
 
     public long getTimestamp() {
@@ -30,9 +32,13 @@ public class Event {
         return message;
     }
 
+    public String getProviderId() {
+        return providerId;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hashCode(timestamp, user, message);
+        return Objects.hashCode(timestamp, user, providerId);
     }
 
     @Override
@@ -43,7 +49,7 @@ public class Event {
         if (o instanceof Event) {
             Event other = (Event) o;
             return Objects.equal(other.timestamp, timestamp) && Objects.equal(other.user, user)
-                    && Objects.equal(other.message, message);
+                    && Objects.equal(other.providerId, providerId);
         }
         return false;
     }
