@@ -20,7 +20,7 @@ public class AutomaticFetchingInitializerTest {
 
     private AutomaticFetchingInitializer initializer;
     private UserResolver userResolver;
-    private EventTaskFactory taskFactory;
+    private TaskFactory taskFactory;
     private FetchingRegistrar registrar;
     private List<Fetcher> fetchers;
 
@@ -28,7 +28,7 @@ public class AutomaticFetchingInitializerTest {
     public void initBeforeTest() throws Exception {
         initMocks(this);
         userResolver = mock(UserResolver.class);
-        taskFactory = mock(EventTaskFactory.class);
+        taskFactory = mock(TaskFactory.class);
         registrar = mock(FetchingRegistrar.class);
         initializer = new AutomaticFetchingInitializer();
         initializer.setRegistrar(registrar);

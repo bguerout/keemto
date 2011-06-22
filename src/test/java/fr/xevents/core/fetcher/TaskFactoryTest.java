@@ -16,9 +16,9 @@ import org.junit.Test;
 import fr.xevents.core.EventRepository;
 import fr.xevents.core.User;
 
-public class EventTaskFactoryTest {
+public class TaskFactoryTest {
 
-    private EventTaskFactory factory;
+    private TaskFactory factory;
     private EventRepository eventRepository;
     private Fetcher fetcher;
     private List<Fetcher> fetchers;
@@ -34,7 +34,7 @@ public class EventTaskFactoryTest {
         when(fetcherResolver.resolve(user)).thenReturn(fetchers);
 
         eventRepository = mock(EventRepository.class);
-        factory = new EventTaskFactory(eventRepository, fetcherResolver);
+        factory = new TaskFactory(eventRepository, fetcherResolver);
 
     }
 

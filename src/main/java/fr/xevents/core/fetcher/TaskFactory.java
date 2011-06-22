@@ -12,16 +12,16 @@ import fr.xevents.core.EventRepository;
 import fr.xevents.core.User;
 
 @Component
-public class EventTaskFactory {
+public class TaskFactory {
 
-    private static final Logger log = LoggerFactory.getLogger(EventTaskFactory.class);
+    private static final Logger log = LoggerFactory.getLogger(TaskFactory.class);
 
     private final EventRepository eventRepository;
 
     private final FetcherResolver fetcherResolver;
 
     @Autowired
-    public EventTaskFactory(EventRepository eventRepository, FetcherResolver fetcherResolver) {
+    public TaskFactory(EventRepository eventRepository, FetcherResolver fetcherResolver) {
         this.eventRepository = eventRepository;
         this.fetcherResolver = fetcherResolver;
 
