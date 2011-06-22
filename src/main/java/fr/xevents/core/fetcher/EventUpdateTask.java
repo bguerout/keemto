@@ -27,35 +27,28 @@ public class EventUpdateTask implements Runnable {
     public void run() throws FetchingException {
         log.debug("Task execution has been triggered for " + user);
         Event mostRecentEvent = eventRepository.getMostRecentEvent(user, fetcher.getProviderId());
-        fetchAndPersist(mostRecentEvent.getTimestamp());
+        updateEvents(mostRecentEvent);
     }
 
-    public long getDelay() {
-        return fetcher.getDelay();
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    private void fetchAndPersist(long lastFetchedEventTime) {
-
+    private void updateEvents(Event mostRecentEvent) {
         try {
-            List<Event> events = fetcher.fetch(user, lastFetchedEventTime);
-            eventRepository.persist(events);
+            List<Event> events = fetch(mostRecentEvent.getTimestamp());
+            persist(events);
             logFetchedEvents(events);
         } catch (RuntimeException e) {
-            handleFetchingException(e);
+            handleExceptionDuringUpdate(e);
         }
     }
 
-    private void logFetchedEvents(List<Event> events) {
-        for (Event event : events) {
-            log.debug("A new Event has been fetched " + event);
-        }
+    protected List<Event> fetch(long lastFetchedEventTime) {
+        return fetcher.fetch(user, lastFetchedEventTime);
     }
 
-    protected void handleFetchingException(Exception e) throws FetchingException {
+    protected void persist(List<Event> events) {
+        eventRepository.persist(events);
+    }
+
+    protected void handleExceptionDuringUpdate(Exception e) throws FetchingException {
         StringBuilder message = new StringBuilder();
         message.append("An error has occured when trying to update events for user: ");
         message.append(user);
@@ -66,4 +59,17 @@ public class EventUpdateTask implements Runnable {
         throw new FetchingException(message.toString(), e);
     }
 
+    private void logFetchedEvents(List<Event> events) {
+        for (Event event : events) {
+            log.debug("A new Event has been fetched " + event);
+        }
+    }
+
+    public long getDelay() {
+        return fetcher.getDelay();
+    }
+
+    public User getUser() {
+        return user;
+    }
 }
