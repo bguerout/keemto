@@ -9,15 +9,15 @@ import fr.xevents.core.Event;
 import fr.xevents.core.EventRepository;
 import fr.xevents.core.User;
 
-public class EventTask implements Runnable {
+public class EventUpdateTask implements Runnable {
 
-    private static final Logger log = LoggerFactory.getLogger(EventTask.class);
+    private static final Logger log = LoggerFactory.getLogger(EventUpdateTask.class);
 
     private final Fetcher fetcher;
     private final User user;
     private final EventRepository eventRepository;
 
-    EventTask(Fetcher fetcher, User user, EventRepository eventRepository) {
+    EventUpdateTask(Fetcher fetcher, User user, EventRepository eventRepository) {
         this.fetcher = fetcher;
         this.user = user;
         this.eventRepository = eventRepository;

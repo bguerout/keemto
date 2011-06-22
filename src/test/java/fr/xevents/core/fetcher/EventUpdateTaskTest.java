@@ -21,9 +21,9 @@ import fr.xevents.core.Event;
 import fr.xevents.core.EventRepository;
 import fr.xevents.core.User;
 
-public class EventTaskTest {
+public class EventUpdateTaskTest {
 
-    private EventTask task;
+    private EventUpdateTask task;
     private EventRepository eventRepository;
     private Fetcher fetcher;
     private User user;
@@ -34,7 +34,7 @@ public class EventTaskTest {
         fetcher = mock(Fetcher.class);
         eventRepository = mock(EventRepository.class);
         user = new User("user");
-        task = new EventTask(fetcher, user, eventRepository);
+        task = new EventUpdateTask(fetcher, user, eventRepository);
 
         when(fetcher.getProviderId()).thenReturn("provider");
         when(eventRepository.getMostRecentEvent(any(User.class), eq("provider"))).thenReturn(mostRecentEvent);

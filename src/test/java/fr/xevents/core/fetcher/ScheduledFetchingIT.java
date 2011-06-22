@@ -25,7 +25,7 @@ public class ScheduledFetchingIT {
     public void shouldExecuteFetcherAsychronouslyWithDelay() throws Exception {
         CountDownLatch latch = new CountDownLatch(10);
         User user = new User("bguerout");
-        EventTask countDownTask = new CountDownTask(latch, user);
+        EventUpdateTask countDownTask = new CountDownTask(latch, user);
 
         registrar.registerTask(countDownTask);
         latch.await(2000, TimeUnit.MILLISECONDS);
@@ -33,7 +33,7 @@ public class ScheduledFetchingIT {
         assertThat(latch.getCount(), equalTo((long) 0));
     }
 
-    public class CountDownTask extends EventTask {
+    public class CountDownTask extends EventUpdateTask {
 
         private final CountDownLatch latch;
 

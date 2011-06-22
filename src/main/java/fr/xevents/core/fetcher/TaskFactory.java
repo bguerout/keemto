@@ -27,15 +27,15 @@ public class TaskFactory {
 
     }
 
-    private EventTask createTask(Fetcher fetcher, User user) {
-        return new EventTask(fetcher, user, eventRepository);
+    private EventUpdateTask createTask(Fetcher fetcher, User user) {
+        return new EventUpdateTask(fetcher, user, eventRepository);
     }
 
-    public List<EventTask> createTasks(User user) {
+    public List<EventUpdateTask> createTasks(User user) {
 
-        List<EventTask> tasks = new ArrayList<EventTask>();
+        List<EventUpdateTask> tasks = new ArrayList<EventUpdateTask>();
         for (Fetcher fetcher : fetcherResolver.resolve(user)) {
-            EventTask task = createTask(fetcher, user);
+            EventUpdateTask task = createTask(fetcher, user);
             tasks.add(task);
         }
         return tasks;

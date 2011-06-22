@@ -43,7 +43,7 @@ public class AutomaticFetchingInitializerTest {
     public void shouldRegisterTask() throws Exception {
         User user = new User("bguerout");
 
-        ArrayList<EventTask> tasks = Lists.newArrayList(mock(EventTask.class));
+        ArrayList<EventUpdateTask> tasks = Lists.newArrayList(mock(EventUpdateTask.class));
         when(taskFactory.createTasks(user)).thenReturn(tasks);
         when(userResolver.getAllUsers()).thenReturn(Lists.newArrayList(user));
 
@@ -57,8 +57,8 @@ public class AutomaticFetchingInitializerTest {
     public void shouldRegisterTaskForAllUsers() throws Exception {
         User bguerout = new User("bguerout");
         User stnevex = new User("stnevex");
-        ArrayList<EventTask> bgueroutTasks = Lists.newArrayList(mock(EventTask.class));
-        ArrayList<EventTask> stnevexTasks = Lists.newArrayList(mock(EventTask.class));
+        ArrayList<EventUpdateTask> bgueroutTasks = Lists.newArrayList(mock(EventUpdateTask.class));
+        ArrayList<EventUpdateTask> stnevexTasks = Lists.newArrayList(mock(EventUpdateTask.class));
         when(userResolver.getAllUsers()).thenReturn(Lists.newArrayList(bguerout, stnevex));
         when(taskFactory.createTasks(bguerout)).thenReturn(bgueroutTasks);
         when(taskFactory.createTasks(stnevex)).thenReturn(stnevexTasks);

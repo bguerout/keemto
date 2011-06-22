@@ -31,7 +31,7 @@ public class FetchingRegistrarTest {
 
     @Test
     public void shouldAutomaticallyRegisterTaskToScheduler() throws Exception {
-        EventTask task = mock(EventTask.class);
+        EventUpdateTask task = mock(EventUpdateTask.class);
         when(task.getUser()).thenReturn(user);
 
         registrar.registerTask(task);
@@ -41,9 +41,9 @@ public class FetchingRegistrarTest {
 
     @Test
     public void shouldRegisterAllTasks() throws Exception {
-        EventTask task = mock(EventTask.class);
+        EventUpdateTask task = mock(EventUpdateTask.class);
         when(task.getUser()).thenReturn(user);
-        EventTask anotherTask = mock(EventTask.class);
+        EventUpdateTask anotherTask = mock(EventUpdateTask.class);
         when(anotherTask.getUser()).thenReturn(user);
 
         registrar.registerTasks(Lists.newArrayList(task, anotherTask));
@@ -53,7 +53,7 @@ public class FetchingRegistrarTest {
 
     @Test
     public void shouldCancelTAsksForUser() throws Exception {
-        EventTask task = mock(EventTask.class);
+        EventUpdateTask task = mock(EventUpdateTask.class);
         when(task.getUser()).thenReturn(user);
         ScheduledFuture<?> future = mock(ScheduledFuture.class);
         when(scheduler.scheduleWithFixedDelay(task, task.getDelay())).thenReturn(future);

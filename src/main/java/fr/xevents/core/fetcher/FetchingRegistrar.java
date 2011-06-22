@@ -27,13 +27,13 @@ public class FetchingRegistrar {
         this.scheduler = scheduler;
     }
 
-    public void registerTasks(List<EventTask> tasks) {
-        for (EventTask task : tasks) {
+    public void registerTasks(List<EventUpdateTask> tasks) {
+        for (EventUpdateTask task : tasks) {
             registerTask(task);
         }
     }
 
-    public void registerTask(EventTask task) {
+    public void registerTask(EventUpdateTask task) {
         TaskMonitor monitor = getOrCreateManager(task.getUser());
         ScheduledFuture<?> future = scheduler.scheduleWithFixedDelay(task, task.getDelay());
         monitor.addFuture(future);

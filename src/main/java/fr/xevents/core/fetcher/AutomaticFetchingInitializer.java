@@ -25,7 +25,7 @@ public class AutomaticFetchingInitializer implements InitializingBean {
 
     protected void registerAllTasks(List<Fetcher> fetchers) {
         for (User user : userResolver.getAllUsers()) {
-            List<EventTask> tasks = taskFactory.createTasks(user);
+            List<EventUpdateTask> tasks = taskFactory.createTasks(user);
             registrar.registerTasks(tasks);
         }
     }

@@ -41,7 +41,7 @@ public class TaskFactoryTest {
     @Test
     public void shouldCreateTaskWithUser() throws Exception {
 
-        List<EventTask> tasks = factory.createTasks(user);
+        List<EventUpdateTask> tasks = factory.createTasks(user);
 
         assertThat(tasks, notNullValue());
         assertThat(tasks.size(), equalTo(1));
@@ -54,7 +54,7 @@ public class TaskFactoryTest {
         when(fetcher2.canFetch(any(User.class))).thenReturn(true);
         fetchers.add(fetcher2);
 
-        List<EventTask> tasks = factory.createTasks(user);
+        List<EventUpdateTask> tasks = factory.createTasks(user);
 
         assertThat(tasks, notNullValue());
         assertThat(tasks.size(), equalTo(2));
