@@ -61,7 +61,7 @@ public class EventUpdateTask implements Runnable {
 
     private void logFetchedEvents(List<Event> events) {
         for (Event event : events) {
-            log.debug("A new Event has been fetched " + event);
+            log.debug("A new Event has been fetched: " + event);
         }
     }
 

@@ -27,9 +27,7 @@ public abstract class SocialFetcher<T> implements Fetcher {
         List<Event> events = new ArrayList<Event>();
         List<T> apis = apiResolver.getApis(user);
 
-        if (apis.isEmpty()) {
-            log.info("User: " + user + " does not own Api of type: " + apiResolver.getApiClass());
-        }
+        logFetchingBeginning(user, apis);
 
         for (T api : apis) {
             List<Event> apiEvents = fetchApiEvents(api, lastFetchedEventTime);
@@ -40,11 +38,21 @@ public abstract class SocialFetcher<T> implements Fetcher {
         return events;
     }
 
+    private void logFetchingBeginning(User user, List<T> apis) {
+        if (apis.isEmpty()) {
+            log.debug("Unable to fetch User: " + user + "because he does not own Api of type: "
+                    + apiResolver.getApiClass() + " for provider: " + getProviderId());
+        } else {
+            log.debug("Fetching provider: " + getProviderId() + " for user: " + user);
+        }
+    }
+
     private void logFetchResult(User user, long lastFetchedEventTime, int nbEvents) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         String lastEventDate = format.format(new Date(lastFetchedEventTime));
         if (nbEvents == 0) {
-            log.info("No event has been fetched because application is up to date since " + lastEventDate);
+            log.info("No event has been fetched for provider: " + getProviderId() + " and user: " + user.getUsername()
+                    + ". Application is up to date since " + lastEventDate);
         } else {
             log.info(nbEvents + " event(s) have been fetched for " + user);
         }
