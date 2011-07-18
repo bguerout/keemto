@@ -15,7 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.social.twitter.api.TimelineOperations;
 import org.springframework.social.twitter.api.Tweet;
-import org.springframework.social.twitter.api.TwitterApi;
+import org.springframework.social.twitter.api.Twitter;
 
 import com.google.common.collect.Lists;
 
@@ -29,15 +29,15 @@ public class TwitterFetcherTest {
     private Tweet tweet2;
     private User user;
     private long since;
-    private ApiResolver<TwitterApi> apiResolver;
-    private TwitterApi api;
+    private ApiResolver<Twitter> apiResolver;
+    private Twitter api;
     private TimelineOperations timelineOperations;
 
     @Before
     public void initBeforeTest() throws Exception {
 
         apiResolver = mock(ApiResolver.class);
-        api = mock(TwitterApi.class);
+        api = mock(Twitter.class);
         timelineOperations = mock(TimelineOperations.class);
         fetcher = new TwitterFetcher(apiResolver);
         user = new User("bguerout");

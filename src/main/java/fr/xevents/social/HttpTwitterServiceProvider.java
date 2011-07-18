@@ -2,10 +2,10 @@ package fr.xevents.social;
 
 import org.springframework.social.oauth1.AbstractOAuth1ServiceProvider;
 import org.springframework.social.oauth1.OAuth1Template;
-import org.springframework.social.twitter.api.TwitterApi;
+import org.springframework.social.twitter.api.Twitter;
 import org.springframework.social.twitter.api.impl.TwitterTemplate;
 
-public class HttpTwitterServiceProvider extends AbstractOAuth1ServiceProvider<TwitterApi> {
+public class HttpTwitterServiceProvider extends AbstractOAuth1ServiceProvider<Twitter> {
 
     public HttpTwitterServiceProvider(String consumerKey, String consumerSecret) {
         super(consumerKey, consumerSecret, new OAuth1Template(consumerKey, consumerSecret,
@@ -14,7 +14,7 @@ public class HttpTwitterServiceProvider extends AbstractOAuth1ServiceProvider<Tw
     }
 
     @Override
-    public TwitterApi getApi(String accessToken, String secret) {
+    public Twitter getApi(String accessToken, String secret) {
         return new TwitterTemplate(getConsumerKey(), getConsumerSecret(), accessToken, secret);
     }
 }

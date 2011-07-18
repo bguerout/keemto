@@ -20,7 +20,7 @@ public class UserConnectionController {
 
     @RequestMapping("/connections")
     public String getAllUserConnections(Model model) {
-        model.addAttribute("connections", connectionRepository.findConnections());
+        model.addAttribute("connections", connectionRepository.findAllConnections());
         return "connections";
     }
 }

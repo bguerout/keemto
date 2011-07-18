@@ -15,7 +15,7 @@ import org.mockito.Mock;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.UsersConnectionRepository;
-import org.springframework.social.twitter.api.TwitterApi;
+import org.springframework.social.twitter.api.Twitter;
 
 import com.google.common.collect.Lists;
 
@@ -23,13 +23,13 @@ import fr.xevents.core.User;
 
 public class ApiResolverTest {
 
-    private ApiResolver<TwitterApi> resolver;
+    private ApiResolver<Twitter> resolver;
 
     @Mock
     private UsersConnectionRepository usersConnectionRepository;
 
     @Mock
-    private TwitterApi api;
+    private Twitter api;
 
     @Mock
     private ConnectionRepository connRepository;
@@ -38,7 +38,7 @@ public class ApiResolverTest {
     public void initBeforeTest() throws Exception {
         initMocks(this);
 
-        resolver = new ApiResolver<TwitterApi>(TwitterApi.class, usersConnectionRepository);
+        resolver = new ApiResolver<Twitter>(Twitter.class, usersConnectionRepository);
 
         when(usersConnectionRepository.createConnectionRepository("bguerout")).thenReturn(connRepository);
 
@@ -47,7 +47,7 @@ public class ApiResolverTest {
     @Test
     public void whenNoApiExistsThenShouldReturnAnEmptyList() throws Exception {
 
-        List<TwitterApi> apis = resolver.getApis(new User("bguerout"));
+        List<Twitter> apis = resolver.getApis(new User("bguerout"));
 
         assertThat(apis, notNullValue());
     }
@@ -55,11 +55,11 @@ public class ApiResolverTest {
     @Test
     public void shouldUseSocialRepositoryToResolveApis() {
 
-        Connection<TwitterApi> twitterConnection = mock(Connection.class);
-        when(connRepository.findConnectionsToApi(TwitterApi.class)).thenReturn(Lists.newArrayList(twitterConnection));
+        Connection<Twitter> twitterConnection = mock(Connection.class);
+        when(connRepository.findConnections(Twitter.class)).thenReturn(Lists.newArrayList(twitterConnection));
         when(twitterConnection.getApi()).thenReturn(api);
 
-        List<TwitterApi> apis = resolver.getApis(new User("bguerout"));
+        List<Twitter> apis = resolver.getApis(new User("bguerout"));
 
         assertThat(apis, hasItem(api));
 

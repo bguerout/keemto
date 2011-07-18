@@ -37,7 +37,7 @@ public class UserConnectionControllerIT extends ControllerTestCase {
 
         MultiValueMap<String, Connection<?>> connections = new LinkedMultiValueMap<String, Connection<?>>();
         connections.add("twitter", mock(Connection.class));
-        when(repository.findConnections()).thenReturn(connections);
+        when(repository.findAllConnections()).thenReturn(connections);
 
         ModelAndView mav = handlerAdapter.handle(request, response, controller);
 
@@ -49,7 +49,7 @@ public class UserConnectionControllerIT extends ControllerTestCase {
 
         MultiValueMap<String, Connection<?>> connections = new LinkedMultiValueMap<String, Connection<?>>();
         connections.add("twitter", mock(Connection.class));
-        when(repository.findConnections()).thenReturn(connections);
+        when(repository.findAllConnections()).thenReturn(connections);
 
         ModelAndView mav = handlerAdapter.handle(request, response, controller);
 

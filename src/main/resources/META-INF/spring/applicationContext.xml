@@ -50,7 +50,7 @@
   <bean id="twitterFetcher" class="fr.xevents.core.fetcher.TwitterFetcher">
     <constructor-arg>
       <bean class="fr.xevents.core.fetcher.ApiResolver">
-        <constructor-arg value="org.springframework.social.twitter.api.TwitterApi" />
+        <constructor-arg value="org.springframework.social.twitter.api.Twitter" />
         <constructor-arg ref="usersConnectionRepository" />
       </bean>
     </constructor-arg>

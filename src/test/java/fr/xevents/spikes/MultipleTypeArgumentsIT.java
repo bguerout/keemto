@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.springframework.core.GenericTypeResolver;
 import org.springframework.social.connect.Connection;
-import org.springframework.social.twitter.api.TwitterApi;
+import org.springframework.social.twitter.api.Twitter;
 
 public class MultipleTypeArgumentsIT {
 
@@ -18,14 +18,14 @@ public class MultipleTypeArgumentsIT {
         Class<?>[] args = GenericTypeResolver.resolveTypeArguments(typor.getClass(), InterfaceWithTypeArguments.class);
 
         assertThat(args.length, equalTo(2));
-        assertTrue(args[0].equals(TwitterApi.class));
+        assertTrue(args[0].equals(Twitter.class));
         assertTrue(args[1].equals(Connection.class));
     }
 
-    public final class ClassWithTypeArguments implements InterfaceWithTypeArguments<TwitterApi, Connection<TwitterApi>> {
+    public final class ClassWithTypeArguments implements InterfaceWithTypeArguments<Twitter, Connection<Twitter>> {
 
         @Override
-        public void test(Connection<TwitterApi> connection) {
+        public void test(Connection<Twitter> connection) {
         }
     }
 }

@@ -6,21 +6,21 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.social.twitter.api.Tweet;
-import org.springframework.social.twitter.api.TwitterApi;
+import org.springframework.social.twitter.api.Twitter;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
 import fr.xevents.core.Event;
 
-public class TwitterFetcher extends SocialFetcher<TwitterApi> {
+public class TwitterFetcher extends SocialFetcher<Twitter> {
 
-    public TwitterFetcher(ApiResolver<TwitterApi> apiResolver) {
+    public TwitterFetcher(ApiResolver<Twitter> apiResolver) {
         super(apiResolver);
     }
 
     @Override
-    protected List<Event> fetchApiEvents(TwitterApi api, long lastFetchedEventTime) {
+    protected List<Event> fetchApiEvents(Twitter api, long lastFetchedEventTime) {
         List<Event> events = new ArrayList<Event>();
         List<Tweet> tweets = api.timelineOperations().getUserTimeline();
 
