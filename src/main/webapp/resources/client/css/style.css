@@ -210,12 +210,64 @@ a:hover {
 }
 
 #navigation {
-    text-align: right;
-    width: 630px;
+    width: 530px;
     position: absolute;
     right: 0;
     top: 0;
     height: 70px;
+}
+
+ul#mainNav form{
+  display:inline;
+}
+ 
+ul#mainNav form label{
+   font-size: 12px;
+   color: #fff;
+   text-decoration: none;
+   text-shadow: 1px 1px #000;
+   padding-right: 5px;
+}
+
+#loginForm input{
+   width:50px;
+   height: 30;
+}
+#loginForm  li{
+   padding: 0 0 0 15px;
+   content: "";
+}
+
+#loginForm  input[type="submit"] {
+  background: #8C8C84;
+  width: auto;
+  font-weight: normal;
+  font-size: 12px;
+  text-shadow: 1px 1px #000;
+  margin-bottom: 0;
+  border: none;
+  background-color: #818387;
+  padding: 0 10px;
+  height: 28px;
+  color: white;
+  border-radius: 2px;
+}
+
+#loginForm  input[type="submit"]:active {
+  opacity: 0.7;
+}
+
+#loginForm  input[type="submit"]:hover {
+  background: #70706B;
+  cursor: pointer;
+  background-color: #333;
+}
+
+#loginForm  fieldset {
+    list-style: none;
+    display: inline;
+    font-size: 12px;
+    padding: 0 0 0 35px;
 }
 
 ul#mainNav {
@@ -225,7 +277,7 @@ ul#mainNav {
 ul#mainNav li {
     list-style: none;
     display: inline;
-    font-size: 18px;
+    font-size: 12px;
     padding: 0 0 0 35px;
 }
 
@@ -238,6 +290,10 @@ ul#mainNav li a {
 ul#mainNav li a:hover {
     color: #f6cff0;
     text-shadow: 0 -1px 0px rgba(0, 0, 0, 0.5);
+}
+
+ul#mainNav li a:after {
+    content: " | ";
 }
 
 #header {
@@ -329,7 +385,6 @@ ul#footerNav li a:hover {
 }
 
 .coreMsgItem {
-    float: left;
     text-align: justify;
     /*width:210px;*/
     min-height: 120px;
