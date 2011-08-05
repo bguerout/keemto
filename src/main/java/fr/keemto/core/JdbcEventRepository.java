@@ -56,10 +56,11 @@ public class JdbcEventRepository implements EventRepository {
     }
 
     private Event createInitializationEvent(User user, String providerId) {
+        //TODO check if null object has to be created in repository or in task
         log.info("User: "
                 + user
-                + " hasn't event yet. "
-                + "This is propably the first time application tried to fetch user's connections. An initialization event is created.");
+                + " hasn't event yet for provider: "+providerId
+                + ". This is propably the first time application tried to fetch user's connections. An initialization event is returned.");
         return new InitializationEvent(user.getUsername(), providerId);
     }
 
