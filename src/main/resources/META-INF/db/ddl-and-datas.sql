@@ -9,7 +9,7 @@ create table events (
     primary key (ts)
 );
 
-create table xevents_user (
+create table keemto_user (
     id identity,
     username varchar unique,
     password varchar not null,
@@ -20,7 +20,7 @@ create table xevents_user (
 
 
 --DATA
-insert into xevents_user (username, password, firstName, lastName) values ('stnevex', 'test', 'Ben', 'G');
+insert into keemto_user (username, password, firstName, lastName) values ('stnevex', 'test', 'Ben', 'G');
 
 insert into events (ts,message,username,providerId) values ('1','eventTest','tester','provider');
 insert into events (ts,message,username,providerId) values ('1301464284372','Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer rutrum suscipit sem, eu blandit urna porta eu. Phasellus fringilla eleifend accumsan.','stnevex','provider');

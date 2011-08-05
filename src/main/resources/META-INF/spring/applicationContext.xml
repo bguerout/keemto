@@ -9,7 +9,7 @@
 
   <tx:annotation-driven mode="aspectj" transaction-manager="transactionManager" />
 
-  <context:component-scan base-package="fr.xevents.core" />
+  <context:component-scan base-package="fr.keemto.core" />
 
   <jdbc:embedded-database id="dataSource" type="H2">
     <jdbc:script location="classpath:/org/springframework/social/connect/jdbc/JdbcUsersConnectionRepository.sql" />
@@ -35,7 +35,7 @@
   <bean id="connectionFactoryLocator" class="org.springframework.social.connect.support.ConnectionFactoryRegistry">
     <property name="connectionFactories">
       <list>
-        <bean class="fr.xevents.social.HttpTwitterConnectionFactory">
+        <bean class="fr.keemto.social.HttpTwitterConnectionFactory">
           <constructor-arg value="${twitter.consumerKey}" />
           <constructor-arg value="${twitter.consumerSecret}" />
         </bean>
@@ -47,9 +47,9 @@
   <task:executor id="executor" pool-size="10" />
 
 
-  <bean id="twitterFetcher" class="fr.xevents.core.fetcher.TwitterFetcher">
+  <bean id="twitterFetcher" class="fr.keemto.core.fetcher.TwitterFetcher">
     <constructor-arg>
-      <bean class="fr.xevents.core.fetcher.ApiResolver">
+      <bean class="fr.keemto.core.fetcher.ApiResolver">
         <constructor-arg value="org.springframework.social.twitter.api.Twitter" />
         <constructor-arg ref="usersConnectionRepository" />
       </bean>

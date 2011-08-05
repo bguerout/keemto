@@ -21,8 +21,8 @@
     <security:authentication-provider>
       <security:password-encoder ref="passwordEncoder" />
       <security:jdbc-user-service data-source-ref="dataSource"
-        users-by-username-query="select username, password, true from xevents_user where username = ?"
-        authorities-by-username-query="select username, 'ROLE_USER' from xevents_user where username = ?" />
+        users-by-username-query="select username, password, true from keemto_user where username = ?"
+        authorities-by-username-query="select username, 'ROLE_USER' from keemto_user where username = ?" />
     </security:authentication-provider>
   </security:authentication-manager>
 

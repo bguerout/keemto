@@ -22,7 +22,7 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public List<User> getAllUsers() {
-        return jdbcTemplate.query("select username from xevents_user", new UserRowMapper());
+        return jdbcTemplate.query("select username from keemto_user", new UserRowMapper());
 
     }
 

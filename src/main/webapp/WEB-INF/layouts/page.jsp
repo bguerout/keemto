@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 
-<title>XEvents</title>
+<title>keemto</title>
 
 <script src="http://code.jquery.com/jquery-1.4.4.js" type="text/javascript"></script>
 <script src="<c:url value="/resources/js/jquery.timeago-0.9.2.js"/>" type="text/javascript"></script>
@@ -54,8 +54,8 @@
               <li>
                 <h2>Project Pages</h2>
                 <ul>
-                  <li><a href="https://github.com/bguerout/xevents">GitHub</a></li>
-                  <li><a href="https://github.com/bguerout/xevents/wiki">Wiki</a> (Backlog & Improvements
+                  <li><a href="https://github.com/bguerout/keemto">GitHub</a></li>
+                  <li><a href="https://github.com/bguerout/keemto/wiki">Wiki</a> (Backlog & Improvements
                     list)</li>
                   <li><a href="http://xebia.shapado.com">Xebia Shapado</a></li>
                 </ul>

@@ -7,7 +7,7 @@
 
 <form action="<c:url value="/connect/twitter" />" method="POST">
   <div class="formInfo">
-    <p>You haven't created any connections with Twitter yet. Click the button to connect Xevents with your Twitter
+    <p>You haven't created any connections with Twitter yet. Click the button to connect keemto with your Twitter
       account. (You'll be redirected to Twitter where you'll be asked to authorize the connection.)</p>
   </div>
   <p>

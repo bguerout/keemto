@@ -7,7 +7,7 @@
     </encoder>
   </appender>
 
-  <logger name="fr.xevents">
+  <logger name="fr.keemto">
     <level value="DEBUG" />
   </logger>
 
