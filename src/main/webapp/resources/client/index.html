@@ -25,12 +25,16 @@
         <script type="text/javascript" src="js/json2.js"></script>
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/jquery-ui.js"></script>
+        <script type="text/javascript" src="js/jquery.mockjax.js"></script>
+        <script type="text/javascript" src="js/jquery.form.js"></script>
         <script type="text/javascript" src="js/underscore.js"></script>
         <script type="text/javascript" src="js/backbone.js"></script>
-        <script type="text/javascript" src="js/backbone-localstorage.js"></script>
+        <script type="text/javascript" src="js/keemto-mock.js"></script>
         <script type="text/javascript" src="js/keemto.js"></script>
+
         
-        <!-- PROD javascript resources 
+        <!-- PROD javascript resources
+                 <script type="text/javascript" src="js/backbone-localstorage.js"></script>
         <link href='http://fonts.googleapis.com/css?family=Arvo:regular,bold' rel='stylesheet' type='text/css'/>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"></script>
@@ -41,68 +45,24 @@
         
     </head>
     <body id="home">
-        <div id="top">
+
+        <div id="header">
             <div class="wrap">
                 <div id="xebiaLogo">
                     <a href="index.html" title="Home"><img src="img/xebiaLogo.png" alt="Xebia Logo" /></a>
                 </div>
-                <div id="navigation">
-                    <ul id="mainNav">
-                        <li>
-                          <a id="toggleHeaderButton" href="#" title="more">Hide Notifications</a>
-                        </li>
-                        <form id="loginForm">
-                          <fieldset>
-                           <label for="last_name">Login</label> <input type="text" id="last_name" name="last_name" />
-                           <label for="first_name">Password</label><input type="text" id="first_name" name="first_name" />
-                          </fieldset>
-                          <input type="submit" value="Login">
-                        <form>
-                    </ul>
-                </div>
-                <div id="login">
-                  
-                </div>
+                <div id="navigation"></div>
             </div>
         </div>
-        <button id="eventButton">Create Event</button>
-        <div id="header">
+
+        <div id="panel">
             <div class="wrap">
-                <div id="headerContent">
-                    <div id="headerContentTxt">
-                        <h1>What is Keemto ?</h1>
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                        </p>
-                    </div>
-                    <div id="headerContentButons">
-                        <span class="buttonLarge reflect"><a href="https://github.com/bguerout/xevents" title="Github Page">Github Page</a></span>
-                        <span class="buttonLarge"><a href="http://blog.xebia.fr/" title="Xebia blog">Xebia Blog</a></span>
-                        <div class="clear">
-                        </div>
-                    </div>
-                </div>
-                <div class="clear">
-                </div>
+
             </div>
         </div>
-        <div id="main">
-            <div class="wrap">
-                <div id="coreMsg">
-                    <div class="coreMsgItem">
-                        <img src="img/social/twitter.png" class="h1img" alt="twitter" /><h1>Benoit Guerout</h1>
-                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-                        <span class="buttonSmall home"><a href="community.html" title="Xebia Mobile Community">Learn more</a></span>
-                    </div>
-                    <div class="coreMsgItem">
-                        <img src="img/social/mail.png" class="h1img" alt="twitter" /><h1>Benoit Guerout</h1>
-                        <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
-                    </div>
-                    <div class="clear"></div>
-                </div>
-                <div class="clear"></div>
-            </div>
-        </div>
+
+        <div id="main"></div>
+
         <div id="footer">
             <div class="wrap">
                 <div class="footerRowSmall">
@@ -155,12 +115,43 @@
       <script type="text/template" id="event-template">
          <img src="img/social/<%= providerId %>.png" class="h1img" alt="twitter" />
          <h1><%= user %></h1>
-          <p><%= content %></p>
+          <p><%= message %></p>
+      </script>
+
+      <script type="text/template" id="connection-template">
+          <a href="<%= profileUrl %>" target="_blank"><%= displayName %></a>
+          <span class="buttons">
+              <a href="#" class="negative" onclick="return false"><img src="img/delete.png" alt="">Revoke Access</a>
+          </span>
+      </script>
+
+      <script type="text/template" id="authenticated-template">
+          <ul id="mainNav">
+             <li><a id="panelButton" href="#" title="more">Hide Notifications</a></li>
+             <li><a id="connectionsButton" href="#connections" title="more">Manage your connections</a></li>
+         </ul>
+         <div id="loginNav">
+            <ul>
+                <li><a>Welcome <%= login %></a></li>
+                <li><a href="#logout">Logout</a></li>
+            </ul>
+         </div>
       </script>
       
-      <script type="text/template" id="login-template">
-          <li>User authenticated</li>
-          <li><a href="#">Logout</a></li>
+      <script type="text/template" id="form-template">
+          <ul id="mainNav">
+             <li><a id="panelButton" href="#" title="more">Hide Notifications</a></li>
+         </ul>
+         <div id="loginNav">
+            <form action="#">
+              <fieldset>
+               <label for="login">Login</label><input type="text" id="login" name="login" />
+               <label for="password">Password</label><input type="text" id="password" name="password" />
+              </fieldset>
+              <input type="submit" value="Login"/>
+            </form>
+         </div>
       </script>
+
     </body>
 </html>
