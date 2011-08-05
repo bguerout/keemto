@@ -193,13 +193,6 @@ a:hover {
     width: 960px;
 }
 
-#top {
-    background: #6a205f;
-    width: 100%;
-    height: 70px;
-    position: relative;
-}
-
 #xebiaLogo {
     width: 330px;
     height: 45px;
@@ -209,30 +202,38 @@ a:hover {
     left: 0;
 }
 
+
 #navigation {
-    text-align: right;
-    width: 630px;
+    width: 530px;
     position: absolute;
     right: 0;
     top: 0;
     height: 70px;
 }
 
-ul#mainNav {
-    line-height: 67px;
+#header {
+    background: #6a205f;
+    width: 100%;
+    height: 70px;
+    position: relative;
 }
 
-ul#mainNav li {
+#header li {
     list-style: none;
     display: inline;
-    font-size: 18px;
+    font-size: 12px;
     padding: 0 0 0 35px;
 }
 
-ul#mainNav li a {
+#header li a {
     color: #fff;
     text-decoration: none;
     text-shadow: 1px 1px #000;
+}
+
+
+ul#mainNav {
+    line-height: 67px;
 }
 
 ul#mainNav li a:hover {
@@ -240,24 +241,173 @@ ul#mainNav li a:hover {
     text-shadow: 0 -1px 0px rgba(0, 0, 0, 0.5);
 }
 
-#header {
+#loginNav {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 70px;
+    line-height: 67px;
+    display:inline;
+	font-size: 12px;
+    padding: 0 0 0 35px;
+}
+ 
+#loginNav  label{
+   font-size: 12px;
+   color: #fff;
+   text-decoration: none;
+   text-shadow: 1px 1px #000;
+   padding-right: 5px;
+}
+
+#loginNav input{
+   width:50px;
+}
+
+#loginNav  input[type="submit"] {
+  background: #8C8C84;
+  width: auto;
+  font-weight: normal;
+  font-size: 12px;
+  text-shadow: 1px 1px #000;
+  margin-bottom: 0;
+  border: none;
+  background-color: #818387;
+  padding: 0 10px;
+  height: 28px;
+  color: white;
+  border-radius: 2px;
+}
+
+#loginNav  input[type="submit"]:active {
+  opacity: 0.7;
+}
+
+#loginNav  input[type="submit"]:hover {
+  background: #70706B;
+  cursor: pointer;
+  background-color: #333;
+}
+
+#loginNav fieldset {
+    list-style: none;
+    display: inline;
+    font-size: 12px;
+    padding: 0 0 0 35px;
+}
+
+
+#panel {
     background: url(../img/headerBG.png);
     width: 100%;
     height: 200px;
     position: relative;
 }
 
-#header .wrap {
+
+#panel .wrap {
     height: 350px;
 }
 
-#header:after {
+#panel:after {
     content: url(../img/shadowTop.png);
     position: absolute;
     top: 326px;
     left: 50%;
     margin-left: -480px;
 }
+
+#panelContent {
+    /*width: 400px;*/
+    margin-right: 20px;
+    height: 156px;
+}
+
+
+#panelContent h1 {
+    color: #6A205F;
+    font-size: 32px;
+    padding: 25px 0;
+}
+
+#panelContent div {
+   list-style: none;
+   padding:5px 10px 6px 7px;
+   float: left;
+}
+
+#panelContent div:after {
+   content: '|';
+}
+
+
+/* BUTTONS */
+.buttons a{
+    display:inline;
+    margin:0 7px 0 0;
+    background-color:#f5f5f5;
+    border:1px solid #dedede;
+    border-top:1px solid #eee;
+    border-left:1px solid #eee;
+    font-size:100%;
+    line-height:130%;
+    text-decoration:none;
+    font-weight:bold;
+    color:#565656;
+    cursor:pointer;
+    padding:5px 10px 6px 7px;
+}
+
+
+.buttons a img{
+    margin:0 3px -3px 0 !important;
+    padding:0;
+    border:none;
+    width:16px;
+    height:16px;
+}
+
+.buttons a:hover{
+    background-color:#dff4ff;
+    border:1px solid #c2e1ef;
+    color:#336699;
+}
+.buttons a:active{
+    background-color:#6299c5;
+    border:1px solid #6299c5;
+    color:#fff;
+}
+
+/* POSITIVE */
+.buttons a.positive{
+    color:#529214;
+}
+.buttons a.positive:hover{
+    background-color:#E6EFC2;
+    border:1px solid #C6D880;
+    color:#529214;
+}
+.buttons a.positive:active{
+    background-color:#529214;
+    border:1px solid #529214;
+    color:#fff;
+}
+
+/* NEGATIVE */
+.buttons a.negative{
+    color:#d12f19;
+}
+.buttons a.negative:hover{
+    background:#fbe3e4;
+    border:1px solid #fbc2c4;
+    color:#d12f19;
+}
+.buttons a.negative:active{
+    background-color:#d12f19;
+    border:1px solid #d12f19;
+    color:#fff;
+}
+
 
 #home #main {
     width: 100%;
@@ -329,10 +479,9 @@ ul#footerNav li a:hover {
 }
 
 .coreMsgItem {
-    float: left;
     text-align: justify;
     /*width:210px;*/
-    min-height: 120px;
+    min-height: 100px;
     margin-right: 40px;
     position: relative;
     border-bottom: 1px solid #B0B4B8;
@@ -350,23 +499,6 @@ ul#footerNav li a:hover {
 
 #coreMsg h1 {
     line-height: 40px;
-}
-
-#headerContent {
-    /*width: 400px;*/
-    float: left;
-    margin-right: 20px;
-}
-
-#headerContent h1 {
-    color: #6A205F;
-    font-size: 32px;
-    line-height: 40px;
-    padding: 25px 0;
-}
-
-#headerContentTxt {
-    height: 156px;
 }
 
 #homeSlider {
@@ -505,12 +637,12 @@ ul#footerNav li a:hover {
     padding-left: 30px;
 }
 
-#contact #header {
+#contact #panel {
     height: 260px !important;
     overflow: hidden;
 }
 
-#contact #header:after {
+#contact #panel:after {
     content: url(../img/shadowTop.png);
     top: 240px;
     left: 50%;
@@ -522,7 +654,7 @@ ul#footerNav li a:hover {
     padding-bottom: 5px;
 }
 
-#portfolio #header {
+#portfolio #panel {
     height: 425px !important;
     overflow: hidden;
     background: url(../img/headerBG.png);
@@ -532,7 +664,7 @@ ul#footerNav li a:hover {
     padding-top: 20px;
 }
 
-#portfolio #header:after {
+#portfolio #panel:after {
     content: url(../img/shadowTop.png);
     top: 420px;
     left: 50%;
