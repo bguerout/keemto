@@ -16,10 +16,10 @@
 
 package fr.keemto.core.fetcher;
 
-import java.util.List;
-
 import fr.keemto.core.Event;
 import fr.keemto.core.User;
+
+import java.util.List;
 
 public interface Fetcher {
 

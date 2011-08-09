@@ -16,22 +16,18 @@
 
 package fr.keemto.web;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeValue;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
-
-import java.util.ArrayList;
-
+import com.google.common.collect.Lists;
+import fr.keemto.core.Event;
+import fr.keemto.core.EventRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
 
-import fr.keemto.core.Event;
-import fr.keemto.core.EventRepository;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.ModelAndViewAssert.*;
 
 public class EventControllerIT extends ControllerTestCase {
 

@@ -16,15 +16,8 @@
 
 package fr.keemto.core.fetcher;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-
-import java.util.List;
-
+import com.google.common.collect.Lists;
+import fr.keemto.core.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -33,9 +26,14 @@ import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.social.twitter.api.Twitter;
 
-import com.google.common.collect.Lists;
+import java.util.List;
 
-import fr.keemto.core.User;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ApiResolverTest {
 

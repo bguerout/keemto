@@ -16,21 +16,17 @@
 
 package fr.keemto.core.fetcher;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
+import com.google.common.collect.Lists;
+import fr.keemto.core.User;
+import fr.keemto.core.UserResolver;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import com.google.common.collect.Lists;
-
-import fr.keemto.core.User;
-import fr.keemto.core.UserResolver;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class AutomaticFetchingInitializerTest {
 

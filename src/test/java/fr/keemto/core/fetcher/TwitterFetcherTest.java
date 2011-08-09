@@ -16,27 +16,23 @@
 
 package fr.keemto.core.fetcher;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Date;
-import java.util.List;
-
+import com.google.common.collect.Lists;
+import fr.keemto.core.Event;
+import fr.keemto.core.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.social.twitter.api.TimelineOperations;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.Twitter;
 
-import com.google.common.collect.Lists;
+import java.util.Date;
+import java.util.List;
 
-import fr.keemto.core.Event;
-import fr.keemto.core.User;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 public class TwitterFetcherTest {
 

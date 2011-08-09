@@ -15,16 +15,15 @@
  */
 package fr.keemto.web;
 
-import java.security.Principal;
-
-import javax.inject.Inject;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.UsersConnectionRepository;
+
+import javax.inject.Inject;
+import java.security.Principal;
 
 @Configuration
 public class ConnectionRepositoryConfig {

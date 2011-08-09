@@ -16,14 +16,13 @@
 
 package fr.keemto.core.fetcher;
 
-import java.util.List;
-
+import fr.keemto.core.User;
+import fr.keemto.core.UserResolver;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.keemto.core.User;
-import fr.keemto.core.UserResolver;
+import java.util.List;
 
 @Component
 public class AutomaticFetchingInitializer implements InitializingBean {

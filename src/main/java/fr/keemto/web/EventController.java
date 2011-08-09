@@ -16,12 +16,11 @@
 
 package fr.keemto.web;
 
+import fr.keemto.core.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import fr.keemto.core.EventRepository;
 
 @Controller
 public class EventController {

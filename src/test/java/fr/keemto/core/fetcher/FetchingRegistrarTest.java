@@ -16,20 +16,15 @@
 
 package fr.keemto.core.fetcher;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.concurrent.ScheduledFuture;
-
+import com.google.common.collect.Lists;
+import fr.keemto.core.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.scheduling.TaskScheduler;
 
-import com.google.common.collect.Lists;
+import java.util.concurrent.ScheduledFuture;
 
-import fr.keemto.core.User;
+import static org.mockito.Mockito.*;
 
 public class FetchingRegistrarTest {
 

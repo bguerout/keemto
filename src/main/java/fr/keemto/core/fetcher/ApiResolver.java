@@ -16,14 +16,13 @@
 
 package fr.keemto.core.fetcher;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import fr.keemto.core.User;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.UsersConnectionRepository;
 
-import fr.keemto.core.User;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ApiResolver<T> {
 

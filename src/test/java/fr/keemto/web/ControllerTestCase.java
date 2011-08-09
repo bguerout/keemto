@@ -16,12 +16,12 @@
 
 package fr.keemto.web;
 
-import static org.mockito.MockitoAnnotations.initMocks;
-
 import org.junit.Before;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter;
+
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public abstract class ControllerTestCase {
 

@@ -16,21 +16,20 @@
 
 package fr.keemto.core.fetcher;
 
+import fr.keemto.core.EventRepository;
+import fr.keemto.core.User;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import fr.keemto.core.EventRepository;
-import fr.keemto.core.User;
 
 public class TaskFactoryTest {
 

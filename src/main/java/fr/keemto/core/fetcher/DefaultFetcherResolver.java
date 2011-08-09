@@ -16,16 +16,15 @@
 
 package fr.keemto.core.fetcher;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import fr.keemto.core.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import fr.keemto.core.User;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class DefaultFetcherResolver implements FetcherResolver {

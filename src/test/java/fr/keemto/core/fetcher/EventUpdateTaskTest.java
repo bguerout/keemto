@@ -16,26 +16,21 @@
 
 package fr.keemto.core.fetcher;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-
+import com.google.common.collect.Lists;
+import fr.keemto.core.Event;
+import fr.keemto.core.EventRepository;
+import fr.keemto.core.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.dao.DataRetrievalFailureException;
 
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
 
-import fr.keemto.core.Event;
-import fr.keemto.core.EventRepository;
-import fr.keemto.core.User;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 public class EventUpdateTaskTest {
 

@@ -16,18 +16,16 @@
 
 package fr.keemto.core.fetcher;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import fr.keemto.core.Event;
+import org.springframework.social.twitter.api.Tweet;
+import org.springframework.social.twitter.api.Twitter;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-
-import org.springframework.social.twitter.api.Tweet;
-import org.springframework.social.twitter.api.Twitter;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-
-import fr.keemto.core.Event;
 
 public class TwitterFetcher extends SocialFetcher<Twitter> {
 
