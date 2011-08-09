@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 //Keemto UI Javascript
 $(document).ready(function () {
 
@@ -27,29 +28,6 @@ $(document).ready(function () {
 
         log: function (str) {
             console.log(str);
-        },
-
-        login: function (login, password) {
-            var self = this;
-            $.ajax({
-                type: "POST",
-                url: "/api/login",
-                data: {
-                    login: login,
-                    password: password
-                },
-                dataType: "json",
-                success: function (response) {
-                    var currentUserLogin = response.login;
-                    self.activeSession.set({
-                        login: currentUserLogin
-                    });
-                    self.log("User " + currentUserLogin + " has been authenticated ");
-                },
-                error: function (response) {
-                    alert(response.responseText);
-                }
-            });
         },
 
         init: function () {
@@ -73,10 +51,57 @@ $(document).ready(function () {
                 }
             });
 
+            this.notifier = new App.Notifier();
+            //Error Handling
+            this.notifier.bind("notification:error", function (notification) {
+                 alert(notification.message);
+            });
+        },
 
+        notify: function (notification){
+           this.notifier.notify(notification);
+        },
+
+        //TODO move login handling to an Auth object
+        login: function (login, password) {
+            var self = this;
+            $.ajax({
+                type: "POST",
+                url: "/api/login",
+                data: {
+                    login: login,
+                    password: password
+                },
+                dataType: "json",
+                success: function (response) {
+                    if(response.loggedIn){
+                     var currentUserLogin = response.username;
+                        self.activeSession.set({
+                            login: currentUserLogin
+                        });
+                        self.log("User " + currentUserLogin + " has been authenticated ");
+                    }else{
+                        App.notify({type : "error", message : "Authentication has failed for user: "+response.username});
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
         }
     };
     _.extend(App, Backbone.Events);
+
+    //Notifier for error handling
+    App.Notifier = function (a) {
+        a || (a = {});
+        this.initialize && this.initialize(a)
+    };
+    _.extend(App.Notifier.prototype, Backbone.Events, {
+        notify: function (notification) {
+            this.trigger("notification:"+notification.type, notification);
+        }
+    });
 
     App.Models.Session = Backbone.Model.extend({
 
@@ -126,7 +151,6 @@ $(document).ready(function () {
             $(this.el).html(this.template(this.model.toJSON()));
             return this;
         }
-
     });
 
 
@@ -340,5 +364,4 @@ $(document).ready(function () {
 
 
     App.init();
-
 });

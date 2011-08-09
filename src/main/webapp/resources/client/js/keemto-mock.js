@@ -88,12 +88,10 @@ $(document).ready(function () {
 
             if (settings.data.login == '') {
                 this.status = 401;
-                this.responseText = "Unable to authenticate user";
+                this.responseText = {"username":null,"loggedIn":false};
             } else {
                 this.status = 200;
-                this.responseText = {
-                    login: 'stnevex'
-                };
+                this.responseText = {"username":"stnevex","loggedIn":true};
             }
         }
     });
