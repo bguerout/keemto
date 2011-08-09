@@ -29,7 +29,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath*:/META-INF/spring/applicationContext.xml" })
+@ContextConfiguration(locations = {"classpath*:/META-INF/spring/applicationContext.xml"})
 public class JdbcEventRepositoryIT {
 
     @Autowired

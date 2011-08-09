@@ -16,58 +16,60 @@
   -->
 
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop"
-  xmlns:context="http://www.springframework.org/schema/context" xmlns:jee="http://www.springframework.org/schema/jee"
-  xmlns:task="http://www.springframework.org/schema/task" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:jdbc="http://www.springframework.org/schema/jdbc"
-  xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd   http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:task="http://www.springframework.org/schema/task" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd   http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
-  <context:property-placeholder location="classpath*:META-INF/spring/*.properties" />
+  <context:property-placeholder location="classpath*:META-INF/spring/*.properties"/>
 
-  <tx:annotation-driven mode="aspectj" transaction-manager="transactionManager" />
+  <tx:annotation-driven mode="aspectj" transaction-manager="transactionManager"/>
 
-  <context:component-scan base-package="fr.keemto.core" />
+  <context:component-scan base-package="fr.keemto.core"/>
 
   <jdbc:embedded-database id="dataSource" type="H2">
-    <jdbc:script location="classpath:/org/springframework/social/connect/jdbc/JdbcUsersConnectionRepository.sql" />
-    <jdbc:script location="classpath:/META-INF/db/ddl-and-datas.sql" />
+    <jdbc:script location="classpath:/org/springframework/social/connect/jdbc/JdbcUsersConnectionRepository.sql"/>
+    <jdbc:script location="classpath:/META-INF/db/ddl-and-datas.sql"/>
   </jdbc:embedded-database>
 
   <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-    <constructor-arg ref="dataSource" />
+    <constructor-arg ref="dataSource"/>
   </bean>
 
   <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-    <property name="dataSource" ref="dataSource" />
+    <property name="dataSource" ref="dataSource"/>
   </bean>
 
-  <bean id="textEncryptor" class="org.springframework.security.crypto.encrypt.Encryptors" factory-method="noOpText" />
+  <bean id="textEncryptor" class="org.springframework.security.crypto.encrypt.Encryptors" factory-method="noOpText"/>
 
   <bean id="usersConnectionRepository" class="org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository">
-    <constructor-arg ref="dataSource" />
-    <constructor-arg ref="connectionFactoryLocator" />
-    <constructor-arg ref="textEncryptor" />
+    <constructor-arg ref="dataSource"/>
+    <constructor-arg ref="connectionFactoryLocator"/>
+    <constructor-arg ref="textEncryptor"/>
   </bean>
 
   <bean id="connectionFactoryLocator" class="org.springframework.social.connect.support.ConnectionFactoryRegistry">
     <property name="connectionFactories">
       <list>
         <bean class="fr.keemto.social.HttpTwitterConnectionFactory">
-          <constructor-arg value="${twitter.consumerKey}" />
-          <constructor-arg value="${twitter.consumerSecret}" />
+          <constructor-arg value="${twitter.consumerKey}"/>
+          <constructor-arg value="${twitter.consumerSecret}"/>
         </bean>
       </list>
     </property>
   </bean>
 
-  <task:scheduler id="scheduler" pool-size="10" />
-  <task:executor id="executor" pool-size="10" />
+  <task:scheduler id="scheduler" pool-size="10"/>
+  <task:executor id="executor" pool-size="10"/>
 
 
   <bean id="twitterFetcher" class="fr.keemto.core.fetcher.TwitterFetcher">
     <constructor-arg>
       <bean class="fr.keemto.core.fetcher.ApiResolver">
-        <constructor-arg value="org.springframework.social.twitter.api.Twitter" />
-        <constructor-arg ref="usersConnectionRepository" />
+        <constructor-arg value="org.springframework.social.twitter.api.Twitter"/>
+        <constructor-arg ref="usersConnectionRepository"/>
       </bean>
     </constructor-arg>
   </bean>

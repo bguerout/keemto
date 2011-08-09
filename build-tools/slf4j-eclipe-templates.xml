@@ -1,15 +1,34 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><templates><template autoinsert="true" context="java" deleted="false" description="SLF4J Log Debug" enabled="true" name="logdebug">if(${LOGGER:var(org.slf4j.Logger)}.isDebugEnabled()) {
-	LOGGER.debug(${cursor});
-}</template><template autoinsert="true" context="java" deleted="false" description="SLF4J Log Error" enabled="true" name="logerror">if(${LOGGER:var(org.slf4j.Logger)}.isErrorEnabled()) {
-	LOGGER.error(${cursor});
-}</template><template autoinsert="true" context="java" deleted="false" description="SLF4J logger" enabled="true" name="dlog">private static final Logger LOGGER = LoggerFactory.getLogger(${enclosing_type}.class);
-${imp:import(org.slf4j.LoggerFactory)}
-${imap:import(org.slf4j.Logger)}
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<templates>
+  <template autoinsert="true" context="java" deleted="false" description="SLF4J Log Debug" enabled="true"
+            name="logdebug">if(${LOGGER:var(org.slf4j.Logger)}.isDebugEnabled()) {
+    LOGGER.debug(${cursor});
+    }
+  </template>
+  <template autoinsert="true" context="java" deleted="false" description="SLF4J Log Error" enabled="true"
+            name="logerror">if(${LOGGER:var(org.slf4j.Logger)}.isErrorEnabled()) {
+    LOGGER.error(${cursor});
+    }
+  </template>
+  <template autoinsert="true" context="java" deleted="false" description="SLF4J logger" enabled="true" name="dlog">
+    private static final Logger LOGGER = LoggerFactory.getLogger(${enclosing_type}.class);
+    ${imp:import(org.slf4j.LoggerFactory)}
+    ${imap:import(org.slf4j.Logger)}
 
-</template><template autoinsert="true" context="java" deleted="false" description="SLF4J Log Info" enabled="true" name="loginfo">if(${LOGGER:var(org.slf4j.Logger)}.isInfoEnabled()) {
-	LOGGER.info(${cursor});
-}</template><template autoinsert="true" context="java" deleted="false" description="SLF4J Log Trace" enabled="true" name="logtrace">if(${LOGGER:var(org.slf4j.Logger)}.isTraceEnabled()) {
-	LOGGER.trace(${cursor});
-}</template><template autoinsert="true" context="java" deleted="false" description="SLF4J Log Warn" enabled="true" name="logwarn">if(${LOGGER:var(org.slf4j.Logger)}.isWarnEnabled()) {
-	LOGGER.warn(${cursor});
-}</template></templates>
+  </template>
+  <template autoinsert="true" context="java" deleted="false" description="SLF4J Log Info" enabled="true" name="loginfo">
+    if(${LOGGER:var(org.slf4j.Logger)}.isInfoEnabled()) {
+    LOGGER.info(${cursor});
+    }
+  </template>
+  <template autoinsert="true" context="java" deleted="false" description="SLF4J Log Trace" enabled="true"
+            name="logtrace">if(${LOGGER:var(org.slf4j.Logger)}.isTraceEnabled()) {
+    LOGGER.trace(${cursor});
+    }
+  </template>
+  <template autoinsert="true" context="java" deleted="false" description="SLF4J Log Warn" enabled="true" name="logwarn">
+    if(${LOGGER:var(org.slf4j.Logger)}.isWarnEnabled()) {
+    LOGGER.warn(${cursor});
+    }
+  </template>
+</templates>

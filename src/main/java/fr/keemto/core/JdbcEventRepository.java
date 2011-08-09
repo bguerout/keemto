@@ -54,12 +54,12 @@ public class JdbcEventRepository implements EventRepository {
 
     private void persist(Event event) {
         jdbcTemplate.update("insert into events (ts,username,message,providerId) values(?,?,?,?)",
-                new Object[] { event.getTimestamp(), event.getUser(), event.getMessage(), event.getProviderId() });
+                new Object[]{event.getTimestamp(), event.getUser(), event.getMessage(), event.getProviderId()});
     }
 
     @Override
     public Event getMostRecentEvent(User user, String providerId) {
-        String[] parameters = { user.getUsername(), providerId };
+        String[] parameters = {user.getUsername(), providerId};
         try {
             return jdbcTemplate
                     .queryForObject(
@@ -74,7 +74,7 @@ public class JdbcEventRepository implements EventRepository {
         //TODO check if null object has to be created in repository or in task
         log.info("User: "
                 + user
-                + " hasn't event yet for provider: "+providerId
+                + " hasn't event yet for provider: " + providerId
                 + ". This is propably the first time application tried to fetch user's connections. An initialization event is returned.");
         return new InitializationEvent(user.getUsername(), providerId);
     }

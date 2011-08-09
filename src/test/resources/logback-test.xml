@@ -16,21 +16,21 @@
   -->
 
 <configuration>
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} %M:%L - %msg%n</pattern>
-        </encoder>
-    </appender>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} %M:%L - %msg%n</pattern>
+    </encoder>
+  </appender>
 
-    <logger name="fr.keemto">
-        <level value="DEBUG" />
-    </logger>
+  <logger name="fr.keemto">
+    <level value="DEBUG"/>
+  </logger>
 
-    <root>
-        <level value="WARN" />
-        <appender-ref ref="STDOUT" />
-    </root>
+  <root>
+    <level value="WARN"/>
+    <appender-ref ref="STDOUT"/>
+  </root>
 
 </configuration>
 

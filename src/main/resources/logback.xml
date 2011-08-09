@@ -24,12 +24,12 @@
   </appender>
 
   <logger name="fr.keemto">
-    <level value="DEBUG" />
+    <level value="DEBUG"/>
   </logger>
 
   <root>
-    <level value="WARN" />
-    <appender-ref ref="STDOUT" />
+    <level value="WARN"/>
+    <appender-ref ref="STDOUT"/>
   </root>
 
 </configuration>

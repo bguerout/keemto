@@ -15,13 +15,14 @@
   ~ limitations under the License.
   -->
 
-<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+        "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
 
 <tiles-definitions>
   <definition name="signin" extends="page">
-    <put-attribute name="content" value="/WEB-INF/views/user/signin.jsp" />
+    <put-attribute name="content" value="/WEB-INF/views/user/signin.jsp"/>
   </definition>
   <definition name="connections" extends="page">
-    <put-attribute name="content" value="/WEB-INF/views/user/connections.jsp" />
+    <put-attribute name="content" value="/WEB-INF/views/user/connections.jsp"/>
   </definition>
 </tiles-definitions>

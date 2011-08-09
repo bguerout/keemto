@@ -18,7 +18,6 @@ package fr.keemto.core;
 
 /**
  * A NullEvent (from NullPattern) created at EPOCH.
- * 
  */
 public class InitializationEvent extends Event {
 
