@@ -52,9 +52,9 @@ $(document).ready(function () {
             });
 
             this.notifier = new App.Notifier();
-            //Error Handling
             this.notifier.bind("notification:error", function (notification) {
-                 alert(notification.message);
+                 App.log("An error has occurred : "+ notification.message);
+                 alert("An error has occurred : "+ notification.message);
             });
         },
 
