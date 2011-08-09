@@ -340,6 +340,10 @@ ul#mainNav li a:hover {
    content: '|';
 }
 
+#panelContent ul a {
+   font-size: 14px;
+}
+
 
 /* BUTTONS */
 .buttons a{
