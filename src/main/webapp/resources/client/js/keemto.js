@@ -47,7 +47,7 @@ $(document).ready(function () {
                     });
                 },
                 error: function (collection) {
-                    alert("Error loading events.");
+                    App.notify({type : "error", message : "Error loading events."});
                 }
             });
 
@@ -85,7 +85,7 @@ $(document).ready(function () {
                     }
                 },
                 error: function (response) {
-                    alert(response.responseText);
+                    App.notify({type : "error", message : "Authentication has failed."});
                 }
             });
         }
@@ -218,7 +218,7 @@ $(document).ready(function () {
                     });
                 },
                 error: function (collection) {
-                    alert("Error loading connections.");
+                    App.notify({type : "error", message : "Error loading connections."});
                 }
             });
         }
