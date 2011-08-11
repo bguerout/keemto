@@ -108,6 +108,25 @@
           <stopKey>foo</stopKey>
           <stopPort>9999</stopPort>
         </configuration>
+        <executions>
+          <execution>
+            <id>start-jetty</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>run-war</goal>
+            </goals>
+            <configuration>
+              <daemon>true</daemon>
+            </configuration>
+          </execution>
+          <execution>
+            <id>stop-jetty</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -142,46 +161,6 @@
               <location>build-tools/gen/de.loskutov.anyedit.AnyEditTools.prefs</location>
             </file>
           </additionalConfig>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>com.mycila.maven-license-plugin</groupId>
-        <artifactId>maven-license-plugin</artifactId>
-        <version>1.8.0</version>
-        <configuration>
-          <header>src/main/resources/header.txt</header>
-          <strictCheck>true</strictCheck>
-          <useDefaultExcludes>false</useDefaultExcludes>
-          <excludes>
-            <exclude>**/*.png</exclude>
-            <exclude>.metadata/**</exclude>
-            <exclude>.gitignore</exclude>
-            <exclude>.git/**</exclude>
-            <exclude>target/**</exclude>
-            <exclude>.settings/**</exclude>
-            <exclude>.project</exclude>
-            <exclude>.classpath</exclude>
-            <exclude>LICENCE</exclude>
-            <exclude>README</exclude>
-            <exclude>**/MANIFEST.MF</exclude>
-            <exclude>src/main/webapp/WEB-INF/lib/**</exclude>
-            <exclude>src/main/webapp/WEB-INF/classes/**</exclude>
-            <exclude>src/main/webapp/images/**</exclude>
-            <exclude>.externalToolBuilders/**</exclude>
-            <exclude>.pmd/**</exclude>
-            <exclude>src/test/resources/**</exclude>
-            <exclude>src/main/webapp/js/jquery/**</exclude>
-            <exclude>src/main/xsd/**</exclude>
-            <exclude>infinitest.filters</exclude>
-            <exclude>src/main/java/net/awired/visuwall/generated/**</exclude>
-          </excludes>
-          <executions>
-            <execution>
-              <goals>
-                <goal>check</goal>
-              </goals>
-            </execution>
-          </executions>
         </configuration>
       </plugin>
     </plugins>
@@ -225,7 +204,6 @@
       <artifactId>commons-codec</artifactId>
       <version>1.5</version>
     </dependency>
-
 
     <!-- Spring -->
     <dependency>

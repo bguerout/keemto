@@ -40,7 +40,7 @@ public class SpringSecurityLoginService implements LoginService {
             SecurityContextHolder.getContext().setAuthentication(auth);
             return new LoginStatus(auth.isAuthenticated(), auth.getName());
         } catch (BadCredentialsException e) {
-            return new LoginStatus(false, null);
+            return new LoginStatus(false, username);
         }
     }
 }

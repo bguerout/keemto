@@ -28,6 +28,7 @@
     <security:form-login login-page="/signin" login-processing-url="/signin/authenticate" default-target-url="/"/>
     <security:logout logout-url="/signout" delete-cookies="JSESSIONID"/>
     <security:intercept-url pattern="/" access="permitAll"/>
+    <security:intercept-url pattern="/api/login**" access="permitAll"/>
     <security:intercept-url pattern="/signin/**" access="permitAll"/>
     <security:intercept-url pattern="/resources/**" access="permitAll"/>
     <security:intercept-url pattern="/favicon.ico" access="permitAll"/>
