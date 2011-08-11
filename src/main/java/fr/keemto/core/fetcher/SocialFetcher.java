@@ -31,10 +31,12 @@ public abstract class SocialFetcher<T> implements Fetcher {
     private static final Logger log = LoggerFactory.getLogger(SocialFetcher.class);
 
     private final ApiResolver<T> apiResolver;
+    private long delay;
 
-    public SocialFetcher(ApiResolver<T> apiResolver) {
+    public SocialFetcher(ApiResolver<T> apiResolver,long delay) {
         super();
         this.apiResolver = apiResolver;
+        this.delay = delay;
     }
 
     @Override
@@ -76,6 +78,12 @@ public abstract class SocialFetcher<T> implements Fetcher {
     @Override
     public boolean canFetch(User user) {
         return !apiResolver.getApis(user).isEmpty();
+    }
+
+
+    @Override
+    public long getDelay() {
+        return delay;
     }
 
     protected abstract List<Event> fetchApiEvents(T api, long lastFetchedEventTime);

@@ -53,7 +53,7 @@ public class SocialFetcherTest {
     private class StringFetcher extends SocialFetcher<String> {
 
         public StringFetcher(ApiResolver<String> apiResolver) {
-            super(apiResolver);
+            super(apiResolver, 60000);
         }
 
         @Override
