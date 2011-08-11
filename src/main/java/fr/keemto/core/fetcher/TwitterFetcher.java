@@ -29,8 +29,12 @@ import java.util.List;
 
 public class TwitterFetcher extends SocialFetcher<Twitter> {
 
+    public TwitterFetcher(ApiResolver<Twitter> apiResolver, long delay) {
+        super(apiResolver, delay);
+    }
+
     public TwitterFetcher(ApiResolver<Twitter> apiResolver) {
-        super(apiResolver);
+        this(apiResolver, 60000);
     }
 
     @Override
@@ -48,11 +52,6 @@ public class TwitterFetcher extends SocialFetcher<Twitter> {
     @Override
     public String getProviderId() {
         return "twitter";
-    }
-
-    @Override
-    public long getDelay() {
-        return 60000;
     }
 
     private Collection<Tweet> filterTweetsByDate(List<Tweet> tweets, final long lastFetchedEventTime) {
