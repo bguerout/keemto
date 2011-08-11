@@ -75,6 +75,6 @@ public class SpringSecurityLoginTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         LoginStatus status = loginService.login("foo", "bar");
         assertFalse(status.isLoggedIn());
-        assertEquals(null, status.getUsername());
+        assertEquals("foo", status.getUsername());
     }
 }
