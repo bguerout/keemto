@@ -31,6 +31,7 @@
     <!-- API urls -->
     <security:intercept-url pattern="/api/login**" access="permitAll"/>
     <security:intercept-url pattern="/api/events**" access="permitAll"/>
+    <security:intercept-url pattern="/api/connections**" access="permitAll"/>
 
     <security:intercept-url pattern="/signin/**" access="permitAll"/>
     <security:intercept-url pattern="/resources/**" access="permitAll"/>

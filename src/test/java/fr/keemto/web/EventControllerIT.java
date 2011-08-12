@@ -22,12 +22,14 @@ import fr.keemto.core.EventRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.ModelAndViewAssert.*;
 
 public class EventControllerIT extends ControllerTestCase {
 
@@ -39,31 +41,24 @@ public class EventControllerIT extends ControllerTestCase {
     @Before
     public void initBeforeTest() throws Exception {
         controller = new EventController(eventRepository);
-        request.setMethod("GET");
-        request.setRequestURI("/");
-    }
-
-    @Test
-    public void shouldReturnHomeViewWithEvents() throws Exception {
-        ArrayList<Event> events = Lists.newArrayList(new Event(1, "user", "message", "provider"));
-        when(eventRepository.getAllEvents()).thenReturn(events);
-
-        final ModelAndView mav = handlerAdapter.handle(request, response, controller);
-        assertViewName(mav, "home");
-        assertModelAttributeAvailable(mav, "events");
-        assertModelAttributeValue(mav, "events", events);
+        request.addHeader("Accept", "application/json");
     }
 
     @Test
     public void shouldReturnAllEvents() throws Exception {
 
-        request.setRequestURI("/api/events.json");
-        request.addHeader("Accept", "application/json");
+        request.setMethod("GET");
+        request.setRequestURI("/api/events");
 
-        ArrayList<Event> events = Lists.newArrayList(new Event(1, "user", "message", "provider"));
+        ArrayList<Event> events = Lists.newArrayList(new Event(1, "user1", "message", "provider"));
         when(eventRepository.getAllEvents()).thenReturn(events);
 
-        final ModelAndView mav = handlerAdapter.handle(request, response, controller);
+        handlerAdapter.handle(request, response, controller);
 
+        assertThat(response.getStatus(), equalTo(200));
+        List<Map<String, String>> eventsAsJSon = getJsonResultsAsList(response);
+        assertThat(eventsAsJSon.size(),equalTo(1));
+        assertThat(eventsAsJSon.get(0).get("user"), equalTo("user1"));
     }
+
 }

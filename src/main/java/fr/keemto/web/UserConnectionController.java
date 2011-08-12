@@ -21,7 +21,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @Scope(value = "request")
@@ -34,9 +37,16 @@ public class UserConnectionController {
         this.connectionRepository = connectionRepository;
     }
 
+
     @RequestMapping("/connections")
     public String getAllUserConnections(Model model) {
         model.addAttribute("connections", connectionRepository.findAllConnections());
         return "connections";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/api/connections")
+    @ResponseBody
+    public MultiValueMap getUserConnections(Model model) {
+        return connectionRepository.findAllConnections();
     }
 }

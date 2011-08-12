@@ -17,14 +17,12 @@
 package fr.keemto.web;
 
 import fr.keemto.core.Event;
-import fr.keemto.web.security.LoginStatus;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 
@@ -44,10 +42,15 @@ public class JsonApiWebIT {
     @Test
     public void shouldReturnEventsList() {
 
-        Event[] events = template.getForObject(URL + "/events", Event[].class);
+        Event[] events = template.getForObject(buildUrl("events"), Event[].class);
 
         assertThat(events, notNullValue());
-        assertThat(events.length, greaterThan(0));
+        assertThat(events.length, equalTo(6));
+    }
+
+
+    private String buildUrl(String path) {
+        return URL + "/" + path;
     }
 
 

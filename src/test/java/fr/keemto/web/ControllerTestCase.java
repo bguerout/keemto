@@ -16,7 +16,7 @@
 
 package fr.keemto.web;
 
-import com.google.common.collect.Lists;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
@@ -24,9 +24,11 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -54,5 +56,15 @@ public abstract class ControllerTestCase {
 
         HttpMessageConverter[] converters = httpMessageConverters.toArray(new HttpMessageConverter[httpMessageConverters.size()]);
         handlerAdapter.setMessageConverters(converters);
+    }
+
+    protected List<Map<String, String>> getJsonResultsAsList(MockHttpServletResponse response) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(response.getContentAsString(), List.class);
+    }
+
+        protected Map<String, String> getJsonSingleResultAsMap(MockHttpServletResponse response) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(response.getContentAsString(), Map.class);
     }
 }

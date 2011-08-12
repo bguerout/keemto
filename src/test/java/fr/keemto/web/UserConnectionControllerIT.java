@@ -16,21 +16,28 @@
 
 package fr.keemto.web;
 
+import fr.keemto.util.JacksonConnection;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.servlet.ModelAndView;
 
-import static org.mockito.Mockito.mock;
+import java.util.Map;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.springframework.test.web.ModelAndViewAssert.*;
 
 public class UserConnectionControllerIT extends ControllerTestCase {
+
+    private static final Logger log = LoggerFactory.getLogger(UserConnectionControllerIT.class);
 
     @Mock
     private ConnectionRepository repository;
@@ -43,32 +50,23 @@ public class UserConnectionControllerIT extends ControllerTestCase {
         controller = new UserConnectionController(repository);
 
         request.setMethod("GET");
-        request.setRequestURI("/connections");
+        request.setRequestURI("/api/connections");
+        request.addHeader("Accept", "application/json");
     }
 
     @Test
-    public void showReturnConnectionsView() throws Exception {
+    public void showReturnAllConnections() throws Exception {
 
         MultiValueMap<String, Connection<?>> connections = new LinkedMultiValueMap<String, Connection<?>>();
-        connections.add("twitter", mock(Connection.class));
+        connections.add("twitter", new JacksonConnection<Object>());
         when(repository.findAllConnections()).thenReturn(connections);
 
-        ModelAndView mav = handlerAdapter.handle(request, response, controller);
+        handlerAdapter.handle(request, response, controller);
 
-        assertViewName(mav, "connections");
-    }
-
-    @Test
-    public void showReturnAllUserConnections() throws Exception {
-
-        MultiValueMap<String, Connection<?>> connections = new LinkedMultiValueMap<String, Connection<?>>();
-        connections.add("twitter", mock(Connection.class));
-        when(repository.findAllConnections()).thenReturn(connections);
-
-        ModelAndView mav = handlerAdapter.handle(request, response, controller);
-
-        assertModelAttributeAvailable(mav, "connections");
-        assertModelAttributeValue(mav, "connections", connections);
+        assertThat(response.getStatus(), equalTo(200));
+        Map<String, String> eventsAsJSon = getJsonSingleResultAsMap(response);
+        assertThat(eventsAsJSon.size(), equalTo(1));
+        assertThat(eventsAsJSon.get("twitter"), notNullValue());
     }
 
 }
