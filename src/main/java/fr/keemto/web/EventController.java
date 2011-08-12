@@ -16,11 +16,16 @@
 
 package fr.keemto.web;
 
+import fr.keemto.core.Event;
 import fr.keemto.core.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 @Controller
 public class EventController {
@@ -36,6 +41,12 @@ public class EventController {
     public String home(Model model) {
         model.addAttribute("events", eventRepository.getAllEvents());
         return "home";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/api/events")
+    @ResponseBody
+    public List<Event> getAllEvents() {
+        return  eventRepository.getAllEvents();
     }
 
 }

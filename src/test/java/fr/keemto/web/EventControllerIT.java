@@ -53,4 +53,17 @@ public class EventControllerIT extends ControllerTestCase {
         assertModelAttributeAvailable(mav, "events");
         assertModelAttributeValue(mav, "events", events);
     }
+
+    @Test
+    public void shouldReturnAllEvents() throws Exception {
+
+        request.setRequestURI("/api/events.json");
+        request.addHeader("Accept", "application/json");
+
+        ArrayList<Event> events = Lists.newArrayList(new Event(1, "user", "message", "provider"));
+        when(eventRepository.getAllEvents()).thenReturn(events);
+
+        final ModelAndView mav = handlerAdapter.handle(request, response, controller);
+
+    }
 }

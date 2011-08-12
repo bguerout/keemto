@@ -17,6 +17,8 @@
 package fr.keemto.core;
 
 import com.google.common.base.Objects;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 public class Event {
 
@@ -28,10 +30,12 @@ public class Event {
 
     private final String providerId;
 
-    public Event(long timestamp, String owner, String message, String providerId) {
+    @JsonCreator
+    public Event(@JsonProperty("timestamp") long timestamp, @JsonProperty("user") String user,
+                 @JsonProperty("message") String message, @JsonProperty("providerId") String providerId) {
         super();
         this.timestamp = timestamp;
-        this.user = owner;
+        this.user = user;
         this.message = message;
         this.providerId = providerId;
     }

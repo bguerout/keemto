@@ -16,10 +16,17 @@
 
 package fr.keemto.web;
 
+import com.google.common.collect.Lists;
 import org.junit.Before;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -35,5 +42,17 @@ public abstract class ControllerTestCase {
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
         handlerAdapter = new AnnotationMethodHandlerAdapter();
+
+        addJackonMessageConverter();
+
+    }
+
+    private void addJackonMessageConverter() {
+        List<HttpMessageConverter<?>> httpMessageConverters = new ArrayList<HttpMessageConverter<?>>
+                (Arrays.asList(handlerAdapter.getMessageConverters()));
+        httpMessageConverters.add(new MappingJacksonHttpMessageConverter());
+
+        HttpMessageConverter[] converters = httpMessageConverters.toArray(new HttpMessageConverter[httpMessageConverters.size()]);
+        handlerAdapter.setMessageConverters(converters);
     }
 }

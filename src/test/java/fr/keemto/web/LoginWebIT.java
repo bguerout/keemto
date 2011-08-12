@@ -16,16 +16,17 @@
 
 package fr.keemto.web;
 
+import fr.keemto.core.Event;
 import fr.keemto.web.security.LoginStatus;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.junit.experimental.categories.Category;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 
@@ -41,7 +42,7 @@ public class LoginWebIT {
 
     @Before
     public void prepare() throws Exception {
-         template = new RestTemplate();
+        template = new RestTemplate();
     }
 
     @Test
@@ -85,7 +86,6 @@ public class LoginWebIT {
         assertThat(status.isLoggedIn(), is(true));
         assertThat(status.getUsername(), equalTo(VALID_USERNAME));
     }
-
 
 }
 
