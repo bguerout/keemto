@@ -21,21 +21,19 @@
        xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd     http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
 
+  <security:http use-expressions="true" >
+    <security:form-login />
+    <security:logout logout-url="/logout" delete-cookies="JSESSIONID"/>
 
-  <mvc:view-controller path="/authenticate" view-name="signin"/>
-
-  <security:http use-expressions="true">
-    <security:form-login login-page="/signin" login-processing-url="/signin/authenticate" default-target-url="/"/>
-    <security:logout logout-url="/signout" delete-cookies="JSESSIONID"/>
-    <security:intercept-url pattern="/" access="permitAll"/>
     <!-- API urls -->
     <security:intercept-url pattern="/api/login**" access="permitAll"/>
     <security:intercept-url pattern="/api/events**" access="permitAll"/>
     <security:intercept-url pattern="/api/connections**" access="permitAll"/>
-
-    <security:intercept-url pattern="/signin/**" access="permitAll"/>
+    <!-- Resources urls -->
+    <security:intercept-url pattern="/" access="permitAll"/>
     <security:intercept-url pattern="/resources/**" access="permitAll"/>
     <security:intercept-url pattern="/favicon.ico" access="permitAll"/>
+
     <security:intercept-url pattern="/**" access="isAuthenticated()"/>
   </security:http>
 

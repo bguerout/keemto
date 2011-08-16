@@ -18,13 +18,19 @@ package fr.keemto.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.connect.web.ConnectController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.NativeWebRequest;
+
+import java.util.List;
 
 @Controller
 @Scope(value = "request")
@@ -37,16 +43,15 @@ public class UserConnectionController {
         this.connectionRepository = connectionRepository;
     }
 
-
-    @RequestMapping("/connections")
-    public String getAllUserConnections(Model model) {
-        model.addAttribute("connections", connectionRepository.findAllConnections());
-        return "connections";
+    @RequestMapping(value = "/api/connections", method = RequestMethod.GET)
+    @ResponseBody
+    public MultiValueMap getUserConnections() {
+        return connectionRepository.findAllConnections();
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/api/connections")
+    @RequestMapping(value = "/api/connections/{providerId}", method = RequestMethod.GET)
     @ResponseBody
-    public MultiValueMap getUserConnections(Model model) {
-        return connectionRepository.findAllConnections();
+    public List<Connection<?>> getUserConnections(@PathVariable String  providerId) {
+        return connectionRepository.findConnections(providerId);
     }
 }

@@ -16,29 +16,24 @@
 
 package fr.keemto.util;
 
-import org.springframework.social.connect.ApiAdapter;
-import org.springframework.social.connect.ConnectionValues;
-import org.springframework.social.connect.UserProfile;
-
-public class NullApiAdapter implements ApiAdapter<Object> {
+import org.springframework.social.connect.ConnectionData;
+import org.springframework.social.connect.ConnectionKey;
+import org.springframework.social.connect.support.AbstractConnection;
 
 
-    public NullApiAdapter() {
+public final class NullConnection<Object> extends AbstractConnection {
+
+    public NullConnection(ConnectionData data) {
+        super(data, new NullApiAdapter());
     }
 
-    public boolean test(Object api) {
-        return true;
+    @Override
+    public ConnectionData createData() {
+        return null;
     }
 
-    public void setConnectionValues(Object api, ConnectionValues values) {
-
+    @Override
+    public Object getApi() {
+        return null;
     }
-
-    public UserProfile fetchUserProfile(Object api) {
-        return UserProfile.EMPTY;
-    }
-
-    public void updateStatus(Object api, String message) {
-    }
-
 }

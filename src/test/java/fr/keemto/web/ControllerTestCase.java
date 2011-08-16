@@ -16,6 +16,9 @@
 
 package fr.keemto.web;
 
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -58,13 +61,10 @@ public abstract class ControllerTestCase {
         handlerAdapter.setMessageConverters(converters);
     }
 
-    protected List<Map<String, String>> getJsonResultsAsList(MockHttpServletResponse response) throws IOException {
+    protected JsonNode toJsonNode(String json) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(response.getContentAsString(), List.class);
-    }
-
-        protected Map<String, String> getJsonSingleResultAsMap(MockHttpServletResponse response) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(response.getContentAsString(), Map.class);
+        JsonFactory jsonFactory = mapper.getJsonFactory();
+        JsonParser jp = jsonFactory.createJsonParser(json);
+        return jp.readValueAsTree();
     }
 }

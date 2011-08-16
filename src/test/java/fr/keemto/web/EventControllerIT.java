@@ -19,6 +19,7 @@ package fr.keemto.web;
 import com.google.common.collect.Lists;
 import fr.keemto.core.Event;
 import fr.keemto.core.EventRepository;
+import org.codehaus.jackson.JsonNode;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -29,6 +30,7 @@ import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.when;
 
 public class EventControllerIT extends ControllerTestCase {
@@ -39,7 +41,7 @@ public class EventControllerIT extends ControllerTestCase {
     private EventController controller;
 
     @Before
-    public void initBeforeTest() throws Exception {
+    public void prepare() throws Exception {
         controller = new EventController(eventRepository);
         request.addHeader("Accept", "application/json");
     }
@@ -56,9 +58,9 @@ public class EventControllerIT extends ControllerTestCase {
         handlerAdapter.handle(request, response, controller);
 
         assertThat(response.getStatus(), equalTo(200));
-        List<Map<String, String>> eventsAsJSon = getJsonResultsAsList(response);
-        assertThat(eventsAsJSon.size(),equalTo(1));
-        assertThat(eventsAsJSon.get(0).get("user"), equalTo("user1"));
+        JsonNode eventsAsJSon = toJsonNode(response.getContentAsString());
+        assertThat(eventsAsJSon, notNullValue());
+        assertThat(eventsAsJSon.findPath("user").getValueAsText(), equalTo("user1"));
     }
 
 }

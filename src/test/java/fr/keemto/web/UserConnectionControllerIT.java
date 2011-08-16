@@ -16,22 +16,26 @@
 
 package fr.keemto.web;
 
-import fr.keemto.util.JacksonConnection;
+import fr.keemto.util.NullConnection;
+import org.codehaus.jackson.JsonNode;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.social.connect.Connection;
+import org.springframework.social.connect.ConnectionData;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -42,6 +46,7 @@ public class UserConnectionControllerIT extends ControllerTestCase {
     @Mock
     private ConnectionRepository repository;
     private UserConnectionController controller;
+    private ConnectionData data;
 
     @Before
     public void initBeforeTest() throws Exception {
@@ -50,23 +55,56 @@ public class UserConnectionControllerIT extends ControllerTestCase {
         controller = new UserConnectionController(repository);
 
         request.setMethod("GET");
-        request.setRequestURI("/api/connections");
         request.addHeader("Accept", "application/json");
+
+        data = new ConnectionData("providerId", "providerUserId", "stnevex",
+                "http://twitter.com/stnevex", "http://twitter.com/stnevex.jpg",
+                "accessToken", "secret", "refreshToken", (long) 999);
     }
 
     @Test
     public void showReturnAllConnections() throws Exception {
 
+        request.setRequestURI("/api/connections");
+
         MultiValueMap<String, Connection<?>> connections = new LinkedMultiValueMap<String, Connection<?>>();
-        connections.add("twitter", new JacksonConnection<Object>());
+        connections.add("twitter", new NullConnection<Object>(data));
         when(repository.findAllConnections()).thenReturn(connections);
 
         handlerAdapter.handle(request, response, controller);
 
         assertThat(response.getStatus(), equalTo(200));
-        Map<String, String> eventsAsJSon = getJsonSingleResultAsMap(response);
-        assertThat(eventsAsJSon.size(), equalTo(1));
-        assertThat(eventsAsJSon.get("twitter"), notNullValue());
+
+        JsonNode node = toJsonNode(response.getContentAsString());
+        JsonNode twitterConnx = node.get("twitter");
+        assertThat(twitterConnx, notNullValue());
+        assertThat(twitterConnx.findPath("displayName").getValueAsText(), equalTo("stnevex"));
+        assertThat(twitterConnx.findPath("profileUrl").getValueAsText(), equalTo("http://twitter.com/stnevex"));
+        assertThat(twitterConnx.findPath("imageUrl").getValueAsText(), equalTo("http://twitter.com/stnevex.jpg"));
+
+    }
+
+    @Test
+    public void showReturnProviderConnections() throws Exception {
+
+        request.setRequestURI("/api/connections/twitter");
+
+        List<Connection<?>> connections = new ArrayList<Connection<?>>();
+        connections.add(new NullConnection<Object>(data));
+        when(repository.findConnections("twitter")).thenReturn(connections);
+
+        handlerAdapter.handle(request, response, controller);
+
+        assertThat(response.getStatus(), equalTo(200));
+
+        JsonNode node = toJsonNode(response.getContentAsString());
+        assertThat(node, notNullValue());
+        assertThat(node.findPath("displayName").getValueAsText(), equalTo("stnevex"));
+        assertThat(node.findPath("profileUrl").getValueAsText(), equalTo("http://twitter.com/stnevex"));
+        assertThat(node.findPath("imageUrl").getValueAsText(), equalTo("http://twitter.com/stnevex.jpg"));
+
+        verify(repository).findConnections("twitter");
+
     }
 
 }
