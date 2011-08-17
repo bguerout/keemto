@@ -39,9 +39,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class UserConnectionControllerIT extends ControllerTestCase {
+public class UserConnectionControllerTest extends ControllerTestCase {
 
-    private static final Logger log = LoggerFactory.getLogger(UserConnectionControllerIT.class);
+    private static final Logger log = LoggerFactory.getLogger(UserConnectionControllerTest.class);
 
     @Mock
     private ConnectionRepository repository;

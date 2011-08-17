@@ -23,6 +23,7 @@ import org.codehaus.jackson.JsonNode;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,16 +34,17 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.when;
 
-public class EventControllerIT extends ControllerTestCase {
+public class EventControllerTest extends ControllerTestCase {
 
-    @Mock
+
     private EventRepository eventRepository;
 
+    @Autowired
     private EventController controller;
 
     @Before
     public void prepare() throws Exception {
-        controller = new EventController(eventRepository);
+
         request.addHeader("Accept", "application/json");
     }
 
