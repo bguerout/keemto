@@ -36,15 +36,14 @@ import static org.mockito.Mockito.when;
 
 public class EventControllerTest extends ControllerTestCase {
 
-
+    @Mock
     private EventRepository eventRepository;
 
-    @Autowired
     private EventController controller;
 
     @Before
     public void prepare() throws Exception {
-
+        controller = new EventController(eventRepository);
         request.addHeader("Accept", "application/json");
     }
 
