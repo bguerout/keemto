@@ -18,18 +18,18 @@ package fr.keemto.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpStatus;
 import org.springframework.social.connect.Connection;
+import org.springframework.social.connect.ConnectionKey;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.web.ConnectController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Controller
@@ -51,7 +51,14 @@ public class UserConnectionController {
 
     @RequestMapping(value = "/api/connections/{providerId}", method = RequestMethod.GET)
     @ResponseBody
-    public List<Connection<?>> getUserConnections(@PathVariable String  providerId) {
+    public List<Connection<?>> getUserConnections(@PathVariable String providerId) {
         return connectionRepository.findConnections(providerId);
+    }
+
+    @RequestMapping(value = "/api/connections/{providerId}/{providerUserId}", method = RequestMethod.DELETE)
+    @ResponseStatus(value= HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public void removeConnection(@PathVariable String providerId, @PathVariable String providerUserId) {
+        connectionRepository.removeConnection(new ConnectionKey(providerId, providerUserId));
     }
 }

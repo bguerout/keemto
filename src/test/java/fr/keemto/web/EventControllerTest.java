@@ -45,13 +45,12 @@ public class EventControllerTest extends ControllerTestCase {
     public void prepare() throws Exception {
         controller = new EventController(eventRepository);
         request.addHeader("Accept", "application/json");
+        request.setMethod("GET");
+        request.setRequestURI("/api/events");
     }
 
     @Test
     public void shouldReturnAllEvents() throws Exception {
-
-        request.setMethod("GET");
-        request.setRequestURI("/api/events");
 
         ArrayList<Event> events = Lists.newArrayList(new Event(1, "user1", "message", "provider"));
         when(eventRepository.getAllEvents()).thenReturn(events);
@@ -59,9 +58,22 @@ public class EventControllerTest extends ControllerTestCase {
         handlerAdapter.handle(request, response, controller);
 
         assertThat(response.getStatus(), equalTo(200));
-        JsonNode eventsAsJSon = toJsonNode(response.getContentAsString());
-        assertThat(eventsAsJSon, notNullValue());
-        assertThat(eventsAsJSon.findPath("user").getValueAsText(), equalTo("user1"));
+        JsonNode eventsAsJson = toJsonNode(response.getContentAsString());
+        assertThat(eventsAsJson, notNullValue());
+        assertThat(eventsAsJson.findPath("user").getValueAsText(), equalTo("user1"));
+    }
+
+    @Test
+    public void whenNoEventHasBeenFetchedShouldReturnAnEmptyJson() throws Exception {
+
+        when(eventRepository.getAllEvents()).thenReturn(new ArrayList<Event>());
+
+        handlerAdapter.handle(request, response, controller);
+
+        assertThat(response.getStatus(), equalTo(200));
+        JsonNode eventsAsJson = toJsonNode(response.getContentAsString());
+        assertThat(eventsAsJson, notNullValue());
+        assertThat(eventsAsJson.size(), equalTo(0));
     }
 
 }

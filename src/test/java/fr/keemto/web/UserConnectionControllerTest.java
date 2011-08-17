@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionData;
+import org.springframework.social.connect.ConnectionKey;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -54,17 +55,21 @@ public class UserConnectionControllerTest extends ControllerTestCase {
 
         controller = new UserConnectionController(repository);
 
-        request.setMethod("GET");
         request.addHeader("Accept", "application/json");
 
-        data = new ConnectionData("providerId", "providerUserId", "stnevex",
-                "http://twitter.com/stnevex", "http://twitter.com/stnevex.jpg",
-                "accessToken", "secret", "refreshToken", (long) 999);
+        String providerUserId = "1111";
+        String providerId = "twitter";
+        String profileUrl = "http://twitter.com/stnevex";
+        String imageUrl = "http://twitter.com/stnevex.jpg";
+        String displayName = "stnevex";
+        data = new ConnectionData(providerId, providerUserId, displayName,
+                profileUrl, imageUrl, "accessToken", "secret", "refreshToken", (long) 999);
     }
 
     @Test
     public void showReturnAllConnections() throws Exception {
 
+        request.setMethod("GET");
         request.setRequestURI("/api/connections");
 
         MultiValueMap<String, Connection<?>> connections = new LinkedMultiValueMap<String, Connection<?>>();
@@ -74,19 +79,33 @@ public class UserConnectionControllerTest extends ControllerTestCase {
         handlerAdapter.handle(request, response, controller);
 
         assertThat(response.getStatus(), equalTo(200));
-
         JsonNode node = toJsonNode(response.getContentAsString());
-        JsonNode twitterConnx = node.get("twitter");
-        assertThat(twitterConnx, notNullValue());
-        assertThat(twitterConnx.findPath("displayName").getValueAsText(), equalTo("stnevex"));
-        assertThat(twitterConnx.findPath("profileUrl").getValueAsText(), equalTo("http://twitter.com/stnevex"));
-        assertThat(twitterConnx.findPath("imageUrl").getValueAsText(), equalTo("http://twitter.com/stnevex.jpg"));
+        assertThat(node.get("twitter"), notNullValue());
+        assertThat(node.findPath("displayName").getValueAsText(), equalTo("stnevex"));
+        assertThat(node.findPath("profileUrl").getValueAsText(), equalTo("http://twitter.com/stnevex"));
+        assertThat(node.findPath("imageUrl").getValueAsText(), equalTo("http://twitter.com/stnevex.jpg"));
 
+    }
+
+    @Test
+    public void whenUserHasnotConnectionShouldReturnEmptyJson() throws Exception {
+
+        request.setMethod("GET");
+        request.setRequestURI("/api/connections");
+
+        when(repository.findAllConnections()).thenReturn(new LinkedMultiValueMap<String, Connection<?>>());
+
+        handlerAdapter.handle(request, response, controller);
+
+        assertThat(response.getStatus(), equalTo(200));
+        JsonNode node = toJsonNode(response.getContentAsString());
+        assertThat(node.size(), equalTo(0));
     }
 
     @Test
     public void showReturnProviderConnections() throws Exception {
 
+        request.setMethod("GET");
         request.setRequestURI("/api/connections/twitter");
 
         List<Connection<?>> connections = new ArrayList<Connection<?>>();
@@ -96,15 +115,25 @@ public class UserConnectionControllerTest extends ControllerTestCase {
         handlerAdapter.handle(request, response, controller);
 
         assertThat(response.getStatus(), equalTo(200));
-
         JsonNode node = toJsonNode(response.getContentAsString());
         assertThat(node, notNullValue());
         assertThat(node.findPath("displayName").getValueAsText(), equalTo("stnevex"));
         assertThat(node.findPath("profileUrl").getValueAsText(), equalTo("http://twitter.com/stnevex"));
         assertThat(node.findPath("imageUrl").getValueAsText(), equalTo("http://twitter.com/stnevex.jpg"));
+        assertThat(node.findPath("providerId").getValueAsText(), equalTo("twitter"));
+        assertThat(node.findPath("providerUserId").getValueAsText(), equalTo("1111"));
+    }
 
-        verify(repository).findConnections("twitter");
+    @Test
+    public void showDeleteAConnection() throws Exception {
 
+        request.setMethod("DELETE");
+        request.setRequestURI("/api/connections/twitter/1111");
+
+        handlerAdapter.handle(request, response, controller);
+
+        assertThat(response.getStatus(), equalTo(204));
+        verify(repository).removeConnection(new ConnectionKey("twitter", "1111"));
     }
 
 }
