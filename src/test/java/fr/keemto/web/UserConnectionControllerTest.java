@@ -125,15 +125,15 @@ public class UserConnectionControllerTest extends ControllerTestCase {
     }
 
     @Test
-    public void showDeleteAConnection() throws Exception {
+    public void shouldDeleteConnection() throws Exception {
 
         request.setMethod("DELETE");
-        request.setRequestURI("/api/connections/twitter/1111");
+        request.setRequestURI("/api/connections/twitter/9999");
 
         handlerAdapter.handle(request, response, controller);
 
         assertThat(response.getStatus(), equalTo(204));
-        verify(repository).removeConnection(new ConnectionKey("twitter", "1111"));
+        verify(repository).removeConnection(new ConnectionKey("twitter", "9999"));
     }
 
 }
