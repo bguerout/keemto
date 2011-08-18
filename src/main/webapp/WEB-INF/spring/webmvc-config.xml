@@ -21,34 +21,43 @@
        xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd     http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
 
-  <context:property-placeholder location="classpath*:META-INF/spring/*.properties"/>
+    <context:property-placeholder location="classpath*:META-INF/spring/*.properties"/>
 
-  <!-- Turns on support for mapping requests to Spring MVC @Controller methods. -->
-  <mvc:annotation-driven/>
+    <!-- Turns on support for mapping requests to Spring MVC @Controller methods. -->
+    <mvc:annotation-driven/>
 
-  <!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources -->
-  <mvc:resources mapping="/resources/**" location="/resources/"/>
+    <!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources -->
+    <mvc:resources mapping="/resources/**" location="/resources/"/>
 
-  <!-- Allows for mapping the DispatcherServlet to "/" by forwarding static resource requests to the container's default
-    Servlet -->
-  <mvc:default-servlet-handler/>
+    <!-- Allows for mapping the DispatcherServlet to "/" by forwarding static resource requests to the container's default
+   Servlet -->
+    <mvc:default-servlet-handler/>
 
-  <!-- Resolves localized messages*.properties and application.properties files in the application to allow for internationalization. -->
-  <bean class="org.springframework.context.support.ReloadableResourceBundleMessageSource" id="messageSource"
-        p:basenames="WEB-INF/i18n/messages,META-INF/spring/*.properties" p:fallbackToSystemLocale="false"/>
+    <!-- Scanning controller annotations are externalize in a dedicated file to allow Functional Testing.
+    Controllers will not be automatically instanciated during testing phase. -->
+    <context:component-scan base-package="fr.keemto.web"/>
 
-  <!-- Maps view names to Tiles Definitions -->
-  <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
-    <property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView"/>
-  </bean>
-  <bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
-    <property name="definitions">
-      <value>
-        /WEB-INF/layouts/tiles.xml,/WEB-INF/views/**/tiles.xml
-      </value>
-    </property>
-    <property name="checkRefresh" value="true"/>
-  </bean>
+    <!-- Resolves localized messages*.properties and application.properties files in the application to allow for internationalization. -->
+    <bean class="org.springframework.context.support.ReloadableResourceBundleMessageSource" id="messageSource"
+          p:basenames="WEB-INF/i18n/messages,META-INF/spring/*.properties" p:fallbackToSystemLocale="false"/>
+
+    <!-- Maps view names to Tiles Definitions -->
+    <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView"/>
+    </bean>
+
+    <bean class="org.springframework.social.connect.web.ConnectController" scope="request">
+        <constructor-arg value="http://localhost:8080/keemto"/>
+    </bean>
+
+    <bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+        <property name="definitions">
+            <value>
+                /WEB-INF/layouts/tiles.xml,/WEB-INF/views/**/tiles.xml
+            </value>
+        </property>
+        <property name="checkRefresh" value="true"/>
+    </bean>
 
 
 </beans>
