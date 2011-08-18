@@ -34,12 +34,12 @@ import java.util.List;
 
 @Controller
 @Scope(value = "request")
-public class UserConnectionController {
+public class ConnectionController {
 
     private final ConnectionRepository connectionRepository;
 
     @Autowired
-    public UserConnectionController(ConnectionRepository connectionRepository) {
+    public ConnectionController(ConnectionRepository connectionRepository) {
         this.connectionRepository = connectionRepository;
     }
 

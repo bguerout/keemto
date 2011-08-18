@@ -40,20 +40,20 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class UserConnectionControllerTest extends ControllerTestCase {
+public class ConnectionControllerTest extends ControllerTestCase {
 
-    private static final Logger log = LoggerFactory.getLogger(UserConnectionControllerTest.class);
+    private static final Logger log = LoggerFactory.getLogger(ConnectionControllerTest.class);
 
     @Mock
     private ConnectionRepository repository;
-    private UserConnectionController controller;
+    private ConnectionController controller;
     private ConnectionData data;
 
     @Before
     public void initBeforeTest() throws Exception {
         initMocks(this);
 
-        controller = new UserConnectionController(repository);
+        controller = new ConnectionController(repository);
 
         request.addHeader("Accept", "application/json");
 
