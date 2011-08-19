@@ -67,15 +67,32 @@ $(document).ready(function () {
         responseTime: 750,
         contentType: 'text/json',
         type: 'GET',
-        responseText: [
-            {displayName: '@stnevex',
-            profileUrl:'http://twitter.com/stnevex',
-            providerId: 'twitter'}
-            ,
-             {displayName: '@bguerout',
-            profileUrl:'http://twitter.com/bguerout',
-            providerId: 'twitter'}
-        ]
+        responseText: {
+            "twitter":[
+              {
+                 "api":null,
+                 "key":{
+                    "providerId":"twitter",
+                    "providerUserId":"1111"
+                 },
+                 "displayName":"stnevex",
+                 "profileUrl":"http://twitter.com/stnevex",
+                 "imageUrl":"http://twitter.com/stnevex.jpg"
+              }
+            ],
+            "yammer":[
+              {
+                 "api":null,
+                 "key":{
+                    "providerId":"yammer",
+                    "providerUserId":"1111"
+                 },
+                 "displayName":"bguerout@xebia.fr",
+                 "profileUrl":"http://yammer.com/stnevex",
+                 "imageUrl":"http://yammer.com/stnevex.jpg"
+              }
+            ]
+        }
     });
 
     //login

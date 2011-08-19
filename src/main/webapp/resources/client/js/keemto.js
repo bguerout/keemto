@@ -201,7 +201,18 @@ $(document).ready(function () {
     App.Collections.Connections = Backbone.Collection.extend({
 
         model: App.Models.Connection,
-        url: '/connections'
+        url: '/connections',
+
+        parse: function(response) {
+            var connections = [];
+            for (var provider in response) {
+                for (var i in response[provider]) {
+                   var connx = response[provider][i];
+                   connections.push(connx);
+                }
+            }
+            return connections;
+        }
     });
 
     App.Routers.Connections = Backbone.Router.extend({
