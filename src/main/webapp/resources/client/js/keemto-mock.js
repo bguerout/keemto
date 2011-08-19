@@ -24,18 +24,16 @@ $(document).ready(function () {
         type: 'GET',
         responseText:[
             {
-            id: '1',
-            timestamp: '1',
-            user: 'bguerout',
-            message: 'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur.',
-            providerId: 'mail'
+            "timestamp": '1',
+            "user": 'bguerout',
+            "message": 'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur.',
+            "providerId": 'mail'
             },
             {
-            id: '2',
-            timestamp: '2',
-            user: 'stnevex',
-            message: 'Praesent blandit odio eu enim. Pellentesque sed dui ut augue blandit sodales.',
-            providerId: 'twitter'
+            "timestamp": '2',
+            "user": 'stnevex',
+            "message": 'Praesent blandit odio eu enim. Pellentesque sed dui ut augue blandit sodales.',
+            "providerId": 'twitter'
             }
          ]
 
