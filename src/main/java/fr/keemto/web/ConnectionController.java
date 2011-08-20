@@ -1,17 +1,17 @@
 /*
  * Copyright (C) 2010 Benoit Guerout <bguerout at gmail dot com>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *         http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package fr.keemto.web;
@@ -34,28 +34,29 @@ import java.util.List;
 
 @Controller
 @Scope(value = "request")
-public class UserConnectionController {
+@RequestMapping(value = "/api/connections")
+public class ConnectionController {
 
     private final ConnectionRepository connectionRepository;
 
     @Autowired
-    public UserConnectionController(ConnectionRepository connectionRepository) {
+    public ConnectionController(ConnectionRepository connectionRepository) {
         this.connectionRepository = connectionRepository;
     }
 
-    @RequestMapping(value = "/api/connections", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public MultiValueMap getUserConnections() {
         return connectionRepository.findAllConnections();
     }
 
-    @RequestMapping(value = "/api/connections/{providerId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{providerId}", method = RequestMethod.GET)
     @ResponseBody
     public List<Connection<?>> getUserConnections(@PathVariable String providerId) {
         return connectionRepository.findConnections(providerId);
     }
 
-    @RequestMapping(value = "/api/connections/{providerId}/{providerUserId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{providerId}/{providerUserId}", method = RequestMethod.DELETE)
     @ResponseStatus(value= HttpStatus.NO_CONTENT)
     @ResponseBody
     public void removeConnection(@PathVariable String providerId, @PathVariable String providerUserId) {
