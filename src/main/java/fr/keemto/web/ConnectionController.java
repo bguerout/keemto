@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -46,8 +47,13 @@ public class ConnectionController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public MultiValueMap getUserConnections() {
-        return connectionRepository.findAllConnections();
+    public List<Connection<?>> getUserConnections() {
+        List<Connection<?>> userConnections = new ArrayList<Connection<?>>();
+        MultiValueMap<String, Connection<?>> connectionsByProviderMap = connectionRepository.findAllConnections();
+        for (List<Connection<?>> connections : connectionsByProviderMap.values()){
+            userConnections.addAll(connections);
+        }
+        return userConnections;
     }
 
     @RequestMapping(value = "/{providerId}", method = RequestMethod.GET)

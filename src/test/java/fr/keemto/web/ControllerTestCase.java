@@ -28,6 +28,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,5 +69,20 @@ public abstract class ControllerTestCase {
         JsonFactory jsonFactory = mapper.getJsonFactory();
         JsonParser jp = jsonFactory.createJsonParser(json);
         return jp.readValueAsTree();
+    }
+
+    protected JsonNode toJsonNode(File jsonFile) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonFactory jsonFactory = mapper.getJsonFactory();
+        JsonParser jp = jsonFactory.createJsonParser(jsonFile);
+        return jp.readValueAsTree();
+    }
+
+    protected File getJsonFile(String fileName) {
+        return new File("src/test/resources/web/" + fileName);
+    }
+
+    protected String getJsonFileAsString(String fileName) throws IOException {
+        return toJsonNode(getJsonFile(fileName)).toString();
     }
 }

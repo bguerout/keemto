@@ -1,0 +1,12 @@
+[
+  {
+         "api":null,
+         "key":{
+            "providerId":"twitter",
+            "providerUserId":"1111"
+         },
+         "displayName":"stnevex",
+         "profileUrl":"http://twitter.com/stnevex",
+         "imageUrl":"http://twitter.com/stnevex.jpg"
+      }
+]
