@@ -1,6 +1,5 @@
-{
-   "twitter":[
-      {
+[
+  {
          "api":null,
          "key":{
             "providerId":"twitter",
@@ -10,5 +9,4 @@
          "profileUrl":"http://twitter.com/stnevex",
          "imageUrl":"http://twitter.com/stnevex.jpg"
       }
-   ]
-}
+]
