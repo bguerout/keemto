@@ -23,11 +23,9 @@ import org.codehaus.jackson.JsonNode;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -58,9 +56,9 @@ public class EventControllerTest extends ControllerTestCase {
         handlerAdapter.handle(request, response, controller);
 
         assertThat(response.getStatus(), equalTo(200));
-        JsonNode eventsAsJson = toJsonNode(response.getContentAsString());
-        assertThat(eventsAsJson, notNullValue());
-        assertThat(eventsAsJson.findPath("user").getValueAsText(), equalTo("user1"));
+        String jsonResponse = response.getContentAsString();
+        String expectedJson = getJsonFileAsString("events.json");
+        assertThat(jsonResponse, equalTo(expectedJson));
     }
 
     @Test

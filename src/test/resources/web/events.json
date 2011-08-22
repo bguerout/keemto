@@ -1,0 +1,8 @@
+[
+   {
+      "timestamp":1,
+      "user":"user1",
+      "message":"message",
+      "providerId":"provider"
+   }
+]
