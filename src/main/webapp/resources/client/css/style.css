@@ -323,17 +323,17 @@ ul#mainNav li a:hover {
     padding: 25px 0;
 }
 
-#panelContent div {
+#panelContent li {
     list-style: none;
     padding: 5px 10px 6px 7px;
     float: left;
 }
 
-#panelContent div:after {
+#panelContent li:after {
     content: '|';
 }
 
-#panelContent ul a {
+#panelContent li a {
     font-size: 14px;
 }
 
@@ -392,18 +392,20 @@ ul#mainNav li a:hover {
 }
 
 /* NEGATIVE */
-.buttons a.negative {
+.buttons a.delete {
     color: #d12f19;
+    background: url(../img/delete.png) no-repeat left center;
+    padding-left: 18px;
 }
 
-.buttons a.negative:hover {
-    background: #fbe3e4;
+.buttons a.delete:hover {
+    background: #fbe3e4 url(../img/delete.png) no-repeat left center;
     border: 1px solid #fbc2c4;
     color: #d12f19;
 }
 
-.buttons a.negative:active {
-    background-color: #d12f19;
+.buttons a.delete:active {
+    background: #d12f19 url(../img/delete.png) no-repeat left center;
     border: 1px solid #d12f19;
     color: #fff;
 }

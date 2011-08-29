@@ -101,32 +101,45 @@ public class ConnectionControllerTest extends ControllerTestCase {
     }
 
     @Test
-    public void showReturnProviderConnections() throws Exception {
+    public void showReturnUserConnectionById() throws Exception {
 
         request.setMethod("GET");
-        request.setRequestURI("/api/connections/twitter");
+        request.setRequestURI("/api/connections/twitter-1111");
 
-        List<Connection<?>> connections = new ArrayList<Connection<?>>();
-        connections.add(new NullConnection<Object>(data));
-        when(repository.findConnections("twitter")).thenReturn(connections);
+        when(repository.getConnection(new ConnectionKey("twitter", "1111"))).thenReturn(new NullConnection<Object>(data));
 
         handlerAdapter.handle(request, response, controller);
 
+        assertThat(response.getStatus(), equalTo(200));
         String expectedJson = getJsonFileAsString("connection.json");
         String jsonResponse = response.getContentAsString();
         assertThat(jsonResponse, equalTo(expectedJson));
+
     }
 
     @Test
     public void shouldDeleteConnection() throws Exception {
 
         request.setMethod("DELETE");
-        request.setRequestURI("/api/connections/twitter/9999");
+        request.setRequestURI("/api/connections/twitter-9999");
 
         handlerAdapter.handle(request, response, controller);
 
         assertThat(response.getStatus(), equalTo(204));
         verify(repository).removeConnection(new ConnectionKey("twitter", "9999"));
+    }
+
+
+    @Test
+    public void shouldDeleteConnectionBySplittingKeyWithLastIndexOfMinus() throws Exception {
+
+        request.setMethod("DELETE");
+        request.setRequestURI("/api/connections/linked-in-9999");
+
+        handlerAdapter.handle(request, response, controller);
+
+        assertThat(response.getStatus(), equalTo(204));
+        verify(repository).removeConnection(new ConnectionKey("linked-in", "9999"));
     }
 
 }

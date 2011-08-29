@@ -22,14 +22,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionKey;
 import org.springframework.social.connect.ConnectionRepository;
-import org.springframework.social.connect.web.ConnectController;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.NativeWebRequest;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,23 +43,33 @@ public class ConnectionController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public List<Connection<?>> getUserConnections() {
-        List<Connection<?>> userConnections = new ArrayList<Connection<?>>();
+    public List<JsonConnection> getUserConnections() {
+
         MultiValueMap<String, Connection<?>> connectionsByProviderMap = connectionRepository.findAllConnections();
-        for (List<Connection<?>> connections : connectionsByProviderMap.values()){
-            userConnections.addAll(connections);
+
+        return convertUserConnectionsToJsonConnections(connectionsByProviderMap);
+    }
+
+    private List<JsonConnection> convertUserConnectionsToJsonConnections(MultiValueMap<String, Connection<?>> connectionsByProviderMap) {
+        List<JsonConnection> userConnections = new ArrayList<JsonConnection>();
+        for (List<Connection<?>> connections : connectionsByProviderMap.values()) {
+            for (Connection<?> connx : connections) {
+                userConnections.add(new JsonConnection(connx));
+            }
         }
         return userConnections;
     }
 
-    @RequestMapping(value = "/{providerId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{providerId}-{providerUserId}", method = RequestMethod.GET)
     @ResponseBody
-    public List<Connection<?>> getUserConnections(@PathVariable String providerId) {
-        return connectionRepository.findConnections(providerId);
+    public JsonConnection getUserConnections(@PathVariable String providerId, @PathVariable String providerUserId) {
+        //TODO we should use a ConnectionKeyBuilder to convert id to provider*Id
+        Connection<?> connection = connectionRepository.getConnection(new ConnectionKey(providerId, providerUserId));
+        return new JsonConnection(connection);
     }
 
-    @RequestMapping(value = "/{providerId}/{providerUserId}", method = RequestMethod.DELETE)
-    @ResponseStatus(value= HttpStatus.NO_CONTENT)
+    @RequestMapping(value = {"/{providerId}-{providerUserId}"}, method = RequestMethod.DELETE)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @ResponseBody
     public void removeConnection(@PathVariable String providerId, @PathVariable String providerUserId) {
         connectionRepository.removeConnection(new ConnectionKey(providerId, providerUserId));

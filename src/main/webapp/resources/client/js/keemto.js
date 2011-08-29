@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 //Keemto UI Javascript
 $(document).ready(function () {
 
@@ -47,19 +45,22 @@ $(document).ready(function () {
                     });
                 },
                 error: function (collection) {
-                    App.notify({type : "error", message : "Error loading events."});
+                    App.notify({
+                        type: "error",
+                        message: "Error loading events."
+                    });
                 }
             });
 
             this.notifier = new App.Notifier();
             this.notifier.bind("notification:error", function (notification) {
-                 App.log("An error has occurred : "+ notification.message);
-                 alert("An error has occurred : "+ notification.message);
+                App.log("An error has occurred : " + notification.message);
+                alert("An error has occurred : " + notification.message);
             });
         },
 
-        notify: function (notification){
-           this.notifier.notify(notification);
+        notify: function (notification) {
+            this.notifier.notify(notification);
         },
 
         //TODO move login handling to an Auth object
@@ -74,18 +75,24 @@ $(document).ready(function () {
                 },
                 dataType: "json",
                 success: function (response) {
-                    if(response.loggedIn){
-                     var currentUserLogin = response.username;
+                    if (response.loggedIn) {
+                        var currentUserLogin = response.username;
                         self.activeSession.set({
                             login: currentUserLogin
                         });
                         self.log("User " + currentUserLogin + " has been authenticated ");
-                    }else{
-                        App.notify({type : "error", message : "Authentication has failed for user: "+response.username});
+                    } else {
+                        App.notify({
+                            type: "error",
+                            message: "Authentication has failed for user: " + response.username
+                        });
                     }
                 },
                 error: function (response) {
-                    App.notify({type : "error", message : "Authentication has failed."});
+                    App.notify({
+                        type: "error",
+                        message: "Authentication has failed."
+                    });
                 }
             });
         }
@@ -99,7 +106,7 @@ $(document).ready(function () {
     };
     _.extend(App.Notifier.prototype, Backbone.Events, {
         notify: function (notification) {
-            this.trigger("notification:"+notification.type, notification);
+            this.trigger("notification:" + notification.type, notification);
         }
     });
 
@@ -133,7 +140,7 @@ $(document).ready(function () {
     App.Collections.Events = Backbone.Collection.extend({
 
         model: App.Models.Event,
-        url: '/events'
+        url: '/api/events'
     });
 
     App.Views.Event = Backbone.View.extend({
@@ -196,31 +203,22 @@ $(document).ready(function () {
 
     //Connections
     //-----------
-    App.Models.Connection = Backbone.Model.extend({});
+    App.Models.Connection = Backbone.Model.extend({
+
+    });
 
     App.Collections.Connections = Backbone.Collection.extend({
 
         model: App.Models.Connection,
-        url: '/connections',
-
-        parse: function(response) {
-            var connections = [];
-            for (var provider in response) {
-                for (var i in response[provider]) {
-                   var connx = response[provider][i];
-                   connections.push(connx);
-                }
-            }
-            return connections;
-        }
+        url: '/api/connections'
     });
 
     App.Routers.Connections = Backbone.Router.extend({
         routes: {
-            "connections": "connections"
+            "connections": "view"
         },
 
-        connections: function () {
+        view: function () {
             var connections = new App.Collections.Connections();
             connections.fetch({
                 success: function () {
@@ -229,25 +227,48 @@ $(document).ready(function () {
                     });
                 },
                 error: function (collection) {
-                    App.notify({type : "error", message : "Error loading connections."});
+                    App.notify({
+                        type: "error",
+                        message: "Error loading connections."
+                    });
                 }
             });
         }
     });
 
     App.Views.Connection = Backbone.View.extend({
-        tagName: 'div',
+        tagName: 'li',
         template: _.template($('#connection-template').html()),
+        events: {
+            "click a.delete": "revoke"
+        },
 
         initialize: function () {
             _.bindAll(this, 'render');
             this.model.bind('change', this.render);
+            this.model.bind('destroy', this.remove);
             this.model.view = this;
         },
 
         render: function () {
             $(this.el).html(this.template(this.model.toJSON()));
             return this;
+        },
+
+        revoke: function () {
+            this.model.destroy({
+                success: _.bind(function(model, response) {
+                    $(this.el).fadeOut('slow', function() {
+                       $(this).remove();
+                    })
+                }, this),
+                error: function(model, response) {
+                    App.notify({
+                        type: "error",
+                        message: "Unable to revoke access to this application."
+                    });
+                }});
+            return false;
         }
 
     });
@@ -267,7 +288,9 @@ $(document).ready(function () {
             $(this.el).append('<div id="panelContent"><h1>Your connections</h1><span>You have allowed Keemto to access the following applications</span><ul></ul></div>');
 
             _(this.collection.models).each(function (connection) {
-                var connectionElement = new App.Views.Connection({model: connection}).render().el;
+                var connectionElement = new App.Views.Connection({
+                    model: connection
+                }).render().el;
                 this.$('#panelContent ul').append(connectionElement);
             }, this);
 
@@ -282,14 +305,13 @@ $(document).ready(function () {
 
     // Defaults
     // ---------------
-
     App.Routers.Main = Backbone.Router.extend({
         routes: {
             "": "main"
         },
 
         main: function () {
-           new App.Views.InfoPanel();
+            new App.Views.InfoPanel();
         }
     });
 
@@ -323,7 +345,7 @@ $(document).ready(function () {
         togglePanelButton: function () {
             var self = this;
             var flagStatus = this.toggleFlag++ % 2;
-            $('#panel').slideToggle(500,function(){
+            $('#panel').slideToggle(500, function () {
                 if (flagStatus == 0) {
                     self.$('#panelButton').html("Show Notifications");
                 } else {
@@ -333,8 +355,8 @@ $(document).ready(function () {
             return false;
         },
 
-        openConnectionsManager: function(){
-              this.to
+        openConnectionsManager: function () {
+            this.to
         },
 
         submitLoginForm: function () {
