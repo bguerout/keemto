@@ -35,7 +35,7 @@
 
     <!-- Scanning controller annotations are externalize in a dedicated file to allow Functional Testing.
     Controllers will not be automatically instanciated during testing phase. -->
-    <context:component-scan base-package="fr.keemto.web, org.springframework.social.connect.web"/>
+    <context:component-scan base-package="fr.keemto.web"/>
 
     <!-- Resolves localized messages*.properties and application.properties files in the application to allow for internationalization. -->
     <bean class="org.springframework.context.support.ReloadableResourceBundleMessageSource" id="messageSource"

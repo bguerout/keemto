@@ -16,10 +16,12 @@
 
 package fr.keemto.web;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.UsersConnectionRepository;
 
@@ -42,14 +44,20 @@ public class ConnectionRepositoryConfigTest {
         connectionRepositoryConfig.usersConnectionRepository = usersConnectionRepository;
     }
 
+    @After
+    public void cleanSecurityContext() {
+        SecurityContextHolder.getContext().setAuthentication(null);
+    }
+
     @Test
     public void shouldCreateAConnectionRepositoryWithPrincipal() {
 
         ConnectionRepository connectionRepository = mock(ConnectionRepository.class);
         when(usersConnectionRepository.createConnectionRepository("user")).thenReturn(connectionRepository);
         TestingAuthenticationToken principal = new TestingAuthenticationToken("user", null);
+        SecurityContextHolder.getContext().setAuthentication(principal);
 
-        ConnectionRepository repo = connectionRepositoryConfig.connectionRepository(principal);
+        ConnectionRepository repo = connectionRepositoryConfig.connectionRepository();
 
         assertThat(repo, equalTo(connectionRepository));
         verify(usersConnectionRepository).createConnectionRepository("user");
@@ -57,7 +65,7 @@ public class ConnectionRepositoryConfigTest {
 
     @Test(expected = IllegalStateException.class)
     public void shouldThrowExceptionWhenPrincipalCannotBeRetrieved() {
-        connectionRepositoryConfig.connectionRepository(null);
+        connectionRepositoryConfig.connectionRepository();
     }
 
 }
