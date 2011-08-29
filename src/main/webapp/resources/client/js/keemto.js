@@ -80,7 +80,10 @@ $(document).ready(function () {
                         self.activeSession.set({
                             login: currentUserLogin
                         });
-                        self.log("User " + currentUserLogin + " has been authenticated ");
+                        App.notify({
+                            type: "login",
+                            message: "User " + currentUserLogin + " has been authenticated "
+                        });
                     } else {
                         App.notify({
                             type: "error",
@@ -129,6 +132,9 @@ $(document).ready(function () {
 
         logout: function () {
             App.activeSession.clear();
+            App.notify({
+                type: "logout"
+            });
         }
 
     });
