@@ -83,6 +83,17 @@ $(document).ready(function () {
         ]
     });
 
+    $.mockjax({
+        url: '/api/connections',
+        responseTime: 750,
+        contentType: 'text/json',
+        type: 'POST',
+        status: 202,
+        responseText:{
+            "authorizeUrl": 'https://api.twitter.com/oauth/authorize'
+        }
+    });
+
     //Remove connection
     $.mockjax({
         url: '/api/connections/twitter-1111',

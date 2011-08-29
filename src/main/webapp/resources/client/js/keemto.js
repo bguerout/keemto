@@ -80,10 +80,6 @@ $(document).ready(function () {
                         self.activeSession.set({
                             login: currentUserLogin
                         });
-                        App.notify({
-                            type: "login",
-                            message: "User " + currentUserLogin + " has been authenticated "
-                        });
                     } else {
                         App.notify({
                             type: "error",
@@ -132,9 +128,7 @@ $(document).ready(function () {
 
         logout: function () {
             App.activeSession.clear();
-            App.notify({
-                type: "logout"
-            });
+            //TODO add redirection to #
         }
 
     });
@@ -265,7 +259,7 @@ $(document).ready(function () {
             this.model.destroy({
                 success: _.bind(function(model, response) {
                     $(this.el).fadeOut('slow', function() {
-                       $(this).remove();
+                        $(this).remove();
                     })
                 }, this),
                 error: function(model, response) {
@@ -301,9 +295,32 @@ $(document).ready(function () {
             }, this);
 
             $(this.el).append('<div id="panelButtons"></div>');
-            $(this.el).append('<span class="buttonLarge"><a href="#" id="addConnection">Add Connection</a>');
-            $(this.el).append('<span class="buttonLarge"><a href="#" id="cancelConnection">Cancel</a>');
+            $(this.el).append(new App.Views.ButtonConnection({buttonId:"twitter", buttonText:"Add Twitter Connection"}).render().el);
+            $(this.el).append('<span class="buttonLarge"><a>Cancel</a></span>');
 
+            return this;
+        }
+    });
+
+    App.Views.ButtonConnection = Backbone.View.extend({
+        tagName: 'span',
+        className: 'buttonLarge',
+        events: {
+            "click a": "goToProviderAuthorizeUrl"
+        },
+
+        initialize: function (options) {
+            _.bindAll(this, 'render');
+            this.buttonText = options.buttonText;
+            this.buttonId = options.buttonId;
+        },
+
+        goToProviderAuthorizeUrl: function () {
+            return false;
+        },
+
+        render: function () {
+            $(this.el).append('<a>' + this.buttonText + '</a>');
             return this;
         }
     });
@@ -330,8 +347,6 @@ $(document).ready(function () {
 
         events: {
             "click #panelButton": "togglePanelButton",
-            "click #connectionsButton": "togglePanelButton",
-            "click #connectionsButton": "openConnectionsManager",
             "submit #loginNav form": "submitLoginForm"
         },
 
@@ -358,17 +373,6 @@ $(document).ready(function () {
                     self.$('#panelButton').html("Hide Notifications");
                 }
             });
-            return false;
-        },
-
-        openConnectionsManager: function () {
-            this.to
-        },
-
-        submitLoginForm: function () {
-            var login = this.$('input[name="login"]').val();
-            var password = this.$('input[name="password"]').val();
-            App.login(login, password);
             return false;
         },
 
