@@ -22,9 +22,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionKey;
 import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.connect.web.ConnectController;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,26 +38,36 @@ import java.util.List;
 public class ConnectionController {
 
     private final ConnectionRepository connectionRepository;
+    private ConnectController socialController;
 
     @Autowired
-    public ConnectionController(ConnectionRepository connectionRepository) {
+    public ConnectionController(ConnectionRepository connectionRepository, ConnectController socialController) {
         this.connectionRepository = connectionRepository;
+        this.socialController = socialController;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public List<JsonConnection> getUserConnections() {
+    public List<ConnectionViewBean> getUserConnections() {
 
         MultiValueMap<String, Connection<?>> connectionsByProviderMap = connectionRepository.findAllConnections();
 
-        return convertUserConnectionsToJsonConnections(connectionsByProviderMap);
+        return convertUserConnectionsToConnectionViewBean(connectionsByProviderMap);
     }
 
-    private List<JsonConnection> convertUserConnectionsToJsonConnections(MultiValueMap<String, Connection<?>> connectionsByProviderMap) {
-        List<JsonConnection> userConnections = new ArrayList<JsonConnection>();
+    @RequestMapping(method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @ResponseBody
+    public ProviderRedirectViewBean beginConnectionCreation(@RequestParam String providerId, NativeWebRequest request) {
+        RedirectView redirectView = socialController.connect(providerId, request);
+        return new ProviderRedirectViewBean(redirectView.getUrl());
+    }
+
+    private List<ConnectionViewBean> convertUserConnectionsToConnectionViewBean(MultiValueMap<String, Connection<?>> connectionsByProviderMap) {
+        List<ConnectionViewBean> userConnections = new ArrayList<ConnectionViewBean>();
         for (List<Connection<?>> connections : connectionsByProviderMap.values()) {
             for (Connection<?> connx : connections) {
-                userConnections.add(new JsonConnection(connx));
+                userConnections.add(new ConnectionViewBean(connx));
             }
         }
         return userConnections;
@@ -62,10 +75,10 @@ public class ConnectionController {
 
     @RequestMapping(value = "/{providerId}-{providerUserId}", method = RequestMethod.GET)
     @ResponseBody
-    public JsonConnection getUserConnections(@PathVariable String providerId, @PathVariable String providerUserId) {
+    public ConnectionViewBean getUserConnections(@PathVariable String providerId, @PathVariable String providerUserId) {
         //TODO we should use a ConnectionKeyBuilder to convert id to provider*Id
         Connection<?> connection = connectionRepository.getConnection(new ConnectionKey(providerId, providerUserId));
-        return new JsonConnection(connection);
+        return new ConnectionViewBean(connection);
     }
 
     @RequestMapping(value = {"/{providerId}-{providerUserId}"}, method = RequestMethod.DELETE)
@@ -74,4 +87,6 @@ public class ConnectionController {
     public void removeConnection(@PathVariable String providerId, @PathVariable String providerUserId) {
         connectionRepository.removeConnection(new ConnectionKey(providerId, providerUserId));
     }
+
+
 }

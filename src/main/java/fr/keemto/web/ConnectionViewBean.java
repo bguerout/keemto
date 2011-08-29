@@ -20,11 +20,11 @@ package fr.keemto.web;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionKey;
 
-public class JsonConnection {
+public class ConnectionViewBean {
 
     private final Connection<?> connection;
 
-    public JsonConnection(Connection<?> connection) {
+    public ConnectionViewBean(Connection<?> connection) {
         this.connection = connection;
     }
 

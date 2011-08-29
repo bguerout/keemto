@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class JsonConnectionTest {
+public class ConnectionViewBeanTest {
 
 
     @Test
@@ -34,7 +34,7 @@ public class JsonConnectionTest {
         Connection<String> connx = mock(Connection.class);
         ConnectionKey key = new ConnectionKey("provider", "providerUserId");
         when(connx.getKey()).thenReturn(key);
-        JsonConnection jconnection = new JsonConnection(connx);
+        ConnectionViewBean jconnection = new ConnectionViewBean(connx);
 
         String id = jconnection.getId();
 
@@ -50,7 +50,7 @@ public class JsonConnectionTest {
         when(connx.getDisplayName()).thenReturn("display");
         when(connx.getImageUrl()).thenReturn("image");
         when(connx.getProfileUrl()).thenReturn("profile");
-        JsonConnection jconnection = new JsonConnection(connx);
+        ConnectionViewBean jconnection = new ConnectionViewBean(connx);
 
         assertThat(jconnection.getProviderId(), equalTo("provider"));
         assertThat(jconnection.getDisplayName(), equalTo("display"));
