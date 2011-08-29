@@ -6,21 +6,19 @@ article, aside, audio, canvas, command, datalist, details, embed, figcaption, fi
 mark, rp, rt, ruby, summary, time {
     display: inline
 }
-@font-face {font-family:
-    'Lobster1.1Regular';
-    src:
-    url(../fonts/Lobster_1.1_-webfont.eot'.html');
-    src:
-    local('☺'), url(../fonts/Lobster_1.1_-webfont.woff'.html') format('woff'), url(../fonts/Lobster_1.1_-webfont.ttf'.html') format('truetype'), url('../fonts/Lobster_1.1_-webfont.svg#webfont30G9S4nm') format('svg');
+
+@font-face {
+    font-family: 'Lobster1.1Regular';
+    src: url(../fonts/Lobster_1.1_-webfont.eot '.html');
+    src: local('☺'), url(../fonts/Lobster_1.1_-webfont.woff '.html') format('woff'), url(../fonts/Lobster_1.1_-webfont.ttf'.html') format('truetype'), url('../fonts/Lobster_1.1_-webfont.svg#webfont30G9S4nm') format('svg');
     font-weight: normal;
     font-style: normal;
 }
-@font-face {font-family:
-    'RalewayThin';
-    src:
-    url(../fonts/raleway_thin-webfont.eot'.html');
-    src:
-    local('☺'), url(../fonts/raleway_thin-webfont.woff'.html') format('woff'), url(../fonts/raleway_thin-webfont.ttf'.html') format('truetype'), url('../fonts/raleway_thin-webfont.svg#webfont') format('svg');
+
+@font-face {
+    font-family: 'RalewayThin';
+    src: url(../fonts/raleway_thin-webfont.eot '.html');
+    src: local('☺'), url(../fonts/raleway_thin-webfont.woff '.html') format('woff'), url(../fonts/raleway_thin-webfont.ttf'.html') format('truetype'), url('../fonts/raleway_thin-webfont.svg#webfont') format('svg');
     font-weight: normal;
     font-style: normal;
 }
@@ -202,7 +200,6 @@ a:hover {
     left: 0;
 }
 
-
 #navigation {
     width: 530px;
     position: absolute;
@@ -231,7 +228,6 @@ a:hover {
     text-shadow: 1px 1px #000;
 }
 
-
 ul#mainNav {
     line-height: 67px;
 }
@@ -247,46 +243,46 @@ ul#mainNav li a:hover {
     top: 0;
     height: 70px;
     line-height: 67px;
-    display:inline;
-	font-size: 12px;
+    display: inline;
+    font-size: 12px;
     padding: 0 0 0 35px;
 }
- 
-#loginNav  label{
-   font-size: 12px;
-   color: #fff;
-   text-decoration: none;
-   text-shadow: 1px 1px #000;
-   padding-right: 5px;
+
+#loginNav  label {
+    font-size: 12px;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 1px 1px #000;
+    padding-right: 5px;
 }
 
-#loginNav input{
-   width:50px;
+#loginNav input {
+    width: 50px;
 }
 
 #loginNav  input[type="submit"] {
-  background: #8C8C84;
-  width: auto;
-  font-weight: normal;
-  font-size: 12px;
-  text-shadow: 1px 1px #000;
-  margin-bottom: 0;
-  border: none;
-  background-color: #818387;
-  padding: 0 10px;
-  height: 28px;
-  color: white;
-  border-radius: 2px;
+    background: #8C8C84;
+    width: auto;
+    font-weight: normal;
+    font-size: 12px;
+    text-shadow: 1px 1px #000;
+    margin-bottom: 0;
+    border: none;
+    background-color: #818387;
+    padding: 0 10px;
+    height: 28px;
+    color: white;
+    border-radius: 2px;
 }
 
 #loginNav  input[type="submit"]:active {
-  opacity: 0.7;
+    opacity: 0.7;
 }
 
 #loginNav  input[type="submit"]:hover {
-  background: #70706B;
-  cursor: pointer;
-  background-color: #333;
+    background: #70706B;
+    cursor: pointer;
+    background-color: #333;
 }
 
 #loginNav fieldset {
@@ -296,14 +292,12 @@ ul#mainNav li a:hover {
     padding: 0 0 0 35px;
 }
 
-
 #panel {
     background: url(../img/headerBG.png);
     width: 100%;
     height: 200px;
     position: relative;
 }
-
 
 #panel .wrap {
     height: 350px;
@@ -323,91 +317,98 @@ ul#mainNav li a:hover {
     height: 156px;
 }
 
-
 #panelContent h1 {
     color: #6A205F;
     font-size: 32px;
     padding: 25px 0;
 }
 
-#panelContent div {
-   list-style: none;
-   padding:5px 10px 6px 7px;
-   float: left;
+#panelContent li {
+    list-style: none;
+    padding: 5px 10px 6px 7px;
+    float: left;
 }
 
-#panelContent div:after {
-   content: '|';
+#panelContent li:after {
+    content: '|';
 }
 
+#panelContent li a {
+    font-size: 14px;
+}
 
 /* BUTTONS */
-.buttons a{
-    display:inline;
-    margin:0 7px 0 0;
-    background-color:#f5f5f5;
-    border:1px solid #dedede;
-    border-top:1px solid #eee;
-    border-left:1px solid #eee;
-    font-size:100%;
-    line-height:130%;
-    text-decoration:none;
-    font-weight:bold;
-    color:#565656;
-    cursor:pointer;
-    padding:5px 10px 6px 7px;
+.buttons a {
+    display: inline;
+    margin: 0 7px 0 0;
+    background-color: #f5f5f5;
+    border: 1px solid #dedede;
+    border-top: 1px solid #eee;
+    border-left: 1px solid #eee;
+    font-size: 100%;
+    line-height: 130%;
+    text-decoration: none;
+    font-weight: bold;
+    color: #565656;
+    cursor: pointer;
+    padding: 5px 10px 6px 7px;
 }
 
-
-.buttons a img{
-    margin:0 3px -3px 0 !important;
-    padding:0;
-    border:none;
-    width:16px;
-    height:16px;
+.buttons a img {
+    margin: 0 3px -3px 0 !important;
+    padding: 0;
+    border: none;
+    width: 16px;
+    height: 16px;
 }
 
-.buttons a:hover{
-    background-color:#dff4ff;
-    border:1px solid #c2e1ef;
-    color:#336699;
+.buttons a:hover {
+    background-color: #dff4ff;
+    border: 1px solid #c2e1ef;
+    color: #336699;
 }
-.buttons a:active{
-    background-color:#6299c5;
-    border:1px solid #6299c5;
-    color:#fff;
+
+.buttons a:active {
+    background-color: #6299c5;
+    border: 1px solid #6299c5;
+    color: #fff;
 }
 
 /* POSITIVE */
-.buttons a.positive{
-    color:#529214;
+.buttons a.positive {
+    color: #529214;
 }
-.buttons a.positive:hover{
-    background-color:#E6EFC2;
-    border:1px solid #C6D880;
-    color:#529214;
+
+.buttons a.positive:hover {
+    background-color: #E6EFC2;
+    border: 1px solid #C6D880;
+    color: #529214;
 }
-.buttons a.positive:active{
-    background-color:#529214;
-    border:1px solid #529214;
-    color:#fff;
+
+.buttons a.positive:active {
+    background-color: #529214;
+    border: 1px solid #529214;
+    color: #fff;
 }
 
 /* NEGATIVE */
-.buttons a.negative{
-    color:#d12f19;
-}
-.buttons a.negative:hover{
-    background:#fbe3e4;
-    border:1px solid #fbc2c4;
-    color:#d12f19;
-}
-.buttons a.negative:active{
-    background-color:#d12f19;
-    border:1px solid #d12f19;
-    color:#fff;
+.buttons a.delete {
+    color: #d12f19;
+    background: url(../img/delete.png) no-repeat left center;
+    padding-left: 18px;
 }
 
+.buttons a.delete:hover {
+    background: #fbe3e4 url(../img/delete.png) no-repeat left center;
+    border: 1px solid #fbc2c4;
+    color: #d12f19;
+}
+
+.buttons a.delete:active {
+    background: #d12f19 url(../img/delete.png) no-repeat left center;
+    border: 1px solid #d12f19;
+    color: #fff;
+}
 
 #home #main {
     width: 100%;
@@ -553,7 +554,8 @@ ul#footerNav li a:hover {
     margin-left: 60px;
 }
 
-.tweet:after { /*arrow added to leftarrowdiv DIV*/
+.tweet:after {
+    /*arrow added to leftarrowdiv DIV*/
     content: '';
     display: block;
     position: absolute;

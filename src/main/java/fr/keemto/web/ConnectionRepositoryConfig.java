@@ -15,15 +15,18 @@
  */
 package fr.keemto.web;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.social.connect.ConnectionFactoryLocator;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.UsersConnectionRepository;
+import org.springframework.social.connect.web.ConnectController;
 
 import javax.inject.Inject;
-import java.security.Principal;
 
 @Configuration
 public class ConnectionRepositoryConfig {
@@ -31,15 +34,25 @@ public class ConnectionRepositoryConfig {
     @Inject
     protected UsersConnectionRepository usersConnectionRepository;
 
+    @Inject
+    protected ConnectionFactoryLocator connectionFactoryLocator;
+
+    @Bean
+    @Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
+    public ConnectionRepository connectionRepository() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new IllegalStateException("Unable to get a ConnectionRepository: no user signed in");
+        }
+        return usersConnectionRepository.createConnectionRepository(authentication.getName());
+    }
+
+
     @Bean
     @Scope(value = "request")
-    public ConnectionRepository connectionRepository(@Value("#{request.userPrincipal}") Principal principal) {
-        if (principal == null) {
-            throw new IllegalStateException(
-                    "Unable to get a ConnectionRepository because no principal is attached to this request "
-                            + " or this method has been called outside a web container.");
-        }
-        return usersConnectionRepository.createConnectionRepository(principal.getName());
+    public ConnectController connectController() {
+        ConnectController connectController = new ConnectController(connectionFactoryLocator, connectionRepository());
+        return connectController;
     }
 
 }

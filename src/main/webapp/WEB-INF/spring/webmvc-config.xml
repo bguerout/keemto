@@ -46,9 +46,6 @@
         <property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView"/>
     </bean>
 
-    <bean class="org.springframework.social.connect.web.ConnectController" scope="request">
-        <constructor-arg value="http://localhost:8080/keemto"/>
-    </bean>
 
     <bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
         <property name="definitions">

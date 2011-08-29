@@ -26,9 +26,14 @@
     <link rel="stylesheet" href="css/font-googleapis.css" type="text/css" media="screen"/>
     <!--[if IE]>
     <style type="text/css">
-        .timer { display: none !important; }
-        div.caption { background:transparent;
-        filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);zoom: 1;
+        .timer {
+            display: none !important;
+        }
+
+        div.caption {
+            background: transparent;
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #99000000, endColorstr = #99000000);
+            zoom: 1;
     </style>
     <![endif]-->
     <!--[if IE 7]>
@@ -44,6 +49,7 @@
     <script type="text/javascript" src="js/jquery-ui.js"></script>
     <script type="text/javascript" src="js/jquery.mockjax.js"></script>
     <script type="text/javascript" src="js/jquery.form.js"></script>
+    <script type="text/javascript" src="js/jquery.simplemodal.1.4.1.min.js"></script>
     <script type="text/javascript" src="js/underscore.js"></script>
     <script type="text/javascript" src="js/backbone.js"></script>
     <script type="text/javascript" src="js/keemto-mock.js"></script>
@@ -142,9 +148,9 @@
 
 <script type="text/template" id="connection-template">
     <a href="<%= profileUrl %>" target="_blank"><%= displayName %></a>
-          <span class="buttons">
-              <a href="#" class="negative" onclick="return false"><img src="img/delete.png" alt="">Revoke Access</a>
-          </span>
+  <span class="buttons">
+      <a class="delete">Revoke Access</a>
+  </span>
 </script>
 
 <script type="text/template" id="authenticated-template">

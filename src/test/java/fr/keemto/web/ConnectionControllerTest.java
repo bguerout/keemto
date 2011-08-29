@@ -27,15 +27,16 @@ import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionData;
 import org.springframework.social.connect.ConnectionKey;
 import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.connect.web.ConnectController;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.servlet.view.RedirectView;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -46,6 +47,9 @@ public class ConnectionControllerTest extends ControllerTestCase {
 
     @Mock
     private ConnectionRepository repository;
+    @Mock
+    private ConnectController socialController;
+
     private ConnectionController controller;
     private ConnectionData data;
 
@@ -53,7 +57,7 @@ public class ConnectionControllerTest extends ControllerTestCase {
     public void initBeforeTest() throws Exception {
         initMocks(this);
 
-        controller = new ConnectionController(repository);
+        controller = new ConnectionController(repository, socialController);
 
         request.addHeader("Accept", "application/json");
 
@@ -86,7 +90,7 @@ public class ConnectionControllerTest extends ControllerTestCase {
     }
 
     @Test
-    public void whenUserHasnotConnectionShouldReturnEmptyJson() throws Exception {
+    public void whenUserHasNoConnectionShouldReturnEmptyJson() throws Exception {
 
         request.setMethod("GET");
         request.setRequestURI("/api/connections");
@@ -101,32 +105,64 @@ public class ConnectionControllerTest extends ControllerTestCase {
     }
 
     @Test
-    public void showReturnProviderConnections() throws Exception {
+    public void showReturnConnectionById() throws Exception {
 
         request.setMethod("GET");
-        request.setRequestURI("/api/connections/twitter");
+        request.setRequestURI("/api/connections/twitter-1111");
 
-        List<Connection<?>> connections = new ArrayList<Connection<?>>();
-        connections.add(new NullConnection<Object>(data));
-        when(repository.findConnections("twitter")).thenReturn(connections);
+        when(repository.getConnection(new ConnectionKey("twitter", "1111"))).thenReturn(new NullConnection<Object>(data));
 
         handlerAdapter.handle(request, response, controller);
 
+        assertThat(response.getStatus(), equalTo(200));
         String expectedJson = getJsonFileAsString("connection.json");
         String jsonResponse = response.getContentAsString();
         assertThat(jsonResponse, equalTo(expectedJson));
+
     }
 
     @Test
     public void shouldDeleteConnection() throws Exception {
 
         request.setMethod("DELETE");
-        request.setRequestURI("/api/connections/twitter/9999");
+        request.setRequestURI("/api/connections/twitter-9999");
 
         handlerAdapter.handle(request, response, controller);
 
         assertThat(response.getStatus(), equalTo(204));
         verify(repository).removeConnection(new ConnectionKey("twitter", "9999"));
+    }
+
+
+    @Test
+    public void shouldDeleteConnectionBySplittingKeyWithLastIndexOfMinus() throws Exception {
+
+        request.setMethod("DELETE");
+        request.setRequestURI("/api/connections/linked-in-9999");
+
+        handlerAdapter.handle(request, response, controller);
+
+        assertThat(response.getStatus(), equalTo(204));
+        verify(repository).removeConnection(new ConnectionKey("linked-in", "9999"));
+    }
+
+    @Test
+    public void shouldBeginConnectionCreationByReturningProviderUrl() throws Exception {
+
+        request.setMethod("POST");
+        request.setRequestURI("/api/connections");
+        request.setParameter("providerId", "twitter");
+
+        RedirectView redirectView = new RedirectView("https://api.twitter.com/oauth/authorize");
+        when(socialController.connect(eq("twitter"), any(NativeWebRequest.class))).thenReturn(redirectView);
+
+        handlerAdapter.handle(request, response, controller);
+
+        assertThat(response.getStatus(), equalTo(202));
+        String expectedJson = getJsonFileAsString("connection-POST.json");
+        String jsonResponse = response.getContentAsString();
+        assertThat(jsonResponse, equalTo(expectedJson));
+
     }
 
 }

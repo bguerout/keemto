@@ -18,32 +18,30 @@ $(document).ready(function () {
 
     //events init list
     $.mockjax({
-        url: '/events',
+        url: '/api/events',
         responseTime: 750,
         contentType: 'text/json',
         type: 'GET',
         responseText:[
             {
-            id: '1',
-            timestamp: '1',
-            user: 'bguerout',
-            message: 'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur.',
-            providerId: 'mail'
+                "timestamp": '1',
+                "user": 'bguerout',
+                "message": 'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur.',
+                "providerId": 'mail'
             },
             {
-            id: '2',
-            timestamp: '2',
-            user: 'stnevex',
-            message: 'Praesent blandit odio eu enim. Pellentesque sed dui ut augue blandit sodales.',
-            providerId: 'twitter'
+                "timestamp": '2',
+                "user": 'stnevex',
+                "message": 'Praesent blandit odio eu enim. Pellentesque sed dui ut augue blandit sodales.',
+                "providerId": 'twitter'
             }
-         ]
+        ]
 
     });
 
     //event creation
     $.mockjax({
-        url: '/events',
+        url: '/api/events',
         responseTime: 750,
         status: 201,
         contentType: 'text/json',
@@ -63,19 +61,53 @@ $(document).ready(function () {
 
     //connections list
     $.mockjax({
-        url: '/connections',
+        url: '/api/connections',
         responseTime: 750,
         contentType: 'text/json',
         type: 'GET',
         responseText: [
-            {displayName: '@stnevex',
-            profileUrl:'http://twitter.com/stnevex',
-            providerId: 'twitter'}
-            ,
-             {displayName: '@bguerout',
-            profileUrl:'http://twitter.com/bguerout',
-            providerId: 'twitter'}
+            {
+                "id":"twitter-1111",
+                "displayName":"stnevex",
+                "providerId":"twitter",
+                "profileUrl":"http://twitter.com/stnevex",
+                "imageUrl":"http://twitter.com/stnevex.jpg"
+            },
+            {
+                "id":"yammer-9999",
+                "displayName":"bguerout(error on revoke)",
+                "providerId":"twitter",
+                "profileUrl":"http://yammer.com/bguerout",
+                "imageUrl":"http://yammer.com/bguerout.jpg"
+            }
         ]
+    });
+
+    $.mockjax({
+        url: '/api/connections',
+        responseTime: 750,
+        contentType: 'text/json',
+        type: 'POST',
+        status: 202,
+        responseText:{
+            "authorizeUrl": 'https://api.twitter.com/oauth/authorize'
+        }
+    });
+
+    //Remove connection
+    $.mockjax({
+        url: '/api/connections/twitter-1111',
+        responseTime: 750,
+        contentType: 'text/json',
+        type: 'DELETE',
+        status: 204
+    });
+    $.mockjax({
+        url: '/api/connections/yammer-9999',
+        responseTime: 750,
+        contentType: 'text/json',
+        type: 'DELETE',
+        status: 500
     });
 
     //login
@@ -88,12 +120,10 @@ $(document).ready(function () {
 
             if (settings.data.login == '') {
                 this.status = 401;
-                this.responseText = "Unable to authenticate user";
+                this.responseText = {"username":null,"loggedIn":false};
             } else {
                 this.status = 200;
-                this.responseText = {
-                    login: 'stnevex'
-                };
+                this.responseText = {"username":"stnevex","loggedIn":true};
             }
         }
     });
