@@ -41,19 +41,10 @@
     <bean class="org.springframework.context.support.ReloadableResourceBundleMessageSource" id="messageSource"
           p:basenames="WEB-INF/i18n/messages,META-INF/spring/*.properties" p:fallbackToSystemLocale="false"/>
 
-    <!-- Maps view names to Tiles Definitions -->
-    <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
-        <property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView"/>
-    </bean>
-
-
-    <bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
-        <property name="definitions">
-            <value>
-                /WEB-INF/layouts/tiles.xml,/WEB-INF/views/**/tiles.xml
-            </value>
-        </property>
-        <property name="checkRefresh" value="true"/>
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/jsp/"/>
+        <property name="suffix" value=".jsp"/>
     </bean>
 
 
