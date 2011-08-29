@@ -58,19 +58,9 @@ public class ConnectionController {
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     @ResponseBody
-    public ProviderRedirectViewBean beginConnectionCreation(@RequestParam String providerId, NativeWebRequest request) {
+    public AuthorizeProviderViewBean getAuthorizeProviderUrl(@RequestParam String providerId, NativeWebRequest request) {
         RedirectView redirectView = socialController.connect(providerId, request);
-        return new ProviderRedirectViewBean(redirectView.getUrl());
-    }
-
-    private List<ConnectionViewBean> convertUserConnectionsToConnectionViewBean(MultiValueMap<String, Connection<?>> connectionsByProviderMap) {
-        List<ConnectionViewBean> userConnections = new ArrayList<ConnectionViewBean>();
-        for (List<Connection<?>> connections : connectionsByProviderMap.values()) {
-            for (Connection<?> connx : connections) {
-                userConnections.add(new ConnectionViewBean(connx));
-            }
-        }
-        return userConnections;
+        return new AuthorizeProviderViewBean(redirectView.getUrl());
     }
 
     @RequestMapping(value = "/{providerId}-{providerUserId}", method = RequestMethod.GET)
@@ -86,6 +76,17 @@ public class ConnectionController {
     @ResponseBody
     public void removeConnection(@PathVariable String providerId, @PathVariable String providerUserId) {
         connectionRepository.removeConnection(new ConnectionKey(providerId, providerUserId));
+    }
+
+
+    private List<ConnectionViewBean> convertUserConnectionsToConnectionViewBean(MultiValueMap<String, Connection<?>> connectionsByProviderMap) {
+        List<ConnectionViewBean> userConnections = new ArrayList<ConnectionViewBean>();
+        for (List<Connection<?>> connections : connectionsByProviderMap.values()) {
+            for (Connection<?> connx : connections) {
+                userConnections.add(new ConnectionViewBean(connx));
+            }
+        }
+        return userConnections;
     }
 
 

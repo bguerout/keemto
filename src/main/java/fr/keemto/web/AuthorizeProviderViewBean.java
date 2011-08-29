@@ -16,15 +16,15 @@
 
 package fr.keemto.web;
 
-public class ProviderRedirectViewBean {
+public class AuthorizeProviderViewBean {
 
     private final String url;
 
-    public ProviderRedirectViewBean(String url) {
+    public AuthorizeProviderViewBean(String url) {
         this.url = url;
     }
 
-    public String getRedirectUrl() {
+    public String getAuthorizeUrl() {
         return url;
     }
 }

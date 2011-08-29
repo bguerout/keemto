@@ -153,7 +153,7 @@ public class ConnectionControllerTest extends ControllerTestCase {
         request.setRequestURI("/api/connections");
         request.setParameter("providerId", "twitter");
 
-        RedirectView redirectView = new RedirectView("http://twitter.com");
+        RedirectView redirectView = new RedirectView("https://api.twitter.com/oauth/authorize");
         when(socialController.connect(eq("twitter"), any(NativeWebRequest.class))).thenReturn(redirectView);
 
         handlerAdapter.handle(request, response, controller);
