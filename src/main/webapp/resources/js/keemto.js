@@ -140,7 +140,7 @@ $(document).ready(function () {
     App.Collections.Events = Backbone.Collection.extend({
 
         model: App.Models.Event,
-        url: '/api/events'
+        url: 'api/events'
     });
 
     App.Views.Event = Backbone.View.extend({
