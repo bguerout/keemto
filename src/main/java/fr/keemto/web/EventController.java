@@ -37,12 +37,6 @@ public class EventController {
         this.eventRepository = repository;
     }
 
-    @RequestMapping("/")
-    public String home(Model model) {
-        model.addAttribute("events", eventRepository.getAllEvents());
-        return "home";
-    }
-
     @RequestMapping(method = RequestMethod.GET, value = "/api/events")
     @ResponseBody
     public List<Event> getAllEvents() {
