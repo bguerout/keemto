@@ -35,6 +35,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -83,9 +84,16 @@ public class ConnectionControllerTest extends ControllerTestCase {
         handlerAdapter.handle(request, response, controller);
 
         assertThat(response.getStatus(), equalTo(200));
-        String expectedJson = getJsonFileAsString("connections.json");
-        String jsonResponse = response.getContentAsString();
-        assertThat(jsonResponse, equalTo(expectedJson));
+        JsonNode jsonNode = toJsonNode(response.getContentAsString());
+        assertThat(jsonNode.isArray(), is(true));
+        assertThat(jsonNode.has(0), is(true));
+        JsonNode connx = jsonNode.get(0);
+        assertThat(connx.get("id").getTextValue(), equalTo("twitter-1111"));
+        assertThat(connx.get("providerId").getTextValue(), equalTo("twitter"));
+        assertThat(connx.get("displayName").getTextValue(), equalTo("stnevex"));
+        assertThat(connx.get("profileUrl").getTextValue(), equalTo("http://twitter.com/stnevex"));
+        assertThat(connx.get("imageUrl").getTextValue(), equalTo("http://twitter.com/stnevex.jpg"));
+
 
     }
 
@@ -115,9 +123,12 @@ public class ConnectionControllerTest extends ControllerTestCase {
         handlerAdapter.handle(request, response, controller);
 
         assertThat(response.getStatus(), equalTo(200));
-        String expectedJson = getJsonFileAsString("connection.json");
-        String jsonResponse = response.getContentAsString();
-        assertThat(jsonResponse, equalTo(expectedJson));
+        JsonNode connx = toJsonNode(response.getContentAsString());
+        assertThat(connx.get("id").getTextValue(), equalTo("twitter-1111"));
+        assertThat(connx.get("providerId").getTextValue(), equalTo("twitter"));
+        assertThat(connx.get("displayName").getTextValue(), equalTo("stnevex"));
+        assertThat(connx.get("profileUrl").getTextValue(), equalTo("http://twitter.com/stnevex"));
+        assertThat(connx.get("imageUrl").getTextValue(), equalTo("http://twitter.com/stnevex.jpg"));
 
     }
 
@@ -159,9 +170,8 @@ public class ConnectionControllerTest extends ControllerTestCase {
         handlerAdapter.handle(request, response, controller);
 
         assertThat(response.getStatus(), equalTo(202));
-        String expectedJson = getJsonFileAsString("connection-POST.json");
-        String jsonResponse = response.getContentAsString();
-        assertThat(jsonResponse, equalTo(expectedJson));
+        JsonNode connx = toJsonNode(response.getContentAsString());
+        assertThat(connx.get("authorizeUrl").getTextValue(), equalTo("https://api.twitter.com/oauth/authorize"));
 
     }
 

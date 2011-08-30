@@ -24,7 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -56,9 +55,12 @@ public class EventControllerTest extends ControllerTestCase {
         handlerAdapter.handle(request, response, controller);
 
         assertThat(response.getStatus(), equalTo(200));
-        String jsonResponse = response.getContentAsString();
-        String expectedJson = getJsonFileAsString("events.json");
-        assertThat(jsonResponse, equalTo(expectedJson));
+        JsonNode connx = toJsonNode(response.getContentAsString());
+        assertThat(connx.get("timestamp").getTextValue(), equalTo("1"));
+        assertThat(connx.get("user").getTextValue(), equalTo("user1"));
+        assertThat(connx.get("message").getTextValue(), equalTo("message"));
+        assertThat(connx.get("providerId").getTextValue(), equalTo("provider"));
+
     }
 
     @Test
