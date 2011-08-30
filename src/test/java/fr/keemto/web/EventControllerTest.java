@@ -27,8 +27,7 @@ import org.mockito.Mock;
 import java.util.ArrayList;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.when;
 
 public class EventControllerTest extends ControllerTestCase {
@@ -55,11 +54,14 @@ public class EventControllerTest extends ControllerTestCase {
         handlerAdapter.handle(request, response, controller);
 
         assertThat(response.getStatus(), equalTo(200));
-        JsonNode connx = toJsonNode(response.getContentAsString());
-        assertThat(connx.get("timestamp").getTextValue(), equalTo("1"));
-        assertThat(connx.get("user").getTextValue(), equalTo("user1"));
-        assertThat(connx.get("message").getTextValue(), equalTo("message"));
-        assertThat(connx.get("providerId").getTextValue(), equalTo("provider"));
+        JsonNode jevents = toJsonNode(response.getContentAsString());
+        assertThat(jevents.isArray(), is(true));
+        assertThat(jevents.has(0), is(true));
+        JsonNode jevent = jevents.get(0);
+        assertThat(jevent.get("timestamp").getValueAsText(), equalTo("1"));
+        assertThat(jevent.get("user").getValueAsText(), equalTo("user1"));
+        assertThat(jevent.get("message").getValueAsText(), equalTo("message"));
+        assertThat(jevent.get("providerId").getValueAsText(), equalTo("provider"));
 
     }
 

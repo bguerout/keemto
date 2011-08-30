@@ -88,11 +88,11 @@ public class ConnectionControllerTest extends ControllerTestCase {
         assertThat(jsonNode.isArray(), is(true));
         assertThat(jsonNode.has(0), is(true));
         JsonNode connx = jsonNode.get(0);
-        assertThat(connx.get("id").getTextValue(), equalTo("twitter-1111"));
-        assertThat(connx.get("providerId").getTextValue(), equalTo("twitter"));
-        assertThat(connx.get("displayName").getTextValue(), equalTo("stnevex"));
-        assertThat(connx.get("profileUrl").getTextValue(), equalTo("http://twitter.com/stnevex"));
-        assertThat(connx.get("imageUrl").getTextValue(), equalTo("http://twitter.com/stnevex.jpg"));
+        assertThat(connx.get("id").getValueAsText(), equalTo("twitter-1111"));
+        assertThat(connx.get("providerId").getValueAsText(), equalTo("twitter"));
+        assertThat(connx.get("displayName").getValueAsText(), equalTo("stnevex"));
+        assertThat(connx.get("profileUrl").getValueAsText(), equalTo("http://twitter.com/stnevex"));
+        assertThat(connx.get("imageUrl").getValueAsText(), equalTo("http://twitter.com/stnevex.jpg"));
 
 
     }
