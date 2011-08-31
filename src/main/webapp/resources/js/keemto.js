@@ -68,10 +68,10 @@ $(document).ready(function () {
             var self = this;
             $.ajax({
                 type: "POST",
-                url: "/api/login",
+                url: "api/login",
                 data: {
-                    login: login,
-                    password: password
+                    j_username: login,
+                    j_password: password
                 },
                 dataType: "json",
                 success: function (response) {
@@ -210,7 +210,7 @@ $(document).ready(function () {
     App.Collections.Connections = Backbone.Collection.extend({
 
         model: App.Models.Connection,
-        url: '/api/connections'
+        url: 'api/connections'
     });
 
     App.Routers.Connections = Backbone.Router.extend({
@@ -316,6 +316,10 @@ $(document).ready(function () {
         },
 
         goToProviderAuthorizeUrl: function () {
+            var form = document.createElement("form");
+            form.setAttribute("method", "post");
+            form.setAttribute("action", "connect/" + this.buttonId);
+            form.submit();
             return false;
         },
 

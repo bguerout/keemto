@@ -18,7 +18,7 @@ $(document).ready(function () {
 
     //events init list
     $.mockjax({
-        url: '/api/events',
+        url: 'api/events',
         responseTime: 750,
         contentType: 'text/json',
         type: 'GET',
@@ -41,7 +41,7 @@ $(document).ready(function () {
 
     //event creation
     $.mockjax({
-        url: '/api/events',
+        url: 'api/events',
         responseTime: 750,
         status: 201,
         contentType: 'text/json',
@@ -61,7 +61,7 @@ $(document).ready(function () {
 
     //connections list
     $.mockjax({
-        url: '/api/connections',
+        url: 'api/connections',
         responseTime: 750,
         contentType: 'text/json',
         type: 'GET',
@@ -84,7 +84,7 @@ $(document).ready(function () {
     });
 
     $.mockjax({
-        url: '/api/connections',
+        url: 'api/connections',
         responseTime: 750,
         contentType: 'text/json',
         type: 'POST',
@@ -96,14 +96,14 @@ $(document).ready(function () {
 
     //Remove connection
     $.mockjax({
-        url: '/api/connections/twitter-1111',
+        url: 'api/connections/twitter-1111',
         responseTime: 750,
         contentType: 'text/json',
         type: 'DELETE',
         status: 204
     });
     $.mockjax({
-        url: '/api/connections/yammer-9999',
+        url: 'api/connections/yammer-9999',
         responseTime: 750,
         contentType: 'text/json',
         type: 'DELETE',
@@ -112,7 +112,7 @@ $(document).ready(function () {
 
     //login
     $.mockjax({
-        url: '/api/login',
+        url: 'api/login',
         responseTime: 750,
         contentType: 'text/json',
         type: 'POST',
