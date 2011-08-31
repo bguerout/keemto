@@ -36,10 +36,12 @@ public class SpringSecurityLoginService implements LoginService {
 
         try {
             Authentication auth = authenticationManager.authenticate(token);
-            log.debug("Login succeeded!");
+            log.debug("Login succeeded for user: " + username);
             SecurityContextHolder.getContext().setAuthentication(auth);
             return new LoginStatus(auth.isAuthenticated(), auth.getName());
         } catch (BadCredentialsException e) {
+            log.warn("Unable to logged in user :" + username, e);
+            //TODO add reason into response
             return new LoginStatus(false, username);
         }
     }

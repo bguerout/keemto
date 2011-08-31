@@ -49,9 +49,7 @@ public class ConnectionController {
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public List<ConnectionViewBean> getUserConnections() {
-
         MultiValueMap<String, Connection<?>> connectionsByProviderMap = connectionRepository.findAllConnections();
-
         return convertUserConnectionsToConnectionViewBean(connectionsByProviderMap);
     }
 
