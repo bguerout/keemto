@@ -18,26 +18,29 @@ package fr.keemto.web;
 
 import fr.keemto.util.NullConnection;
 import org.codehaus.jackson.JsonNode;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.social.connect.Connection;
-import org.springframework.social.connect.ConnectionData;
-import org.springframework.social.connect.ConnectionKey;
-import org.springframework.social.connect.ConnectionRepository;
-import org.springframework.social.connect.web.ConnectController;
+import org.springframework.social.connect.*;
+import org.springframework.social.connect.support.OAuth1ConnectionFactory;
+import org.springframework.social.connect.support.OAuth2ConnectionFactory;
+import org.springframework.social.connect.web.ConnectSupport;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isA;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -49,7 +52,10 @@ public class ConnectionControllerTest extends ControllerTestCase {
     @Mock
     private ConnectionRepository repository;
     @Mock
-    private ConnectController socialController;
+    private ConnectionFactoryLocator connectionFactoryLocator;
+
+    @Mock
+    private ConnectSupport webSupport;
 
     private ConnectionController controller;
     private ConnectionData data;
@@ -58,7 +64,7 @@ public class ConnectionControllerTest extends ControllerTestCase {
     public void initBeforeTest() throws Exception {
         initMocks(this);
 
-        controller = new ConnectionController(repository, socialController);
+        controller = new ConnectionController(repository, connectionFactoryLocator, webSupport);
 
         request.addHeader("Accept", "application/json");
 
@@ -158,21 +164,48 @@ public class ConnectionControllerTest extends ControllerTestCase {
     }
 
     @Test
-    public void shouldBeginConnectionCreationByReturningProviderUrl() throws Exception {
+    public void shouldBeginConnectionCreationByRedirectUserToProviderUrl() throws Exception {
 
-        request.setMethod("POST");
-        request.setRequestURI("/api/connections");
-        request.setParameter("providerId", "twitter");
+        when(webSupport.buildOAuthUrl(any(ConnectionFactory.class), any(NativeWebRequest.class))).thenReturn("redirectUrl");
 
-        RedirectView redirectView = new RedirectView("https://api.twitter.com/oauth/authorize");
-        when(socialController.connect(eq("twitter"), any(NativeWebRequest.class))).thenReturn(redirectView);
+        RedirectView redirectView = controller.connect("twitter", mock(NativeWebRequest.class));
 
-        handlerAdapter.handle(request, response, controller);
-
-        assertThat(response.getStatus(), equalTo(202));
-        JsonNode connx = toJsonNode(response.getContentAsString());
-        assertThat(connx.get("authorizeUrl").getTextValue(), equalTo("https://api.twitter.com/oauth/authorize"));
-
+        assertThat(redirectView.getUrl(), equalTo("redirectUrl"));
     }
+
+    @Test
+    public void providerShouldCalledBackWithOAuth1() throws Exception {
+
+        request.setMethod("GET");
+        request.setRequestURI("/api/connections/twitter");
+        request.setParameter("oauth_token", "xxx");
+        Connection newConnectionCreated = mock(Connection.class);
+        when(webSupport.completeConnection(any(OAuth1ConnectionFactory.class), any(NativeWebRequest.class))).thenReturn(newConnectionCreated);
+
+        ModelAndView modelAndView = handlerAdapter.handle(request, response, controller);
+
+        verify(repository).addConnection(newConnectionCreated);
+        assertThat(modelAndView.getView(), Matchers.<Object>instanceOf(RedirectView.class));
+        RedirectView view = (RedirectView)modelAndView.getView();
+        assertThat(view.getUrl(),equalTo("/#connections"));
+    }
+
+    @Test
+    public void providerShouldCalledBackWithOAuth2() throws Exception {
+
+        request.setMethod("GET");
+        request.setRequestURI("/api/connections/yammer");
+        request.setParameter("code", "xxx");
+        Connection newConnectionCreated = mock(Connection.class);
+        when(webSupport.completeConnection(any(OAuth2ConnectionFactory.class), any(NativeWebRequest.class))).thenReturn(newConnectionCreated);
+
+        ModelAndView modelAndView = handlerAdapter.handle(request, response, controller);
+
+        verify(repository).addConnection(newConnectionCreated);
+        assertThat(modelAndView.getView(), Matchers.<Object>instanceOf(RedirectView.class));
+        RedirectView view = (RedirectView)modelAndView.getView();
+        assertThat(view.getUrl(),equalTo("/#connections"));
+    }
+
 
 }

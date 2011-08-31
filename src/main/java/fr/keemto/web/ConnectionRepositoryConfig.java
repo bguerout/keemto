@@ -24,7 +24,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.social.connect.ConnectionFactoryLocator;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.UsersConnectionRepository;
-import org.springframework.social.connect.web.ConnectController;
 
 import javax.inject.Inject;
 
@@ -45,14 +44,6 @@ public class ConnectionRepositoryConfig {
             throw new IllegalStateException("Unable to get a ConnectionRepository: no user signed in");
         }
         return usersConnectionRepository.createConnectionRepository(authentication.getName());
-    }
-
-
-    @Bean
-    @Scope(value = "request")
-    public ConnectController connectController() {
-        ConnectController connectController = new ConnectController(connectionFactoryLocator, connectionRepository());
-        return connectController;
     }
 
 }

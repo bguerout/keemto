@@ -318,7 +318,7 @@ $(document).ready(function () {
         goToProviderAuthorizeUrl: function () {
             var form = document.createElement("form");
             form.setAttribute("method", "post");
-            form.setAttribute("action", "connect/" + this.buttonId);
+            form.setAttribute("action", "api/connections/" + this.buttonId);
             form.submit();
             return false;
         },
