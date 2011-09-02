@@ -20,7 +20,7 @@
 
     //Application
     //-----
-    root.App = {
+    root.Keemto = {
         Views: {},
         Routers: {},
         Collections: {},
@@ -31,36 +31,36 @@
         },
 
         init: function () {
-            this.activeSession = new App.Models.Session();
+            this.activeSession = new Keemto.Models.Session();
 
-            new App.Routers.Authentication();
-            new App.Routers.Main();
-            new App.Routers.Connections();
+            new Keemto.Routers.Authentication();
+            new Keemto.Routers.Main();
+            new Keemto.Routers.Connections();
             Backbone.history.start();
 
-            new App.Views.Header({
+            new Keemto.Views.Header({
                 el: $('#navigation')
             });
 
-            var events = new App.Collections.Events();
+            var events = new Keemto.Collections.Events();
             events.fetch({
                 success: function () {
-                    new App.Views.Events({
+                    new Keemto.Views.Events({
                         el: $("#main"),
                         collection: events
                     });
                 },
                 error: function (collection) {
-                    App.notify({
+                    Keemto.notify({
                         type: "error",
                         message: "Error loading events."
                     });
                 }
             });
 
-            this.notifier = new App.Notifier();
+            this.notifier = new Keemto.Notifier();
             this.notifier.bind("notification:error", function (notification) {
-                App.log("An error has occurred : " + notification.message);
+                Keemto.log("An error has occurred : " + notification.message);
                 alert("An error has occurred : " + notification.message);
             });
         },
@@ -87,14 +87,14 @@
                             login: currentUserLogin
                         });
                     } else {
-                        App.notify({
+                        Keemto.notify({
                             type: "error",
                             message: "Authentication has failed for user: " + response.username
                         });
                     }
                 },
                 error: function (response) {
-                    App.notify({
+                    Keemto.notify({
                         type: "error",
                         message: "Authentication has failed."
                     });
@@ -102,20 +102,20 @@
             });
         }
     };
-    _.extend(App, Backbone.Events);
+    _.extend(Keemto, Backbone.Events);
 
     //Notifier for error handling
-    App.Notifier = function (a) {
+    Keemto.Notifier = function (a) {
         a || (a = {});
         this.initialize && this.initialize(a)
     };
-    _.extend(App.Notifier.prototype, Backbone.Events, {
+    _.extend(Keemto.Notifier.prototype, Backbone.Events, {
         notify: function (notification) {
             this.trigger("notification:" + notification.type, notification);
         }
     });
 
-    App.Models.Session = Backbone.Model.extend({
+    Keemto.Models.Session = Backbone.Model.extend({
 
         defaults: {
             login: "",
@@ -127,13 +127,13 @@
         }
     });
 
-    App.Routers.Authentication = Backbone.Router.extend({
+    Keemto.Routers.Authentication = Backbone.Router.extend({
         routes: {
             "logout": "logout"
         },
 
         logout: function () {
-            App.activeSession.clear();
+            Keemto.activeSession.clear();
             window.location = "";
         }
 
@@ -141,15 +141,15 @@
 
     //Events
     //------
-    App.Models.Event = Backbone.Model.extend({});
+    Keemto.Models.Event = Backbone.Model.extend({});
 
-    App.Collections.Events = Backbone.Collection.extend({
+    Keemto.Collections.Events = Backbone.Collection.extend({
 
-        model: App.Models.Event,
+        model: Keemto.Models.Event,
         url: 'api/events'
     });
 
-    App.Views.Event = Backbone.View.extend({
+    Keemto.Views.Event = Backbone.View.extend({
         tagName: 'div',
         className: 'coreMsgItem',
 
@@ -167,7 +167,7 @@
     });
 
 
-    App.Views.Events = Backbone.View.extend({
+    Keemto.Views.Events = Backbone.View.extend({
 
         events: {
             "click #createEventButton": "createEvent"
@@ -192,7 +192,7 @@
         },
 
         addEventView: function (event) {
-            var eventElement = new App.Views.Event({
+            var eventElement = new Keemto.Views.Event({
                 model: event
             }).render().el;
             this.$("#coreMsg").prepend($(eventElement).fadeIn(2500));
@@ -200,41 +200,41 @@
 
         createEvent: function (event) {
             this.collection.create();
-            App.log("An dummy event has been created: " + event);
+            Keemto.log("An dummy event has been created: " + event);
         }
 
     });
 
     //Connections
     //-----------
-    App.Models.Connection = Backbone.Model.extend({
+    Keemto.Models.Connection = Backbone.Model.extend({
 
     });
 
-    App.Collections.Connections = Backbone.Collection.extend({
+    Keemto.Collections.Connections = Backbone.Collection.extend({
 
-        model: App.Models.Connection,
+        model: Keemto.Models.Connection,
         url: 'api/connections'
     });
 
-    App.Routers.Connections = Backbone.Router.extend({
+    Keemto.Routers.Connections = Backbone.Router.extend({
         routes: {
             "connections": "view"
         },
 
         view: function () {
-            var connections = new App.Collections.Connections();
+            var connections = new Keemto.Collections.Connections();
             connections.fetch({
                 success: function () {
                     var panel = $("#panel .wrap");
                     panel.empty();
-                    new App.Views.Connections({
+                    new Keemto.Views.Connections({
                         el: panel,
                         collection: connections
                     });
                 },
                 error: function (collection, response) {
-                    App.notify({
+                    Keemto.notify({
                         type: "error",
                         message: "Error loading connections."
                     });
@@ -243,7 +243,7 @@
         }
     });
 
-    App.Views.Connection = Backbone.View.extend({
+    Keemto.Views.Connection = Backbone.View.extend({
         tagName: 'li',
         events: {
             "click a.delete": "revoke"
@@ -270,7 +270,7 @@
                     })
                 }, this),
                 error: function(model, response) {
-                    App.notify({
+                    Keemto.notify({
                         type: "error",
                         message: "Unable to revoke access to this application."
                     });
@@ -280,7 +280,7 @@
 
     });
 
-    App.Views.Connections = Backbone.View.extend({
+    Keemto.Views.Connections = Backbone.View.extend({
 
         initialize: function () {
             _.bindAll(this, 'render');
@@ -291,21 +291,21 @@
             $(this.el).append('<div id="panelContent"><h1>Your connections</h1><span>You have allowed Keemto to access the following applications</span><ul></ul></div>');
 
             _(this.collection.models).each(function (connection) {
-                var connectionElement = new App.Views.Connection({
+                var connectionElement = new Keemto.Views.Connection({
                     model: connection
                 }).render().el;
                 this.$('#panelContent ul').append(connectionElement);
             }, this);
 
             $(this.el).append('<div id="panelButtons"></div>');
-            $(this.el).append(new App.Views.ButtonConnection({buttonId:"twitter", buttonText:"Add Twitter Connection"}).render().el);
+            $(this.el).append(new Keemto.Views.ButtonConnection({buttonId:"twitter", buttonText:"Add Twitter Connection"}).render().el);
             $(this.el).append('<span class="buttonLarge"><a>Cancel</a></span>');
 
             return this;
         }
     });
 
-    App.Views.ButtonConnection = Backbone.View.extend({
+    Keemto.Views.ButtonConnection = Backbone.View.extend({
         tagName: 'span',
         className: 'buttonLarge',
         events: {
@@ -337,7 +337,7 @@
 
     // Defaults
     // ---------------
-    App.Routers.Main = Backbone.Router.extend({
+    Keemto.Routers.Main = Backbone.Router.extend({
         routes: {
             "": "main"
         },
@@ -345,13 +345,13 @@
         main: function () {
             var panel = $("#panel .wrap");
             panel.empty();
-            new App.Views.InfoPanel({
+            new Keemto.Views.InfoPanel({
                 el: panel
             });
         }
     });
 
-    App.Views.Header = Backbone.View.extend({
+    Keemto.Views.Header = Backbone.View.extend({
 
         toggleFlag: 0,
 
@@ -362,7 +362,7 @@
 
         initialize: function () {
             _.bindAll(this, 'render');
-            App.activeSession.bind('change', this.render);
+            Keemto.activeSession.bind('change', this.render);
             this.formTemplate = _.template($('#form-template').html());
             this.authTemplate = _.template($('#authenticated-template').html());
             this.render();
@@ -371,7 +371,7 @@
         submitLoginForm: function () {
             var login = this.$('input[name="login"]').val();
             var password = this.$('input[name="password"]').val();
-            App.login(login, password);
+            Keemto.login(login, password);
             return false;
         },
 
@@ -390,8 +390,8 @@
 
         render: function () {
             $(this.el).empty();
-            if (App.activeSession.isAuthenticated()) {
-                $(this.el).html(this.authTemplate(App.activeSession.toJSON()));
+            if (Keemto.activeSession.isAuthenticated()) {
+                $(this.el).html(this.authTemplate(Keemto.activeSession.toJSON()));
             } else {
                 $(this.el).html(this.formTemplate());
             }
@@ -400,7 +400,7 @@
         }
     });
 
-    App.Views.InfoPanel = Backbone.View.extend({
+    Keemto.Views.InfoPanel = Backbone.View.extend({
 
         initialize: function () {
             _.bindAll(this, 'render');
@@ -414,6 +414,4 @@
         }
     });
 
-
-    //App.init();
 }).call(this);
