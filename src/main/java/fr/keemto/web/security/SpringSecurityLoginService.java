@@ -42,6 +42,7 @@ public class SpringSecurityLoginService implements LoginService {
         } catch (BadCredentialsException e) {
             log.warn("Invalid credentials for user :" + username);
             //TODO add reason into response
+            //TODO access denied page must be overriden to send back json
             return new LoginStatus(false, username);
         }
     }
