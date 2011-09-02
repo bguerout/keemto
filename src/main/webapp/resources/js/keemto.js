@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 //Keemto UI Javascript
-$(document).ready(function () {
+(function() {
+
+    var root = this;
 
     //Application
     //-----
-    var App = {
+    root.App = {
         Views: {},
         Routers: {},
         Collections: {},
@@ -36,11 +38,15 @@ $(document).ready(function () {
             new App.Routers.Connections();
             Backbone.history.start();
 
-            new App.Views.Header();
+            new App.Views.Header({
+                el: $('#navigation')
+            });
+
             var events = new App.Collections.Events();
             events.fetch({
                 success: function () {
                     new App.Views.Events({
+                        el: $("#main"),
                         collection: events
                     });
                 },
@@ -128,7 +134,7 @@ $(document).ready(function () {
 
         logout: function () {
             App.activeSession.clear();
-            //TODO add redirection to #
+            window.location = "";
         }
 
     });
@@ -146,10 +152,10 @@ $(document).ready(function () {
     App.Views.Event = Backbone.View.extend({
         tagName: 'div',
         className: 'coreMsgItem',
-        template: _.template($('#event-template').html()),
 
         initialize: function () {
             _.bindAll(this, 'render');
+            this.template = _.template($('#event-template').html());
             this.model.bind('change', this.render);
             this.model.view = this;
         },
@@ -162,8 +168,6 @@ $(document).ready(function () {
 
 
     App.Views.Events = Backbone.View.extend({
-
-        el: $("#main"),
 
         events: {
             "click #createEventButton": "createEvent"
@@ -222,11 +226,14 @@ $(document).ready(function () {
             var connections = new App.Collections.Connections();
             connections.fetch({
                 success: function () {
+                    var panel = $("#panel .wrap");
+                    panel.empty();
                     new App.Views.Connections({
+                        el: panel,
                         collection: connections
                     });
                 },
-                error: function (collection) {
+                error: function (collection, response) {
                     App.notify({
                         type: "error",
                         message: "Error loading connections."
@@ -238,13 +245,13 @@ $(document).ready(function () {
 
     App.Views.Connection = Backbone.View.extend({
         tagName: 'li',
-        template: _.template($('#connection-template').html()),
         events: {
             "click a.delete": "revoke"
         },
 
         initialize: function () {
             _.bindAll(this, 'render');
+            this.template = _.template($('#connection-template').html());
             this.model.bind('change', this.render);
             this.model.bind('destroy', this.remove);
             this.model.view = this;
@@ -275,16 +282,12 @@ $(document).ready(function () {
 
     App.Views.Connections = Backbone.View.extend({
 
-        el: $("#panel .wrap"),
-
         initialize: function () {
             _.bindAll(this, 'render');
             this.render();
         },
 
         render: function () {
-            $(this.el).empty();
-
             $(this.el).append('<div id="panelContent"><h1>Your connections</h1><span>You have allowed Keemto to access the following applications</span><ul></ul></div>');
 
             _(this.collection.models).each(function (connection) {
@@ -319,6 +322,8 @@ $(document).ready(function () {
             var form = document.createElement("form");
             form.setAttribute("method", "post");
             form.setAttribute("action", "api/connections/" + this.buttonId);
+            $('#main').append(form);
+
             form.submit();
             return false;
         },
@@ -338,16 +343,17 @@ $(document).ready(function () {
         },
 
         main: function () {
-            new App.Views.InfoPanel();
+            var panel = $("#panel .wrap");
+            panel.empty();
+            new App.Views.InfoPanel({
+                el: panel
+            });
         }
     });
 
     App.Views.Header = Backbone.View.extend({
 
-        el: $('#navigation'),
         toggleFlag: 0,
-        formTemplate: _.template($('#form-template').html()),
-        authTemplate: _.template($('#authenticated-template').html()),
 
         events: {
             "click #panelButton": "togglePanelButton",
@@ -357,6 +363,8 @@ $(document).ready(function () {
         initialize: function () {
             _.bindAll(this, 'render');
             App.activeSession.bind('change', this.render);
+            this.formTemplate = _.template($('#form-template').html());
+            this.authTemplate = _.template($('#authenticated-template').html());
             this.render();
         },
 
@@ -394,15 +402,12 @@ $(document).ready(function () {
 
     App.Views.InfoPanel = Backbone.View.extend({
 
-        el: $("#panel .wrap"),
-
         initialize: function () {
             _.bindAll(this, 'render');
             this.render();
         },
 
         render: function () {
-            $(this.el).empty();
             $(this.el).append('<div id="panelContent"><h1>What is Keemto ?</h1></div>');
             this.$('#panelContent').append('<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>');
             return this;
@@ -410,5 +415,5 @@ $(document).ready(function () {
     });
 
 
-    App.init();
-});
+    //App.init();
+}).call(this);
