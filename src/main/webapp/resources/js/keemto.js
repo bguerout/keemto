@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-//Keemto UI Javascript
 (function() {
 
     var root = this;
 
-    //Application
-    //-----
     root.Keemto = {
+        // The top-level namespace. All public Keemto classes will be attached to this.
         Views: {},
         Routers: {},
         Collections: {},
@@ -166,7 +164,6 @@
         }
     });
 
-
     Keemto.Views.Events = Backbone.View.extend({
 
         events: {
@@ -202,7 +199,6 @@
             this.collection.create();
             Keemto.log("An dummy event has been created: " + event);
         }
-
     });
 
     //Connections
@@ -334,8 +330,7 @@
         }
     });
 
-
-    // Defaults
+    // Home
     // ---------------
     Keemto.Routers.Main = Backbone.Router.extend({
         routes: {
