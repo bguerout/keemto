@@ -203,9 +203,7 @@
 
     //Connections
     //-----------
-    Keemto.Models.Connection = Backbone.Model.extend({
-
-    });
+    Keemto.Models.Connection = Backbone.Model.extend({});
 
     Keemto.Collections.Connections = Backbone.Collection.extend({
 
@@ -219,10 +217,10 @@
         },
 
         view: function () {
+            var panel = $("#panelContent");
             var connections = new Keemto.Collections.Connections();
             connections.fetch({
                 success: function () {
-                    var panel = $("#panel .wrap");
                     panel.empty();
                     new Keemto.Views.Connections({
                         el: panel,
@@ -284,13 +282,13 @@
         },
 
         render: function () {
-            $(this.el).append('<div id="panelContent"><h1>Your connections</h1><span>You have allowed Keemto to access the following applications</span><ul></ul></div>');
+            $(this.el).append('<h1>Your connections</h1><span>You have allowed Keemto to access the following applications</span><ul></ul>');
 
             _(this.collection.models).each(function (connection) {
                 var connectionElement = new Keemto.Views.Connection({
                     model: connection
                 }).render().el;
-                this.$('#panelContent ul').append(connectionElement);
+                this.$('ul').append(connectionElement);
             }, this);
 
             $(this.el).append('<div id="panelButtons"></div>');
@@ -338,7 +336,7 @@
         },
 
         main: function () {
-            var panel = $("#panel .wrap");
+            var panel = $("#panelContent");
             panel.empty();
             new Keemto.Views.InfoPanel({
                 el: panel
@@ -403,10 +401,11 @@
         },
 
         render: function () {
-            $(this.el).append('<div id="panelContent"><h1>What is Keemto ?</h1></div>');
-            this.$('#panelContent').append('<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>');
+            $(this.el).append('<h1>What is Keemto ?</h1>');
+            $(this.el).append('<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>');
             return this;
         }
     });
+
 
 }).call(this);

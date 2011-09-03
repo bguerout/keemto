@@ -392,7 +392,7 @@ ul#mainNav li a:hover {
 }
 
 /* NEGATIVE */
-.buttons a.delete {
+.buttons .delete {
     color: #d12f19;
     background: url(../img/delete.png) no-repeat left center;
     padding-left: 18px;
