@@ -51,23 +51,23 @@ public class JdbcEventRepositoryIT {
 
     @Test
     public void shouldReturnMostRecentEventForUser() {
-        Event mostRecentEvent = repository.getMostRecentEvent(new User("stnevex"), "provider");
+        Event mostRecentEvent = repository.getMostRecentEvent(new User("stnevex"), "mail");
 
         assertThat(mostRecentEvent, notNullValue());
         assertThat(mostRecentEvent.getUser(), equalTo("stnevex"));
         assertThat(mostRecentEvent.getTimestamp(), equalTo(new Long(1301464284376L)));
         assertThat(mostRecentEvent.getTimestamp(), equalTo(new Long(1301464284376L)));
-        assertThat(mostRecentEvent.getProviderId(), equalTo("provider"));
+        assertThat(mostRecentEvent.getProviderId(), equalTo("mail"));
     }
 
     @Test
     public void whenUserHasntEventShouldReturnAnInitEvent() {
-        Event mostRecentEvent = repository.getMostRecentEvent(new User("userWithoutEvents"), "provider");
+        Event mostRecentEvent = repository.getMostRecentEvent(new User("userWithoutEvents"), "mail");
 
         assertThat(mostRecentEvent, notNullValue());
         assertThat(mostRecentEvent.getUser(), equalTo("userWithoutEvents"));
         assertThat(mostRecentEvent.getTimestamp(), equalTo((long) 0));
-        assertThat(mostRecentEvent.getProviderId(), equalTo("provider"));
+        assertThat(mostRecentEvent.getProviderId(), equalTo("mail"));
     }
 
     @Test

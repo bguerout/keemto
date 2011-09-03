@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/api/login.json")
+@RequestMapping("/api/login")
 public class LoginController {
 
     @Autowired

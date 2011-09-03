@@ -19,10 +19,10 @@ package fr.keemto.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
-import org.springframework.social.connect.Connection;
-import org.springframework.social.connect.ConnectionKey;
-import org.springframework.social.connect.ConnectionRepository;
-import org.springframework.social.connect.web.ConnectController;
+import org.springframework.social.connect.*;
+import org.springframework.social.connect.support.OAuth1ConnectionFactory;
+import org.springframework.social.connect.support.OAuth2ConnectionFactory;
+import org.springframework.social.connect.web.ConnectSupport;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -37,30 +37,26 @@ import java.util.List;
 @RequestMapping(value = "/api/connections")
 public class ConnectionController {
 
+    private final ConnectionFactoryLocator connectionFactoryLocator;
     private final ConnectionRepository connectionRepository;
-    private ConnectController socialController;
+    private final ConnectSupport webSupport;
 
     @Autowired
-    public ConnectionController(ConnectionRepository connectionRepository, ConnectController socialController) {
+    public ConnectionController(ConnectionRepository connectionRepository, ConnectionFactoryLocator connectionFactoryLocator) {
+        this(connectionRepository, connectionFactoryLocator, new ConnectSupport());
+    }
+
+    public ConnectionController(ConnectionRepository connectionRepository, ConnectionFactoryLocator connectionFactoryLocator, ConnectSupport webSupport) {
         this.connectionRepository = connectionRepository;
-        this.socialController = socialController;
+        this.connectionFactoryLocator = connectionFactoryLocator;
+        this.webSupport = webSupport;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public List<ConnectionViewBean> getUserConnections() {
-
         MultiValueMap<String, Connection<?>> connectionsByProviderMap = connectionRepository.findAllConnections();
-
         return convertUserConnectionsToConnectionViewBean(connectionsByProviderMap);
-    }
-
-    @RequestMapping(method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.ACCEPTED)
-    @ResponseBody
-    public AuthorizeProviderViewBean getAuthorizeProviderUrl(@RequestParam String providerId, NativeWebRequest request) {
-        RedirectView redirectView = socialController.connect(providerId, request);
-        return new AuthorizeProviderViewBean(redirectView.getUrl());
     }
 
     @RequestMapping(value = "/{providerId}-{providerUserId}", method = RequestMethod.GET)
@@ -78,6 +74,40 @@ public class ConnectionController {
         connectionRepository.removeConnection(new ConnectionKey(providerId, providerUserId));
     }
 
+    /**
+     * @see org.springframework.social.connect.web.ConnectController
+     */
+    @RequestMapping(value = "/{providerId}", method = RequestMethod.POST)
+    public RedirectView connect(@PathVariable String providerId, NativeWebRequest request) {
+        ConnectionFactory<?> connectionFactory = connectionFactoryLocator.getConnectionFactory(providerId);
+        return new RedirectView(webSupport.buildOAuthUrl(connectionFactory, request));
+    }
+
+    /**
+     * @see org.springframework.social.connect.web.ConnectController
+     */
+    @RequestMapping(value = "/{providerId}", method = RequestMethod.GET, params = "oauth_token")
+    public RedirectView oauth1Callback(@PathVariable String providerId, NativeWebRequest request) {
+        OAuth1ConnectionFactory<?> connectionFactory = (OAuth1ConnectionFactory<?>) connectionFactoryLocator.getConnectionFactory(providerId);
+        Connection<?> connection = webSupport.completeConnection(connectionFactory, request);
+        connectionRepository.addConnection(connection);
+        return createRedirectView();
+    }
+
+    /**
+     * @see org.springframework.social.connect.web.ConnectController
+     */
+    @RequestMapping(value = "/{providerId}", method = RequestMethod.GET, params = "code")
+    public RedirectView oauth2Callback(@PathVariable String providerId, NativeWebRequest request) {
+        OAuth2ConnectionFactory<?> connectionFactory = (OAuth2ConnectionFactory<?>) connectionFactoryLocator.getConnectionFactory(providerId);
+        Connection<?> connection = webSupport.completeConnection(connectionFactory, request);
+        connectionRepository.addConnection(connection);
+        return createRedirectView();
+    }
+
+    private RedirectView createRedirectView() {
+        return new RedirectView("/#connections", true);
+    }
 
     private List<ConnectionViewBean> convertUserConnectionsToConnectionViewBean(MultiValueMap<String, Connection<?>> connectionsByProviderMap) {
         List<ConnectionViewBean> userConnections = new ArrayList<ConnectionViewBean>();
