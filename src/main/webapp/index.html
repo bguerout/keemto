@@ -54,6 +54,7 @@
     <script type="text/javascript" src="resources/js/backbone.js"></script>
     <!--script type="text/javascript" src="resources/js/keemto-mock.js"></script-->
     <script type="text/javascript" src="resources/js/keemto.js"></script>
+    <script type="text/javascript" src="resources/dynamic/js/keemto-boostrapper.js"></script>
 
     <!-- PROD javascript resources
              <script type="text/javascript" src="js/backbone-localstorage.js"></script>
@@ -136,7 +137,9 @@
 <!-- Templates -->
 <script type="text/template" id="event-template">
     <img src="resources/img/social/<%= providerId %>.png" class="h1img" alt="twitter"/>
+
     <h1><%= user %></h1>
+
     <p><%= message %></p>
 </script>
 
@@ -173,12 +176,6 @@
             <input type="submit" value="Login"/>
         </form>
     </div>
-</script>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        Keemto.init();
-    });
 </script>
 
 </body>
