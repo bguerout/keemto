@@ -29,6 +29,8 @@
     <!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources -->
     <mvc:resources mapping="/resources/**" location="/resources/"/>
 
+    <mvc:view-controller path="/resources/dynamic/js/keemto-boostrapper.js" view-name="keemto-boostrapper" />
+
     <!-- Allows for mapping the DispatcherServlet to "/" by forwarding static resource requests to the container's default
    Servlet -->
     <mvc:default-servlet-handler/>
