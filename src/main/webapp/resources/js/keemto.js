@@ -292,8 +292,9 @@
             }, this);
 
             $(this.el).append('<div id="panelButtons"></div>');
-            $(this.el).append(new Keemto.Views.ButtonConnection({buttonId:"twitter", buttonText:"Add Twitter Connection"}).render().el);
-            $(this.el).append('<span class="buttonLarge"><a>Cancel</a></span>');
+            this.$("#panelButtons").append(new Keemto.Views.ButtonConnection({buttonId:"twitter", buttonText:"Add Twitter Connection"}).render().el);
+            this.$("#panelButtons").append(new Keemto.Views.ButtonConnection({buttonId:"yammer", buttonText:"Add Yammer Connection"}).render().el);
+            this.$("#panelButtons").append('<span class="buttonLarge"><a>Cancel</a></span>');
 
             return this;
         }
