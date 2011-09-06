@@ -3,7 +3,7 @@
 <%@page contentType="text/javascript" %>
 $(document).ready(function() {
     Keemto.init();
-    <sec:authorize access="isAuthenticated()">
+    <sec:authorize access="isFullyAuthenticated()">
         Keemto.activeSession.set({login: '<sec:authentication property="principal.username" />'});
     </sec:authorize>
 
