@@ -53,8 +53,8 @@ public class TwitterFetcherTest {
         timelineOperations = mock(TimelineOperations.class);
         fetcher = new TwitterFetcher(apiResolver);
         user = new User("bguerout");
-        tweet1 = createTweet(user, "a tweet", System.currentTimeMillis());
-        tweet2 = createTweet(user, "a second tweet", System.currentTimeMillis() + 10);
+        tweet1 = createTweet("a tweet", System.currentTimeMillis());
+        tweet2 = createTweet("a second tweet", System.currentTimeMillis() + 10);
         since = 0;
 
         when(apiResolver.getApis(eq(user))).thenReturn(Lists.newArrayList(api));
@@ -63,8 +63,8 @@ public class TwitterFetcherTest {
 
     }
 
-    private Tweet createTweet(User tweetOwner, String message, long creationDate) {
-        return new Tweet(1, message, new Date(creationDate), tweetOwner.getUsername(), "profileImageUrl", new Long(2),
+    private Tweet createTweet(String message, long creationDate) {
+        return new Tweet(1, message, new Date(creationDate), "mypseudo", "profileImageUrl", new Long(2),
                 2, "FR", "source");
     }
 

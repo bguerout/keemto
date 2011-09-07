@@ -19,6 +19,7 @@ package fr.keemto.core.fetcher;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import fr.keemto.core.Event;
+import fr.keemto.core.User;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.Twitter;
 
@@ -38,12 +39,12 @@ public class TwitterFetcher extends SocialFetcher<Twitter> {
     }
 
     @Override
-    protected List<Event> fetchApiEvents(Twitter api, long lastFetchedEventTime) {
+    protected List<Event> fetchApiEvents(Twitter api, long lastFetchedEventTime, User user) {
         List<Event> events = new ArrayList<Event>();
         List<Tweet> tweets = api.timelineOperations().getUserTimeline();
 
         for (Tweet tweet : filterTweetsByDate(tweets, lastFetchedEventTime)) {
-            Event event = convertToEvent(tweet);
+            Event event = convertToEvent(tweet, user);
             events.add(event);
         }
         return events;
@@ -65,7 +66,7 @@ public class TwitterFetcher extends SocialFetcher<Twitter> {
         });
     }
 
-    private Event convertToEvent(Tweet tweet) {
-        return new Event(tweet.getCreatedAt().getTime(), tweet.getFromUser(), tweet.getText(), getProviderId());
+    private Event convertToEvent(Tweet tweet, User user) {
+        return new Event(tweet.getCreatedAt().getTime(), user.getUsername(), tweet.getText(), getProviderId());
     }
 }
