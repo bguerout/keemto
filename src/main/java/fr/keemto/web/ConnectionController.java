@@ -83,7 +83,14 @@ public class ConnectionController {
         return new RedirectView(webSupport.buildOAuthUrl(connectionFactory, request));
     }
 
+    @RequestMapping(value = "/{providerId}", method = RequestMethod.POST, params = "oauth_verifier")
+    public RedirectView oauth1ManualCallback(@PathVariable String providerId, NativeWebRequest request) {
+        return oauth1Callback(providerId, request);
+    }
+
     /**
+     * Allows service provider to complete OAuth1 connection creation by call back application
+     *
      * @see org.springframework.social.connect.web.ConnectController
      */
     @RequestMapping(value = "/{providerId}", method = RequestMethod.GET, params = "oauth_token")
@@ -95,6 +102,8 @@ public class ConnectionController {
     }
 
     /**
+     * Allows service provider to complete OAuth2 connection creation by call back application
+     *
      * @see org.springframework.social.connect.web.ConnectController
      */
     @RequestMapping(value = "/{providerId}", method = RequestMethod.GET, params = "code")

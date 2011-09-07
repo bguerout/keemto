@@ -32,17 +32,14 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isA;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ConnectionControllerTest extends ControllerTestCase {
@@ -174,7 +171,7 @@ public class ConnectionControllerTest extends ControllerTestCase {
     }
 
     @Test
-    public void providerShouldCalledBackWithOAuth1() throws Exception {
+    public void providerShouldRequestOAuth1CalledBack() throws Exception {
 
         request.setMethod("GET");
         request.setRequestURI("/api/connections/twitter");
@@ -186,12 +183,29 @@ public class ConnectionControllerTest extends ControllerTestCase {
 
         verify(repository).addConnection(newConnectionCreated);
         assertThat(modelAndView.getView(), Matchers.<Object>instanceOf(RedirectView.class));
-        RedirectView view = (RedirectView)modelAndView.getView();
-        assertThat(view.getUrl(),equalTo("/#connections"));
+        RedirectView view = (RedirectView) modelAndView.getView();
+        assertThat(view.getUrl(), equalTo("/#connections"));
     }
 
     @Test
-    public void providerShouldCalledBackWithOAuth2() throws Exception {
+    public void userShouldPostPinCodeAsOAuth1CalledBack() throws Exception {
+
+        request.setMethod("POST");
+        request.setRequestURI("/api/connections/twitter");
+        request.setParameter("oauth_verifier", "XXX");
+        Connection newConnectionCreated = mock(Connection.class);
+        when(webSupport.completeConnection(any(OAuth1ConnectionFactory.class), any(NativeWebRequest.class))).thenReturn(newConnectionCreated);
+
+        ModelAndView modelAndView = handlerAdapter.handle(request, response, controller);
+
+        verify(repository).addConnection(newConnectionCreated);
+        assertThat(modelAndView.getView(), Matchers.<Object>instanceOf(RedirectView.class));
+        RedirectView view = (RedirectView) modelAndView.getView();
+        assertThat(view.getUrl(), equalTo("/#connections"));
+    }
+
+    @Test
+    public void providerShouldRequestOAuth2CalledBack() throws Exception {
 
         request.setMethod("GET");
         request.setRequestURI("/api/connections/yammer");
@@ -203,8 +217,8 @@ public class ConnectionControllerTest extends ControllerTestCase {
 
         verify(repository).addConnection(newConnectionCreated);
         assertThat(modelAndView.getView(), Matchers.<Object>instanceOf(RedirectView.class));
-        RedirectView view = (RedirectView)modelAndView.getView();
-        assertThat(view.getUrl(),equalTo("/#connections"));
+        RedirectView view = (RedirectView) modelAndView.getView();
+        assertThat(view.getUrl(), equalTo("/#connections"));
     }
 
 

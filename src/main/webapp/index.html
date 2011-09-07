@@ -178,5 +178,20 @@
     </div>
 </script>
 
+<!-- modal content -->
+<div id="oauth-confirm-content">
+    <h3>Connection Confirmation</h3>
+
+    <p>You have successfully created a new connection.</p>
+    <p>To complete the authorization please enter PIN code provided by provider:</p>
+
+     <form action="api/connections/yammer" method="POST">
+            <fieldset>
+                <label for="oauth_verifier">PIN Code</label><input type="text" name="oauth_verifier"/>
+            </fieldset>
+            <input type="submit" value="Finish"/>
+     </form>
+</div>
+
 </body>
 </html>
