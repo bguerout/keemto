@@ -33,7 +33,7 @@ public abstract class SocialFetcher<T> implements Fetcher {
     private final ApiResolver<T> apiResolver;
     private long delay;
 
-    public SocialFetcher(ApiResolver<T> apiResolver,long delay) {
+    public SocialFetcher(ApiResolver<T> apiResolver, long delay) {
         super();
         this.apiResolver = apiResolver;
         this.delay = delay;
@@ -47,9 +47,8 @@ public abstract class SocialFetcher<T> implements Fetcher {
         logFetchingBeginning(user, apis);
 
         for (T api : apis) {
-            List<Event> apiEvents = fetchApiEvents(api, lastFetchedEventTime);
+            List<Event> apiEvents = fetchApiEvents(api, lastFetchedEventTime, user);
             events.addAll(apiEvents);
-
             logFetchResult(user, lastFetchedEventTime, apiEvents.size());
         }
         return events;
@@ -86,6 +85,7 @@ public abstract class SocialFetcher<T> implements Fetcher {
         return delay;
     }
 
-    protected abstract List<Event> fetchApiEvents(T api, long lastFetchedEventTime);
+    //TODO find another way to call fetchApiEvents without User attribute.
+    protected abstract List<Event> fetchApiEvents(T api, long lastFetchedEventTime, User user);
 
 }

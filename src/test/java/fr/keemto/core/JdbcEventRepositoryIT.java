@@ -81,4 +81,13 @@ public class JdbcEventRepositoryIT {
         assertThat(allEvents, hasItem(event));
         assertThat(allEvents, hasItem(event2));
     }
+
+    @Test(expected = DuplicateEventException.class)
+    public void shouldThrowExWhenTrying2EventsWithSameTime() throws Exception {
+        long eventTime = System.currentTimeMillis();
+        Event event = new Event(eventTime, "owner", "message", "provider");
+        Event event2 = new Event(eventTime, "owner", "message", "provider");
+        repository.persist(Lists.newArrayList(event, event2));
+    }
 }
+
