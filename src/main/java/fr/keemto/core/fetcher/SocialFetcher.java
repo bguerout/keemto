@@ -85,6 +85,7 @@ public abstract class SocialFetcher<T> implements Fetcher {
         return delay;
     }
 
+    //TODO find another way to call fetchApiEvents without User attribute.
     protected abstract List<Event> fetchApiEvents(T api, long lastFetchedEventTime, User user);
 
 }
