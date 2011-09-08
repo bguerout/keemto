@@ -78,5 +78,14 @@
     </constructor-arg>
   </bean>
 
+  <bean id="yammerFetcher" class="fr.keemto.core.fetcher.YammerFetcher">
+    <constructor-arg>
+      <bean class="fr.keemto.core.fetcher.ApiResolver">
+        <constructor-arg value="org.springframework.social.yammer.api.impl.YammerTemplate"/>
+        <constructor-arg ref="usersConnectionRepository"/>
+      </bean>
+    </constructor-arg>
+  </bean>
+
 
 </beans>
