@@ -18,6 +18,7 @@ package fr.keemto.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -53,8 +54,12 @@ public class JdbcEventRepository implements EventRepository {
     }
 
     private void persist(Event event) {
-        jdbcTemplate.update("insert into events (ts,username,message,providerId) values(?,?,?,?)",
-                new Object[]{event.getTimestamp(), event.getUser(), event.getMessage(), event.getProviderId()});
+        try {
+            jdbcTemplate.update("insert into events (ts,username,message,providerId) values(?,?,?,?)",
+                    new Object[]{event.getTimestamp(), event.getUser(), event.getMessage(), event.getProviderId()});
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateEventException("Unable to persist event " + event + " because another event exists with same eventTime: " + event.getTimestamp(), e);
+        }
     }
 
     @Override
