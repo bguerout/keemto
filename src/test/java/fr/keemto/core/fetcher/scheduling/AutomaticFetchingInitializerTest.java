@@ -21,10 +21,6 @@ import fr.keemto.core.User;
 import fr.keemto.core.UserResolver;
 import fr.keemto.core.fetcher.Fetcher;
 import fr.keemto.core.fetcher.FetcherResolver;
-import fr.keemto.core.fetcher.scheduling.AutomaticFetchingInitializer;
-import fr.keemto.core.fetcher.scheduling.EventUpdateTask;
-import fr.keemto.core.fetcher.scheduling.FetchingRegistrar;
-import fr.keemto.core.fetcher.scheduling.TaskFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,7 +35,7 @@ public class AutomaticFetchingInitializerTest {
     private AutomaticFetchingInitializer initializer;
     private UserResolver userResolver;
     private TaskFactory taskFactory;
-    private FetchingRegistrar registrar;
+    private TaskRegistrar registrar;
     private List<Fetcher> fetchers;
 
     @Before
@@ -47,7 +43,7 @@ public class AutomaticFetchingInitializerTest {
         initMocks(this);
         userResolver = mock(UserResolver.class);
         taskFactory = mock(TaskFactory.class);
-        registrar = mock(FetchingRegistrar.class);
+        registrar = mock(TaskRegistrar.class);
         initializer = new AutomaticFetchingInitializer();
         initializer.setRegistrar(registrar);
         initializer.setEventTaskFactory(taskFactory);

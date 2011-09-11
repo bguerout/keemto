@@ -18,8 +18,6 @@ package fr.keemto.core.fetcher.scheduling;
 
 import com.google.common.collect.Lists;
 import fr.keemto.core.User;
-import fr.keemto.core.fetcher.scheduling.EventUpdateTask;
-import fr.keemto.core.fetcher.scheduling.FetchingRegistrar;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.scheduling.TaskScheduler;
@@ -28,9 +26,9 @@ import java.util.concurrent.ScheduledFuture;
 
 import static org.mockito.Mockito.*;
 
-public class FetchingRegistrarTest {
+public class TaskRegistrarTest {
 
-    private FetchingRegistrar registrar;
+    private TaskRegistrar registrar;
     private TaskScheduler scheduler;
     private User user;
 
@@ -38,7 +36,7 @@ public class FetchingRegistrarTest {
     public void initBeforeTest() throws Exception {
         user = new User("bguerout");
         scheduler = mock(TaskScheduler.class);
-        registrar = new FetchingRegistrar(scheduler);
+        registrar = new TaskRegistrar(scheduler);
 
     }
 

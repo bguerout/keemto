@@ -17,8 +17,6 @@
 package fr.keemto.core.fetcher.scheduling;
 
 import fr.keemto.core.User;
-import fr.keemto.core.fetcher.scheduling.EventUpdateTask;
-import fr.keemto.core.fetcher.scheduling.FetchingRegistrar;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +34,7 @@ import static org.junit.Assert.assertThat;
 public class ScheduledFetchingIT {
 
     @Autowired
-    private FetchingRegistrar registrar;
+    private TaskRegistrar registrar;
 
     @Test
     public void shouldExecuteFetcherAsychronouslyWithDelay() throws Exception {

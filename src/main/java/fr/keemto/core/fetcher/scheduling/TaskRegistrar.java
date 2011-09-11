@@ -30,15 +30,15 @@ import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 
 @Component
-public class FetchingRegistrar {
+public class TaskRegistrar {
 
-    private static final Logger log = LoggerFactory.getLogger(FetchingRegistrar.class);
+    private static final Logger log = LoggerFactory.getLogger(TaskRegistrar.class);
 
     private final TaskScheduler scheduler;
-    private final List<TaskMonitor> manageableFutures = new ArrayList<FetchingRegistrar.TaskMonitor>();
+    private final List<TaskMonitor> manageableFutures = new ArrayList<TaskRegistrar.TaskMonitor>();
 
     @Autowired
-    public FetchingRegistrar(TaskScheduler scheduler) {
+    public TaskRegistrar(TaskScheduler scheduler) {
         this.scheduler = scheduler;
     }
 

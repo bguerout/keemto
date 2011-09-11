@@ -30,7 +30,7 @@ public class AutomaticFetchingInitializer implements InitializingBean {
 
     private UserResolver userResolver;
     private TaskFactory taskFactory;
-    private FetchingRegistrar registrar;
+    private TaskRegistrar registrar;
     private FetcherResolver fetcherResolver;
 
     @Override
@@ -57,7 +57,7 @@ public class AutomaticFetchingInitializer implements InitializingBean {
     }
 
     @Autowired
-    public void setRegistrar(FetchingRegistrar registrar) {
+    public void setRegistrar(TaskRegistrar registrar) {
         this.registrar = registrar;
     }
 
