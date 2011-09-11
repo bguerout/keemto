@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package fr.keemto.core.fetcher;
+package fr.keemto.core.fetcher.scheduling;
 
 import fr.keemto.core.User;
 import org.slf4j.Logger;

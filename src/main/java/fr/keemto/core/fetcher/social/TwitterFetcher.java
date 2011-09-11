@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package fr.keemto.core.fetcher;
+package fr.keemto.core.fetcher.social;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;

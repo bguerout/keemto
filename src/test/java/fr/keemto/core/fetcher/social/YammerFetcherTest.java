@@ -1,9 +1,11 @@
-package fr.keemto.core.fetcher;
+package fr.keemto.core.fetcher.social;
 
 
 import com.google.common.collect.Lists;
 import fr.keemto.core.Event;
 import fr.keemto.core.User;
+import fr.keemto.core.fetcher.social.ApiResolver;
+import fr.keemto.core.fetcher.social.YammerFetcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.social.yammer.api.MessageOperations;

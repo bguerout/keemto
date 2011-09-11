@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package fr.keemto.core.fetcher;
+package fr.keemto.core.fetcher.social;
 
 import fr.keemto.core.Event;
 import fr.keemto.core.User;
+import fr.keemto.core.fetcher.Fetcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

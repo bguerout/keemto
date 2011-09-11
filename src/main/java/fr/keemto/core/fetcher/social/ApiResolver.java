@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package fr.keemto.core.fetcher;
+package fr.keemto.core.fetcher.social;
 
 import fr.keemto.core.User;
 import org.springframework.social.connect.Connection;

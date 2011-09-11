@@ -69,18 +69,18 @@
   <task:executor id="executor" pool-size="10"/>
 
 
-  <bean id="twitterFetcher" class="fr.keemto.core.fetcher.TwitterFetcher">
+  <bean id="twitterFetcher" class="fr.keemto.core.fetcher.social.TwitterFetcher">
     <constructor-arg>
-      <bean class="fr.keemto.core.fetcher.ApiResolver">
+      <bean class="fr.keemto.core.fetcher.social.ApiResolver">
         <constructor-arg value="org.springframework.social.twitter.api.Twitter"/>
         <constructor-arg ref="usersConnectionRepository"/>
       </bean>
     </constructor-arg>
   </bean>
 
-  <bean id="yammerFetcher" class="fr.keemto.core.fetcher.YammerFetcher">
+  <bean id="yammerFetcher" class="fr.keemto.core.fetcher.social.YammerFetcher">
     <constructor-arg>
-      <bean class="fr.keemto.core.fetcher.ApiResolver">
+      <bean class="fr.keemto.core.fetcher.social.ApiResolver">
         <constructor-arg value="org.springframework.social.yammer.api.impl.YammerTemplate"/>
         <constructor-arg ref="usersConnectionRepository"/>
       </bean>

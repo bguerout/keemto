@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-package fr.keemto.core.fetcher;
+package fr.keemto.core.fetcher.scheduling;
 
 import com.google.common.collect.Lists;
 import fr.keemto.core.User;
 import fr.keemto.core.UserResolver;
+import fr.keemto.core.fetcher.Fetcher;
+import fr.keemto.core.fetcher.FetcherResolver;
+import fr.keemto.core.fetcher.scheduling.AutomaticFetchingInitializer;
+import fr.keemto.core.fetcher.scheduling.EventUpdateTask;
+import fr.keemto.core.fetcher.scheduling.FetchingRegistrar;
+import fr.keemto.core.fetcher.scheduling.TaskFactory;
 import org.junit.Before;
 import org.junit.Test;
 
