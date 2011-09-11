@@ -19,7 +19,6 @@ package fr.keemto.core.fetcher.social;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import fr.keemto.core.Event;
-import fr.keemto.core.User;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.Twitter;
 
@@ -46,7 +45,7 @@ public class TwitterFetcher extends SocialFetcher<Twitter, Tweet> {
     }
 
     @Override
-    protected Event convertDataToEvent(Tweet tweet, Event.Builder builder) {
+    protected Event convertDataToEvent(Tweet tweet, EventBuilder builder) {
         Date createdAt = tweet.getCreatedAt();
         String tweetText = tweet.getText();
         return builder.message(tweetText).timestamp(createdAt.getTime()).build();

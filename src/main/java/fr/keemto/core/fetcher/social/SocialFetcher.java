@@ -50,7 +50,7 @@ public abstract class SocialFetcher<T, D> implements Fetcher {
         for (T api : apis) {
             List<D> fetchedDatas = fetchApi(api, lastFetchedEventTime);
             for (D data : fetchedDatas) {
-                Event.Builder builder = new Event.Builder(user, getProviderId());
+                EventBuilder builder = new EventBuilder(user, getProviderId());
                 Event event = convertDataToEvent(data, builder);
                 events.add(event);
             }
@@ -92,6 +92,6 @@ public abstract class SocialFetcher<T, D> implements Fetcher {
 
     protected abstract List<D> fetchApi(T api, long lastFetchedEventTime);
 
-    protected abstract Event convertDataToEvent(D data, Event.Builder builder);
+    protected abstract Event convertDataToEvent(D data, EventBuilder builder);
 
 }

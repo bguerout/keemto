@@ -19,8 +19,6 @@ package fr.keemto.core.fetcher.social;
 import com.google.common.collect.Lists;
 import fr.keemto.core.Event;
 import fr.keemto.core.User;
-import fr.keemto.core.fetcher.social.ApiResolver;
-import fr.keemto.core.fetcher.social.SocialFetcher;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -74,7 +72,7 @@ public class SocialFetcherTest {
         }
 
         @Override
-        protected Event convertDataToEvent(String data, Event.Builder builder) {
+        protected Event convertDataToEvent(String data, EventBuilder builder) {
             return builder.message(data).build();
         }
     }

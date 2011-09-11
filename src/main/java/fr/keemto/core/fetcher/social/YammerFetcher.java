@@ -3,7 +3,6 @@ package fr.keemto.core.fetcher.social;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import fr.keemto.core.Event;
-import org.springframework.social.yammer.api.MessageOperations;
 import org.springframework.social.yammer.api.impl.MessageInfo;
 import org.springframework.social.yammer.api.impl.YammerMessage;
 import org.springframework.social.yammer.api.impl.YammerTemplate;
@@ -48,7 +47,7 @@ public class YammerFetcher extends SocialFetcher<YammerTemplate, YammerMessage> 
     }
 
     @Override
-    protected Event convertDataToEvent(YammerMessage message, Event.Builder builder) {
+    protected Event convertDataToEvent(YammerMessage message, EventBuilder builder) {
         YammerMessage.Body body = message.getBody();
         String messageContent = body.getPlain();
         long messageCreationTime = message.getCreatedAt().getTime();
