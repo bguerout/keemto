@@ -30,9 +30,7 @@ public class Event {
 
     private final String providerId;
 
-    @JsonCreator
-    public Event(@JsonProperty("timestamp") long timestamp, @JsonProperty("user") String user,
-                 @JsonProperty("message") String message, @JsonProperty("providerId") String providerId) {
+    public Event(long timestamp, String user, String message, String providerId) {
         super();
         this.timestamp = timestamp;
         this.user = user;
