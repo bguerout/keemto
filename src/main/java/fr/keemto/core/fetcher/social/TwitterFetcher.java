@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-public class TwitterFetcher extends SocialFetcher<Twitter> {
+public class TwitterFetcher extends SocialFetcher<Twitter, Tweet> {
 
     public TwitterFetcher(ApiResolver<Twitter> apiResolver, long delay) {
         super(apiResolver, delay);
@@ -39,15 +39,17 @@ public class TwitterFetcher extends SocialFetcher<Twitter> {
     }
 
     @Override
-    protected List<Event> fetchApiEvents(Twitter api, long lastFetchedEventTime, User user) {
-        List<Event> events = new ArrayList<Event>();
+    protected List<Tweet> fetchApi(Twitter api, long lastFetchedEventTime) {
         List<Tweet> tweets = api.timelineOperations().getUserTimeline();
+        Collection<Tweet> filteredTweets = removeAlreadyFetchedTweets(tweets, lastFetchedEventTime);
+        return new ArrayList<Tweet>(filteredTweets);
+    }
 
-        for (Tweet tweet : filterTweetsByDate(tweets, lastFetchedEventTime)) {
-            Event event = convertToEvent(tweet, user);
-            events.add(event);
-        }
-        return events;
+    @Override
+    protected Event convertDataToEvent(Tweet tweet, Event.Builder builder) {
+        Date createdAt = tweet.getCreatedAt();
+        String tweetText = tweet.getText();
+        return builder.message(tweetText).timestamp(createdAt.getTime()).build();
     }
 
     @Override
@@ -55,7 +57,7 @@ public class TwitterFetcher extends SocialFetcher<Twitter> {
         return "twitter";
     }
 
-    private Collection<Tweet> filterTweetsByDate(List<Tweet> tweets, final long lastFetchedEventTime) {
+    private Collection<Tweet> removeAlreadyFetchedTweets(List<Tweet> tweets, final long lastFetchedEventTime) {
         return Collections2.filter(tweets, new Predicate<Tweet>() {
 
             @Override
@@ -66,7 +68,4 @@ public class TwitterFetcher extends SocialFetcher<Twitter> {
         });
     }
 
-    private Event convertToEvent(Tweet tweet, User user) {
-        return new Event(tweet.getCreatedAt().getTime(), user, tweet.getText(), getProviderId());
-    }
 }

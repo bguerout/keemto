@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public abstract class SocialFetcher<T> implements Fetcher {
+public abstract class SocialFetcher<T, D> implements Fetcher {
 
     private static final Logger log = LoggerFactory.getLogger(SocialFetcher.class);
 
@@ -48,9 +48,13 @@ public abstract class SocialFetcher<T> implements Fetcher {
         logFetchingBeginning(user, apis);
 
         for (T api : apis) {
-            List<Event> apiEvents = fetchApiEvents(api, lastFetchedEventTime, user);
-            events.addAll(apiEvents);
-            logFetchResult(user, lastFetchedEventTime, apiEvents.size());
+            List<D> fetchedDatas = fetchApi(api, lastFetchedEventTime);
+            for (D data : fetchedDatas) {
+                Event.Builder builder = new Event.Builder(user, getProviderId());
+                Event event = convertDataToEvent(data, builder);
+                events.add(event);
+            }
+            logFetchResult(user, lastFetchedEventTime, fetchedDatas.size());
         }
         return events;
     }
@@ -86,7 +90,8 @@ public abstract class SocialFetcher<T> implements Fetcher {
         return delay;
     }
 
-    //TODO find another way to call fetchApiEvents without User attribute.
-    protected abstract List<Event> fetchApiEvents(T api, long lastFetchedEventTime, User user);
+    protected abstract List<D> fetchApi(T api, long lastFetchedEventTime);
+
+    protected abstract Event convertDataToEvent(D data, Event.Builder builder);
 
 }

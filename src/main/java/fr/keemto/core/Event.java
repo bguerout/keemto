@@ -88,4 +88,39 @@ public class Event {
                 '}';
     }
 
+    public static class Builder {
+
+        private final User user;
+        private final String providerId;
+
+        private String message = "";
+        private long timestamp = System.currentTimeMillis();
+
+        public Builder(User user, String providerId) {
+            this.user = user;
+            this.providerId = providerId;
+        }
+
+        public Builder message(String message) {
+            this.message = message;
+            return this;
+        }
+
+        public Builder timestamp(long timestamp) {
+            this.timestamp = timestamp;
+            return this;
+        }
+
+        public Event build() {
+            return new Event(this);
+        }
+    }
+
+    private Event(Builder builder) {
+        this.timestamp = builder.timestamp;
+        this.user = builder.user;
+        this.message = builder.message;
+        this.providerId = builder.providerId;
+    }
+
 }

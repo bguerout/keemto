@@ -52,7 +52,7 @@ public class SocialFetcherTest {
         when(apiResolver.getApis(eq(user))).thenReturn(Lists.newArrayList("string-api"));
     }
 
-    private class StringFetcher extends SocialFetcher<String> {
+    private class StringFetcher extends SocialFetcher<String, String> {
 
         public StringFetcher(ApiResolver<String> apiResolver) {
             super(apiResolver, 60000);
@@ -69,10 +69,14 @@ public class SocialFetcherTest {
         }
 
         @Override
-        protected List<Event> fetchApiEvents(String api, long lastFetchedEventTime, User user) {
-            return Lists.newArrayList(new Event(1, user, api.toString(), "social"));
+        protected List<String> fetchApi(String api, long lastFetchedEventTime) {
+            return Lists.newArrayList(api.toString());
         }
 
+        @Override
+        protected Event convertDataToEvent(String data, Event.Builder builder) {
+            return builder.message(data).build();
+        }
     }
 
     @Test
