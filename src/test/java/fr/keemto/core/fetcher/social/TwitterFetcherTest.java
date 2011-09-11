@@ -86,7 +86,7 @@ public class TwitterFetcherTest {
 
         Event event = events.get(0);
         assertThat(event.getTimestamp(), equalTo(tweet1.getCreatedAt().getTime()));
-        assertThat(event.getUser(), equalTo("bguerout"));
+        assertThat(event.getUser(), equalTo(user));
         assertThat(event.getMessage(), equalTo("a tweet"));
 
         event = events.get(1);

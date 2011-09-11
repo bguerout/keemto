@@ -70,7 +70,7 @@ public class SocialFetcherTest {
 
         @Override
         protected List<Event> fetchApiEvents(String api, long lastFetchedEventTime, User user) {
-            return Lists.newArrayList(new Event(1, user.getUsername(), api.toString(), "social"));
+            return Lists.newArrayList(new Event(1, user, api.toString(), "social"));
         }
 
     }
@@ -93,7 +93,7 @@ public class SocialFetcherTest {
         // then
         assertThat(events.size(), greaterThan(0));
         Event event = events.get(0);
-        assertThat(event.getUser(), equalTo("bguerout"));
+        assertThat(event.getUser(), equalTo(user));
         assertThat(event.getMessage(), equalTo("string-api"));
     }
 

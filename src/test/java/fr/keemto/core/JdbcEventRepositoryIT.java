@@ -46,15 +46,16 @@ public class JdbcEventRepositoryIT {
     public void whenEventsExistShouldReturnAllEvents() throws Exception {
 
         List<Event> events = repository.getAllEvents();
-        assertThat(events, hasItem(new Event(1, "tester", "eventTest", "provider")));
+        assertThat(events, hasItem(new Event(1, new User("tester"), "eventTest", "provider")));
     }
 
     @Test
     public void shouldReturnMostRecentEventForUser() {
-        Event mostRecentEvent = repository.getMostRecentEvent(new User("stnevex"), "mail");
+        User stnevex = new User("stnevex");
+        Event mostRecentEvent = repository.getMostRecentEvent(stnevex, "mail");
 
         assertThat(mostRecentEvent, notNullValue());
-        assertThat(mostRecentEvent.getUser(), equalTo("stnevex"));
+        assertThat(mostRecentEvent.getUser(), equalTo(stnevex));
         assertThat(mostRecentEvent.getTimestamp(), equalTo(new Long(1301464284376L)));
         assertThat(mostRecentEvent.getTimestamp(), equalTo(new Long(1301464284376L)));
         assertThat(mostRecentEvent.getProviderId(), equalTo("mail"));
@@ -62,18 +63,20 @@ public class JdbcEventRepositoryIT {
 
     @Test
     public void whenUserHasntEventShouldReturnAnInitEvent() {
-        Event mostRecentEvent = repository.getMostRecentEvent(new User("userWithoutEvents"), "mail");
+        User userWithoutEvents = new User("userWithoutEvents");
+        Event mostRecentEvent = repository.getMostRecentEvent(userWithoutEvents, "mail");
 
         assertThat(mostRecentEvent, notNullValue());
-        assertThat(mostRecentEvent.getUser(), equalTo("userWithoutEvents"));
+        assertThat(mostRecentEvent.getUser(), equalTo(userWithoutEvents));
         assertThat(mostRecentEvent.getTimestamp(), equalTo((long) 0));
         assertThat(mostRecentEvent.getProviderId(), equalTo("mail"));
     }
 
     @Test
     public void shouldPersitEvents() throws Exception {
-        Event event = new Event(System.currentTimeMillis(), "owner", "message", "provider");
-        Event event2 = new Event(System.currentTimeMillis() + 100, "owner", "message", "provider");
+        User owner = new User("owner");
+        Event event = new Event(System.currentTimeMillis(), owner, "message", "provider");
+        Event event2 = new Event(System.currentTimeMillis() + 100, owner, "message", "provider");
         repository.persist(Lists.newArrayList(event, event2));
 
         List<Event> allEvents = repository.getAllEvents();
@@ -84,9 +87,10 @@ public class JdbcEventRepositoryIT {
 
     @Test(expected = DuplicateEventException.class)
     public void shouldThrowExWhenTrying2EventsWithSameTime() throws Exception {
+        User owner = new User("owner");
         long eventTime = System.currentTimeMillis();
-        Event event = new Event(eventTime, "owner", "message", "provider");
-        Event event2 = new Event(eventTime, "owner", "message", "provider");
+        Event event = new Event(eventTime, owner, "message", "provider");
+        Event event2 = new Event(eventTime, owner, "message", "provider");
         repository.persist(Lists.newArrayList(event, event2));
     }
 }

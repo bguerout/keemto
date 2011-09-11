@@ -55,8 +55,9 @@ public class JdbcEventRepository implements EventRepository {
 
     private void persist(Event event) {
         try {
+            User user = event.getUser();
             jdbcTemplate.update("insert into events (ts,username,message,providerId) values(?,?,?,?)",
-                    new Object[]{event.getTimestamp(), event.getUser(), event.getMessage(), event.getProviderId()});
+                    new Object[]{event.getTimestamp(), user.getUsername(), event.getMessage(), event.getProviderId()});
         } catch (DuplicateKeyException e) {
             throw new DuplicateEventException("Unable to persist event " + event + " because another event exists with same eventTime: " + event.getTimestamp(), e);
         }
@@ -81,14 +82,15 @@ public class JdbcEventRepository implements EventRepository {
                 + user
                 + " hasn't event yet for provider: " + providerId
                 + ". This is propably the first time application tried to fetch user's connections. An initialization event is returned.");
-        return new InitializationEvent(user.getUsername(), providerId);
+        return new InitializationEvent(user, providerId);
     }
 
     private final class EventRowMapper implements RowMapper<Event> {
         @Override
         public Event mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new Event(rs.getLong("ts"), rs.getString("username"), rs.getString("message"),
-                    rs.getString("providerId"));
+            String username = rs.getString("username");
+            User user = new User(username);
+            return new Event(rs.getLong("ts"), user, rs.getString("message"), rs.getString("providerId"));
         }
     }
 

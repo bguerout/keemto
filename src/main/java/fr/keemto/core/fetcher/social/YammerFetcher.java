@@ -57,7 +57,7 @@ public class YammerFetcher extends SocialFetcher<YammerTemplate> {
         YammerMessage.Body body = message.getBody();
         String messageContent = body.getPlain();
         long messageCreationTime = message.getCreatedAt().getTime();
-        return new Event(messageCreationTime, user.getUsername(), messageContent, getProviderId());
+        return new Event(messageCreationTime, user, messageContent, getProviderId());
     }
 
 

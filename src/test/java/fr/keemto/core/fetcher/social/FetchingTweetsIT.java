@@ -46,7 +46,7 @@ public class FetchingTweetsIT {
 
         assertThat(events.size(), greaterThan(0));
         for (Event event : events) {
-            assertThat(event.getUser(), equalTo("stnevex"));
+            assertThat(event.getUser(), equalTo(user));
         }
     }
 

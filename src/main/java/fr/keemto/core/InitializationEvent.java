@@ -21,7 +21,7 @@ package fr.keemto.core;
  */
 public class InitializationEvent extends Event {
 
-    public InitializationEvent(String owner, String providerId) {
+    public InitializationEvent(User owner, String providerId) {
         super(0, owner, "initialization event", providerId);
     }
 

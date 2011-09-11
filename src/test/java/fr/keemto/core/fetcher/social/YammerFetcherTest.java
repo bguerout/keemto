@@ -61,7 +61,7 @@ public class YammerFetcherTest {
         Event event = events.get(0);
         assertThat(event.getMessage(), equalTo("foo"));
         assertThat(event.getTimestamp(), equalTo(messageCreationDate.getTime()));
-        assertThat(event.getUser(), equalTo("bguerout"));
+        assertThat(event.getUser(), equalTo(user));
         assertThat(event.getProviderId(), equalTo("yammer"));
     }
 
