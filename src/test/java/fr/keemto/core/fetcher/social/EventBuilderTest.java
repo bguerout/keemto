@@ -18,31 +18,18 @@ package fr.keemto.core.fetcher.social;
 
 import fr.keemto.core.Event;
 import fr.keemto.core.User;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
-class EventBuilder {
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
-    private final User user;
-    private final String providerId;
-
-    private String message = "";
-    private long timestamp = System.currentTimeMillis();
-
-    public EventBuilder(User user, String providerId) {
-        this.user = user;
-        this.providerId = providerId;
-    }
-
-    public EventBuilder message(String message) {
-        this.message = message;
-        return this;
-    }
-
-    public EventBuilder timestamp(long timestamp) {
-        this.timestamp = timestamp;
-        return this;
-    }
-
-    public Event build() {
-        return new Event(timestamp, user, message, providerId);
+public class EventBuilderTest {
+    @Test
+    public void shouldCreateEventWithEmptyMessageAndCurrentTime() throws Exception {
+        Event event = new EventBuilder(new User("user"), "provider").build();
+        assertThat(event.getMessage(), equalTo(""));
+        assertThat(event.getTimestamp(), lessThanOrEqualTo(System.currentTimeMillis()));
     }
 }

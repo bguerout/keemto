@@ -16,8 +16,6 @@
 
 package fr.keemto.core;
 
-import fr.keemto.core.fetcher.social.EventBuilder;
-
 public class Event {
 
     private final long timestamp;
