@@ -88,6 +88,7 @@ public class TwitterFetcherTest {
         assertThat(event.getTimestamp(), equalTo(tweet1.getCreatedAt().getTime()));
         assertThat(event.getUser(), equalTo(user));
         assertThat(event.getMessage(), equalTo("a tweet"));
+        assertThat(event.getProviderId(), equalTo("twitter"));
 
         event = events.get(1);
         assertThat(event.getMessage(), equalTo("a second tweet"));
