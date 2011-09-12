@@ -22,7 +22,6 @@ import fr.keemto.core.EventRepository;
 import fr.keemto.core.User;
 import fr.keemto.core.fetcher.Fetcher;
 import fr.keemto.core.fetcher.FetchingException;
-import fr.keemto.core.fetcher.scheduling.EventUpdateTask;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.dao.DataRetrievalFailureException;
@@ -48,7 +47,7 @@ public class EventUpdateTaskTest {
         fetcher = mock(Fetcher.class);
         eventRepository = mock(EventRepository.class);
         user = new User("user");
-        mostRecentEvent = new Event(9999, user, "message", "provider");
+        mostRecentEvent = new Event(9999, "message", user, "provider");
         task = new EventUpdateTask(fetcher, user, eventRepository);
 
         when(fetcher.getProviderId()).thenReturn("provider");
@@ -66,7 +65,7 @@ public class EventUpdateTaskTest {
 
     @Test
     public void shouldPersitFetchedEvents() {
-        Event fetchedEvent = new Event(System.currentTimeMillis(), user, "message", "provider");
+        Event fetchedEvent = new Event(System.currentTimeMillis(), "message", user, "provider");
         ArrayList<Event> events = Lists.newArrayList(fetchedEvent);
         when(fetcher.fetch(eq(user), anyLong())).thenReturn(events);
 

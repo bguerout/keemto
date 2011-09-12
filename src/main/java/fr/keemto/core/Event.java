@@ -19,14 +19,11 @@ package fr.keemto.core;
 public class Event {
 
     private final long timestamp;
-
-    private final User user;
-
     private final String message;
-
+    private final User user;
     private final String providerId;
 
-    public Event(long timestamp, User user, String message, String providerId) {
+    public Event(long timestamp, String message, User user, String providerId) {
         super();
         this.timestamp = timestamp;
         this.user = user;
@@ -38,12 +35,12 @@ public class Event {
         return timestamp;
     }
 
-    public User getUser() {
-        return user;
-    }
-
     public String getMessage() {
         return message;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public String getProviderId() {

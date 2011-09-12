@@ -90,7 +90,7 @@ public class JdbcEventRepository implements EventRepository {
         public Event mapRow(ResultSet rs, int rowNum) throws SQLException {
             String username = rs.getString("username");
             User user = new User(username);
-            return new Event(rs.getLong("ts"), user, rs.getString("message"), rs.getString("providerId"));
+            return new Event(rs.getLong("ts"), rs.getString("message"), user, rs.getString("providerId"));
         }
     }
 

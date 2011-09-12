@@ -46,7 +46,7 @@ public class JdbcEventRepositoryIT {
     public void whenEventsExistShouldReturnAllEvents() throws Exception {
 
         List<Event> events = repository.getAllEvents();
-        assertThat(events, hasItem(new Event(1, new User("tester"), "eventTest", "provider")));
+        assertThat(events, hasItem(new Event(1, "eventTest", new User("tester"), "provider")));
     }
 
     @Test
@@ -75,8 +75,8 @@ public class JdbcEventRepositoryIT {
     @Test
     public void shouldPersitEvents() throws Exception {
         User owner = new User("owner");
-        Event event = new Event(System.currentTimeMillis(), owner, "message", "provider");
-        Event event2 = new Event(System.currentTimeMillis() + 100, owner, "message", "provider");
+        Event event = new Event(System.currentTimeMillis(), "message", owner, "provider");
+        Event event2 = new Event(System.currentTimeMillis() + 100, "message", owner, "provider");
         repository.persist(Lists.newArrayList(event, event2));
 
         List<Event> allEvents = repository.getAllEvents();
@@ -89,8 +89,8 @@ public class JdbcEventRepositoryIT {
     public void shouldThrowExWhenTrying2EventsWithSameTime() throws Exception {
         User owner = new User("owner");
         long eventTime = System.currentTimeMillis();
-        Event event = new Event(eventTime, owner, "message", "provider");
-        Event event2 = new Event(eventTime, owner, "message", "provider");
+        Event event = new Event(eventTime, "message", owner, "provider");
+        Event event2 = new Event(eventTime, "message", owner, "provider");
         repository.persist(Lists.newArrayList(event, event2));
     }
 }

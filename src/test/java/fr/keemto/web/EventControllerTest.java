@@ -50,7 +50,7 @@ public class EventControllerTest extends ControllerTestCase {
     public void shouldReturnAllEvents() throws Exception {
 
         User user1 = new User("user1");
-        ArrayList<Event> events = Lists.newArrayList(new Event(1, user1, "message", "provider"));
+        ArrayList<Event> events = Lists.newArrayList(new Event(1, "message", user1, "provider"));
         when(eventRepository.getAllEvents()).thenReturn(events);
 
         handlerAdapter.handle(request, response, controller);

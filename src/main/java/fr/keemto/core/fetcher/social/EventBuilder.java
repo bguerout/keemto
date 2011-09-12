@@ -43,6 +43,6 @@ class EventBuilder {
     }
 
     public Event build() {
-        return new Event(timestamp, user, message, providerId);
+        return new Event(timestamp, message, user, providerId);
     }
 }
