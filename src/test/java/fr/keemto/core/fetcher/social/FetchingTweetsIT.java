@@ -18,7 +18,7 @@ package fr.keemto.core.fetcher.social;
 
 import fr.keemto.core.Event;
 import fr.keemto.core.User;
-import fr.keemto.core.fetcher.social.TwitterFetcher;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -39,6 +39,7 @@ public class FetchingTweetsIT {
     private TwitterFetcher fetcher;
 
     @Test(timeout = 3000)
+    @Ignore
     public void fetchTweets() {
         User user = new User("stnevex");
 

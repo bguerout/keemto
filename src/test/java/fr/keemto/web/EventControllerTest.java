@@ -17,6 +17,7 @@
 package fr.keemto.web;
 
 import com.google.common.collect.Lists;
+import fr.keemto.core.DefaultProviderConnection;
 import fr.keemto.core.Event;
 import fr.keemto.core.EventRepository;
 import fr.keemto.core.User;
@@ -26,6 +27,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -50,7 +52,7 @@ public class EventControllerTest extends ControllerTestCase {
     public void shouldReturnAllEvents() throws Exception {
 
         User user1 = new User("user1");
-        ArrayList<Event> events = Lists.newArrayList(new Event(1, "message", user1, "provider"));
+        List<Event> events = Lists.newArrayList(new Event(1, "message", user1, new DefaultProviderConnection("aProvider")));
         when(eventRepository.getAllEvents()).thenReturn(events);
 
         handlerAdapter.handle(request, response, controller);
@@ -62,10 +64,12 @@ public class EventControllerTest extends ControllerTestCase {
         JsonNode eventNode = eventsAsJson.get(0);
         assertThat(eventNode.get("timestamp").getValueAsText(), equalTo("1"));
         assertThat(eventNode.get("message").getValueAsText(), equalTo("message"));
-        assertThat(eventNode.get("providerId").getValueAsText(), equalTo("provider"));
+
+        JsonNode providerConnxNode = eventNode.get("providerConnection");
+        assertThat(providerConnxNode.get("providerId").getValueAsText(), equalTo("aProvider"));
+
         JsonNode userNode = eventNode.get("user");
         assertThat(userNode.get("username").getValueAsText(), equalTo("user1"));
-
     }
 
     @Test

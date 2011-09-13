@@ -17,24 +17,14 @@
 package fr.keemto.core.fetcher.social;
 
 import fr.keemto.core.DefaultProviderConnection;
-import fr.keemto.core.Event;
-import fr.keemto.core.User;
-import org.junit.Test;
+import org.springframework.social.connect.Connection;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
+public class SocialProviderConnection extends DefaultProviderConnection {
 
-public class EventBuilderTest {
-    @Test
-    public void shouldCreateEventWithEmptyMessageAndCurrentTime() throws Exception {
+    private Connection<?> connection;
 
-        DefaultProviderConnection providerConnection = new DefaultProviderConnection("provider");
-        User user = new User("user");
-
-        Event event = new EventBuilder(user, providerConnection).build();
-
-        assertThat(event.getMessage(), equalTo(""));
-        assertThat(event.getTimestamp(), lessThanOrEqualTo(System.currentTimeMillis()));
+    public SocialProviderConnection(Connection<?> connection) {
+        //TODO ugly super call
+        super(connection.getKey().getProviderId(), connection.getKey().getProviderUserId(), connection.getDisplayName(), connection.getProfileUrl(), connection.getImageUrl());
     }
 }

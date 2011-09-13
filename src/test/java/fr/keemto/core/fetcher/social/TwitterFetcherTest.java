@@ -19,10 +19,10 @@ package fr.keemto.core.fetcher.social;
 import com.google.common.collect.Lists;
 import fr.keemto.core.Event;
 import fr.keemto.core.User;
-import fr.keemto.core.fetcher.social.ApiResolver;
-import fr.keemto.core.fetcher.social.TwitterFetcher;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.social.connect.Connection;
+import org.springframework.social.connect.ConnectionKey;
 import org.springframework.social.twitter.api.TimelineOperations;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.Twitter;
@@ -39,27 +39,33 @@ import static org.mockito.Mockito.*;
 public class TwitterFetcherTest {
 
     private TwitterFetcher fetcher;
+    private Twitter api;
+    private ProviderResolver<Twitter> providerResolver;
+    private TimelineOperations timelineOperations;
+
     private Tweet tweet1;
     private Tweet tweet2;
     private User user;
     private long since;
-    private ApiResolver<Twitter> apiResolver;
-    private Twitter api;
-    private TimelineOperations timelineOperations;
 
     @Before
     public void initBeforeTest() throws Exception {
 
-        apiResolver = mock(ApiResolver.class);
         api = mock(Twitter.class);
+        providerResolver = mock(ProviderResolver.class);
         timelineOperations = mock(TimelineOperations.class);
-        fetcher = new TwitterFetcher(apiResolver);
+        fetcher = new TwitterFetcher(providerResolver);
+
         user = new User("bguerout");
         tweet1 = createTweet("a tweet", System.currentTimeMillis());
         tweet2 = createTweet("a second tweet", System.currentTimeMillis() + 10);
         since = 0;
 
-        when(apiResolver.getApis(eq(user))).thenReturn(Lists.newArrayList(api));
+        Connection connection = mock(Connection.class);
+        when(connection.getApi()).thenReturn(api);
+        ConnectionKey key = new ConnectionKey("twitter", "bguerout-account");
+        when(connection.getKey()).thenReturn(key);
+        when(providerResolver.getConnectionsFor(eq(user))).thenReturn(Lists.<Connection<Twitter>>newArrayList(connection));
         when(api.timelineOperations()).thenReturn(timelineOperations);
         when(timelineOperations.getUserTimeline()).thenReturn(Lists.newArrayList(tweet1, tweet2));
 
@@ -88,7 +94,7 @@ public class TwitterFetcherTest {
         assertThat(event.getTimestamp(), equalTo(tweet1.getCreatedAt().getTime()));
         assertThat(event.getUser(), equalTo(user));
         assertThat(event.getMessage(), equalTo("a tweet"));
-        assertThat(event.getProviderId(), equalTo("twitter"));
+        assertThat(event.getProviderConnection().getProviderId(), equalTo("twitter"));
 
         event = events.get(1);
         assertThat(event.getMessage(), equalTo("a second tweet"));

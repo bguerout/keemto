@@ -489,6 +489,20 @@ ul#footerNav li a:hover {
     margin-bottom: 15px;
 }
 
+.twitterEvent {
+  background: url(../img/social/twitter24x24.png) no-repeat bottom center;
+  padding-bottom: 24px;
+}
+
+.provider-connection {
+  float: left;
+  margin-right: 15px;
+}
+
+.provider-connection img{
+  display: block;
+}
+
 #coreMsg .last {
     margin-right: 0 !important;
 }
@@ -690,7 +704,7 @@ ul#footerNav li a:hover {
 }
 
 
-#basic-modal-content {display:none;}
+#oauth-confirm-content {display:none;}
 /* Overlay */
 #simplemodal-overlay {background-color:#000; cursor:wait;}
 /* Container */

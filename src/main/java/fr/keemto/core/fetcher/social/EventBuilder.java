@@ -17,19 +17,20 @@
 package fr.keemto.core.fetcher.social;
 
 import fr.keemto.core.Event;
+import fr.keemto.core.ProviderConnection;
 import fr.keemto.core.User;
 
-class EventBuilder {
+public class EventBuilder {
 
     private final User user;
-    private final String providerId;
+    private final ProviderConnection providerConnection;
 
     private String message = "";
     private long timestamp = System.currentTimeMillis();
 
-    public EventBuilder(User user, String providerId) {
+    public EventBuilder(User user, ProviderConnection providerConnection) {
         this.user = user;
-        this.providerId = providerId;
+        this.providerConnection = providerConnection;
     }
 
     public EventBuilder message(String message) {
@@ -43,6 +44,6 @@ class EventBuilder {
     }
 
     public Event build() {
-        return new Event(timestamp, message, user, providerId);
+        return new Event(timestamp, message, user, providerConnection);
     }
 }

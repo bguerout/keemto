@@ -17,6 +17,7 @@
 package fr.keemto.core.fetcher.scheduling;
 
 import com.google.common.collect.Lists;
+import fr.keemto.core.DefaultProviderConnection;
 import fr.keemto.core.Event;
 import fr.keemto.core.EventRepository;
 import fr.keemto.core.User;
@@ -41,36 +42,31 @@ public class EventUpdateTaskTest {
     private Fetcher fetcher;
     private User user;
     private Event mostRecentEvent;
+    private DefaultProviderConnection providerConnx;
 
     @Before
     public void initBeforeTest() throws Exception {
         fetcher = mock(Fetcher.class);
         eventRepository = mock(EventRepository.class);
         user = new User("user");
-        mostRecentEvent = new Event(9999, "message", user, "provider");
+        providerConnx = new DefaultProviderConnection("aProvider");
+        mostRecentEvent = new Event(9999, "message", user, providerConnx);
         task = new EventUpdateTask(fetcher, user, eventRepository);
 
-        when(fetcher.getProviderId()).thenReturn("provider");
-        when(eventRepository.getMostRecentEvent(any(User.class), eq("provider"))).thenReturn(mostRecentEvent);
-    }
-
-    @Test
-    public void shouldUseEventRepositoryToObtainLastFetchedEventTime() {
-
-        task.run();
-
-        verify(eventRepository).getMostRecentEvent(user, "provider");
-        verify(fetcher).fetch(eq(user), eq(mostRecentEvent.getTimestamp()));
+        when(fetcher.getProviderId()).thenReturn("aProvider");
+        when(eventRepository.getMostRecentEvent(any(User.class), eq("aProvider"))).thenReturn(mostRecentEvent);
     }
 
     @Test
     public void shouldPersitFetchedEvents() {
-        Event fetchedEvent = new Event(System.currentTimeMillis(), "message", user, "provider");
+        Event fetchedEvent = mock(Event.class);
         ArrayList<Event> events = Lists.newArrayList(fetchedEvent);
-        when(fetcher.fetch(eq(user), anyLong())).thenReturn(events);
+        when(fetcher.fetch(eq(user), eq(mostRecentEvent.getTimestamp()))).thenReturn(events);
 
         task.run();
 
+        verify(eventRepository).getMostRecentEvent(user, "aProvider");
+        verify(fetcher).fetch(eq(user), eq(mostRecentEvent.getTimestamp()));
         verify(eventRepository).persist(events);
     }
 
@@ -80,7 +76,6 @@ public class EventUpdateTaskTest {
         when(fetcher.fetch(eq(user), anyLong())).thenThrow(new RuntimeException());
 
         task.run();
-
     }
 
     @Test(expected = FetchingException.class)

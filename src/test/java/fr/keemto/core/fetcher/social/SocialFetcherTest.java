@@ -21,6 +21,8 @@ import fr.keemto.core.Event;
 import fr.keemto.core.User;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.social.connect.Connection;
+import org.springframework.social.connect.ConnectionKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class SocialFetcherTest {
 
     private StringFetcher fetcher;
-    private ApiResolver<String> apiResolver;
+    private ProviderResolver<String> providerResolver;
     private User user;
     private long since;
 
@@ -42,18 +44,84 @@ public class SocialFetcherTest {
     public void initBeforeTest() throws Exception {
         initMocks(this);
 
-        apiResolver = mock(ApiResolver.class);
-        fetcher = new StringFetcher(apiResolver);
+        providerResolver = mock(ProviderResolver.class);
+        fetcher = new StringFetcher(providerResolver);
         user = new User("bguerout");
         since = System.currentTimeMillis();
-
-        when(apiResolver.getApis(eq(user))).thenReturn(Lists.newArrayList("string-api"));
     }
+
+    @Test
+    public void whenNoEventCanBeFoundThenANonNullListMustBeReturned() {
+
+        when(providerResolver.getConnectionsFor(eq(user))).thenReturn(new ArrayList<Connection<String>>());
+
+        List<Event> events = fetcher.fetch(user, since);
+
+        assertThat(events, notNullValue());
+    }
+
+    @Test
+    public void shouldConvertAllFetchedItemsToEvents() {
+
+        List<Connection<String>> connections = new ArrayList<Connection<String>>();
+        connections.add(mockConnectionWithApi("string-api"));
+        when(providerResolver.getConnectionsFor(eq(user))).thenReturn(connections);
+
+        // when
+        List<Event> events = fetcher.fetch(user, since);
+
+        // then
+        assertThat(events.size(), greaterThan(0));
+        Event event = events.get(0);
+        assertThat(event.getUser(), equalTo(user));
+        assertThat(event.getMessage(), equalTo("string-api"));
+    }
+
+    @Test
+    public void shouldFetchAllUserApis() {
+
+        // given
+        StringFetcher fetcherWithManyApis = new StringFetcher(providerResolver);
+        List<Connection<String>> multipleConnections = new ArrayList<Connection<String>>();
+        multipleConnections.add(mockConnectionWithApi("string-api"));
+        multipleConnections.add(mockConnectionWithApi("another-api"));
+        when(providerResolver.getConnectionsFor(eq(user))).thenReturn(multipleConnections);
+
+        // when
+        List<Event> events = fetcherWithManyApis.fetch(user, since);
+
+        // then
+        assertThat(events.size(), equalTo(2));
+        assertThat(events.get(0).getMessage(), equalTo("string-api"));
+        assertThat(events.get(1).getMessage(), equalTo("another-api"));
+    }
+
+    @Test
+    public void shouldCheckIfUserCanBeFetched() throws Exception {
+
+        List<Connection<String>> connections = mock(List.class);
+        when(connections.isEmpty()).thenReturn(false);
+        when(providerResolver.getConnectionsFor(eq(user))).thenReturn(connections);
+
+        boolean canFetch = fetcher.canFetch(user);
+
+        assertThat(canFetch, is(true));
+        verify(providerResolver).getConnectionsFor(user);
+    }
+
+    private Connection mockConnectionWithApi(String api) {
+        Connection connection = mock(Connection.class);
+        when(connection.getApi()).thenReturn(api);
+        ConnectionKey key = new ConnectionKey("providerId", "providerUserIdd");
+        when(connection.getKey()).thenReturn(key);
+        return connection;
+    }
+
 
     private class StringFetcher extends SocialFetcher<String, String> {
 
-        public StringFetcher(ApiResolver<String> apiResolver) {
-            super(apiResolver, 60000);
+        public StringFetcher(ProviderResolver<String> providerResolver) {
+            super(providerResolver, 60000);
         }
 
         @Override
@@ -75,54 +143,6 @@ public class SocialFetcherTest {
         protected Event convertDataToEvent(String data, EventBuilder builder) {
             return builder.message(data).build();
         }
-    }
-
-    @Test
-    public void whenNoEventCanBeFoundThenANonNullListMustBeReturned() {
-        // when
-        List<Event> events = fetcher.fetch(user, since);
-
-        // then
-        assertThat(events, notNullValue());
-    }
-
-    @Test
-    public void shouldConvertAllFetchedItemsToEvents() {
-
-        // when
-        List<Event> events = fetcher.fetch(user, since);
-
-        // then
-        assertThat(events.size(), greaterThan(0));
-        Event event = events.get(0);
-        assertThat(event.getUser(), equalTo(user));
-        assertThat(event.getMessage(), equalTo("string-api"));
-    }
-
-    @Test
-    public void shouldFetchAllUserApis() {
-
-        // given
-        StringFetcher fetcherWithManyApis = new StringFetcher(apiResolver);
-        ArrayList<String> multipleApis = Lists.newArrayList("string-api", "another-api");
-        when(apiResolver.getApis(eq(user))).thenReturn(multipleApis);
-
-        // when
-        List<Event> events = fetcherWithManyApis.fetch(user, since);
-
-        // then
-        assertThat(events.size(), equalTo(2));
-        assertThat(events.get(0).getMessage(), equalTo("string-api"));
-        assertThat(events.get(1).getMessage(), equalTo("another-api"));
-    }
-
-    @Test
-    public void shouldCheckIfUserCanBeFetched() throws Exception {
-
-        boolean canFetch = fetcher.canFetch(user);
-
-        assertThat(canFetch, is(true));
-        verify(apiResolver).getApis(user);
     }
 
 }

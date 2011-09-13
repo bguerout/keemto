@@ -18,6 +18,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Keemto - Keep me in touch</title>
+
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Expires" content="-1">
+
     <meta name="description" content="Keemto"/>
     <meta name="Keywords" content="social"/>
     <link rel="Shortcut Icon" type="image/ico" href="resources/img/favicon.png"/>
@@ -27,13 +32,13 @@
     <!--[if IE]>
     <style type="text/css">
         .timer {
-            display: none !important;
+        display: none !important;
         }
 
         div.caption {
-            background: transparent;
-            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #99000000, endColorstr = #99000000);
-            zoom: 1;
+        background: transparent;
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #99000000, endColorstr = #99000000);
+        zoom: 1;
     </style>
     <![endif]-->
     <!--[if IE 7]>
@@ -52,9 +57,11 @@
     <script type="text/javascript" src="resources/js/jquery.simplemodal.1.4.1.min.js"></script>
     <script type="text/javascript" src="resources/js/underscore.js"></script>
     <script type="text/javascript" src="resources/js/backbone.js"></script>
-    <!--script type="text/javascript" src="resources/js/keemto-mock.js"></script-->
     <script type="text/javascript" src="resources/js/keemto.js"></script>
-    <script type="text/javascript" src="resources/dynamic/js/keemto-boostrapper.js"></script>
+
+    <script type="text/javascript" src="resources/js/keemto-mock.js"></script>
+    <!--script type="text/javascript" src="resources/dynamic/js/keemto-boostrapper.js"></script-->
+
 
     <!-- PROD javascript resources
              <script type="text/javascript" src="js/backbone-localstorage.js"></script>
@@ -136,11 +143,18 @@
 
 <!-- Templates -->
 <script type="text/template" id="event-template">
-    <img src="resources/img/social/<%= providerId %>.png" class="h1img" alt="twitter"/>
+    
+        <div class="provider-connection <%=providerConnection.providerId%>Event">
+            <a target="_blank" href="<%= providerConnection.profileUrl %>"><img src="<%= providerConnection.imageUrl %>"/></a>
+            <a target="_blank" href="<%= providerConnection.profileUrl %>"><%= providerConnection.displayName %></a>
 
-    <h1><%= user.username %></h1>
+        </div>
+        <div class="event-content">
+            <h1><%= user.username %></h1>
 
-    <p><%= message %></p>
+            <p><%= message %></p>
+        </div>
+
 </script>
 
 <script type="text/template" id="connection-template">
@@ -183,14 +197,15 @@
     <h3>Connection Confirmation</h3>
 
     <p>You have successfully created a new connection.</p>
+
     <p>To complete the authorization please enter PIN code provided by provider:</p>
 
-     <form action="api/connections/yammer" method="POST">
-            <fieldset>
-                <label for="oauth_verifier">PIN Code</label><input type="text" name="oauth_verifier"/>
-            </fieldset>
-            <input type="submit" value="Finish"/>
-     </form>
+    <form action="api/connections/yammer" method="POST">
+        <fieldset>
+            <label for="oauth_verifier">PIN Code</label><input type="text" name="oauth_verifier"/>
+        </fieldset>
+        <input type="submit" value="Finish"/>
+    </form>
 </div>
 
 </body>

@@ -43,7 +43,13 @@ public class JdbcEventRepository implements EventRepository {
 
     @Override
     public List<Event> getAllEvents() {
-        return jdbcTemplate.query("select ts,username,message,providerId from events", new EventRowMapper());
+        String eventsSQL =
+                "select ts, username, message, events.providerId, events.providerUserId, " +
+                        "connx.displayName, connx.profileUrl, connx.imageUrl " +
+                        "from events " +
+                        "LEFT JOIN UserConnection as connx ON events.providerId = connx.providerId  " +
+                        "AND events.provideruserId = connx.providerUserId AND events.username= connx.userId ";
+        return jdbcTemplate.query(eventsSQL, new EventRowMapper());
     }
 
     @Override
@@ -54,34 +60,44 @@ public class JdbcEventRepository implements EventRepository {
     }
 
     private void persist(Event event) {
+        String insertEvent = "insert into events (ts,message,username,providerId,providerUserId) values(?,?,?,?,?)";
         try {
             User user = event.getUser();
-            jdbcTemplate.update("insert into events (ts,username,message,providerId) values(?,?,?,?)",
-                    new Object[]{event.getTimestamp(), user.getUsername(), event.getMessage(), event.getProviderId()});
+            ProviderConnection providerConnx = event.getProviderConnection();
+
+            jdbcTemplate.update(insertEvent,
+                    new Object[]{event.getTimestamp(), event.getMessage(), user.getUsername(),
+                            providerConnx.getProviderId(), providerConnx.getProviderUserId()});
+
         } catch (DuplicateKeyException e) {
-            throw new DuplicateEventException("Unable to persist event " + event + " because another event exists with same eventTime: " + event.getTimestamp(), e);
+            throw new DuplicateEventException("Unable to persist event " + event +
+                    " because another event exists with same eventTime: " + event.getTimestamp(), e);
         }
     }
 
     @Override
     public Event getMostRecentEvent(User user, String providerId) {
+        String recentEventsSQL =
+                "select TOP 1 ts, username, message, events.providerId, events.providerUserId, " +
+                        "connx.displayName, connx.profileUrl, connx.imageUrl " +
+                        "from events " +
+                        "LEFT JOIN UserConnection as connx ON events.providerId = connx.providerId  " +
+                        "AND events.provideruserId = connx.providerUserId AND events.username= connx.userId " +
+                        " where events.username=? AND events.providerId=? ORDER BY ts DESC";
         String[] parameters = {user.getUsername(), providerId};
         try {
-            return jdbcTemplate
-                    .queryForObject(
-                            "select TOP 1 ts,username,message,providerId from events where username=? AND providerId=? ORDER BY ts DESC",
-                            parameters, new EventRowMapper());
+            return jdbcTemplate.queryForObject(recentEventsSQL, parameters, new EventRowMapper());
         } catch (EmptyResultDataAccessException e) {
             return createInitializationEvent(user, providerId);
         }
     }
 
     private Event createInitializationEvent(User user, String providerId) {
-        //TODO check if null object has to be created in repository or in task
         log.info("User: "
                 + user
                 + " hasn't event yet for provider: " + providerId
                 + ". This is propably the first time application tried to fetch user's connections. An initialization event is returned.");
+        //TODO check if null object has to be created into repository or in task
         return new InitializationEvent(user, providerId);
     }
 
@@ -89,8 +105,25 @@ public class JdbcEventRepository implements EventRepository {
         @Override
         public Event mapRow(ResultSet rs, int rowNum) throws SQLException {
             String username = rs.getString("username");
+
+            long timestamp = rs.getLong("ts");
+            String message = rs.getString("message");
+
             User user = new User(username);
-            return new Event(rs.getLong("ts"), rs.getString("message"), user, rs.getString("providerId"));
+
+            ProviderConnection providerConnection = buildProviderConnection(rs);
+
+            return new Event(timestamp, message, user, providerConnection);
+        }
+
+        private ProviderConnection buildProviderConnection(ResultSet rs) throws SQLException {
+            //TODO create a ProviderConnection factory
+            String providerId = rs.getString("providerId");
+            String providerUserId = rs.getString("providerUserId");
+            String displayName = rs.getString("displayName");
+            String profileUrl = rs.getString("profileUrl");
+            String imageUrl = rs.getString("imageUrl");
+            return new DefaultProviderConnection(providerId, providerUserId, displayName, profileUrl, imageUrl);
         }
     }
 

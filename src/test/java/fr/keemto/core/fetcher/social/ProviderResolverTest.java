@@ -18,7 +18,6 @@ package fr.keemto.core.fetcher.social;
 
 import com.google.common.collect.Lists;
 import fr.keemto.core.User;
-import fr.keemto.core.fetcher.social.ApiResolver;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -36,9 +35,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class ApiResolverTest {
+public class ProviderResolverTest {
 
-    private ApiResolver<Twitter> resolver;
+    private ProviderResolver<Twitter> resolver;
 
     @Mock
     private UsersConnectionRepository usersConnectionRepository;
@@ -53,7 +52,7 @@ public class ApiResolverTest {
     public void initBeforeTest() throws Exception {
         initMocks(this);
 
-        resolver = new ApiResolver<Twitter>(Twitter.class, usersConnectionRepository);
+        resolver = new ProviderResolver<Twitter>(Twitter.class, usersConnectionRepository);
 
         when(usersConnectionRepository.createConnectionRepository("bguerout")).thenReturn(connRepository);
 

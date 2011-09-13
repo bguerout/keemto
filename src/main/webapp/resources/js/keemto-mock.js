@@ -27,13 +27,27 @@ $(document).ready(function () {
                 "timestamp": '1',
                 "user": 'bguerout',
                 "message": 'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur.',
-                "providerId": 'mail'
+                "user": {
+                  "username": 'stnevex'
+                },
+                "providerConnection": {
+                  "providerId": 'mail'
+                }
             },
             {
                 "timestamp": '2',
                 "user": 'stnevex',
                 "message": 'Praesent blandit odio eu enim. Pellentesque sed dui ut augue blandit sodales.',
-                "providerId": 'twitter'
+                "user": {
+                  "username": 'stnevex'
+                },
+                "providerConnection": {
+                 "providerId":"twitter",
+                 "providerUserId":"@twitter",
+                 "displayName":"stnevex",
+                 "profileUrl":"http://twitter.com/stnevex",
+                 "imageUrl":"http://a0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png"
+                }
             }
         ]
 
@@ -53,7 +67,10 @@ $(document).ready(function () {
                 timestamp: '100',
                 user: 'bguerout',
                 message: timestamp + ' / Ex vix aliquip euismod. Per verear tacimates persequeris ad. Recusabo expetendis ei vix..',
-                providerId: 'mail'
+                providerConnection: {
+                    providerId: 'mail'
+                }
+
             };
         }
 
@@ -127,5 +144,7 @@ $(document).ready(function () {
             }
         }
     });
+
+     Keemto.init();
 
 });
