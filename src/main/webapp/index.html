@@ -143,11 +143,14 @@
 
 <!-- Templates -->
 <script type="text/template" id="event-template">
-    
-        <div class="provider-connection <%=providerConnection.providerId%>Event">
-            <a target="_blank" href="<%= providerConnection.profileUrl %>"><img src="<%= providerConnection.imageUrl %>"/></a>
-            <a target="_blank" href="<%= providerConnection.profileUrl %>"><%= providerConnection.displayName %></a>
 
+        <div class="provider-connection">
+            <%if(providerConnection.anonymous == "false"){%>
+            <a class="provider-img" target="_blank" href="<%= providerConnection.profileUrl %>"><img src="<%= providerConnection.imageUrl %>"/></a>
+            <a class="provider-profile-<%=providerConnection.providerId%>" target="_blank" href="<%= providerConnection.profileUrl %>"><%= providerConnection.displayName %></a>
+             <% } else {%>
+                <img src="resources/img/social/mail.png"/>
+            <%}%>
         </div>
         <div class="event-content">
             <h1><%= user.username %></h1>

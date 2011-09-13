@@ -31,7 +31,8 @@ $(document).ready(function () {
                   "username": 'stnevex'
                 },
                 "providerConnection": {
-                  "providerId": 'mail'
+                  "providerId": 'mail',
+                  "anonymous": 'true'
                 }
             },
             {
@@ -46,7 +47,8 @@ $(document).ready(function () {
                  "providerUserId":"@twitter",
                  "displayName":"stnevex",
                  "profileUrl":"http://twitter.com/stnevex",
-                 "imageUrl":"http://a0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png"
+                 "imageUrl":"http://a0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
+                  "anonymous": 'false'
                 }
             }
         ]
