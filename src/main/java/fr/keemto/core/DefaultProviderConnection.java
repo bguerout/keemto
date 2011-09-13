@@ -38,6 +38,11 @@ public class DefaultProviderConnection implements ProviderConnection {
     }
 
     @Override
+    public String getId() {
+        return getProviderId() + "-" + getProviderUserId();
+    }
+
+    @Override
     public String getProviderId() {
         return providerId;
     }

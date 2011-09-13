@@ -18,6 +18,8 @@ package fr.keemto.core;
 
 public interface ProviderConnection {
 
+    String getId();
+
     String getProviderId();
 
     String getProviderUserId();
