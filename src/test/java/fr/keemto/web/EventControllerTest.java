@@ -52,7 +52,8 @@ public class EventControllerTest extends ControllerTestCase {
     public void shouldReturnAllEvents() throws Exception {
 
         User user1 = new User("user1");
-        List<Event> events = Lists.newArrayList(new Event(1, "message", user1, new DefaultProviderConnection("aProvider")));
+        DefaultProviderConnection providerConnection = new DefaultProviderConnection("yammer", "4444", "stnevex", "http://profileUrl", "http://imageUrl");
+        List<Event> events = Lists.newArrayList(new Event(1, "message", user1, providerConnection));
         when(eventRepository.getAllEvents()).thenReturn(events);
 
         handlerAdapter.handle(request, response, controller);
@@ -66,7 +67,13 @@ public class EventControllerTest extends ControllerTestCase {
         assertThat(eventNode.get("message").getValueAsText(), equalTo("message"));
 
         JsonNode providerConnxNode = eventNode.get("providerConnection");
-        assertThat(providerConnxNode.get("providerId").getValueAsText(), equalTo("aProvider"));
+        assertThat(providerConnxNode.get("providerId").getValueAsText(), equalTo("yammer"));
+        assertThat(providerConnxNode.get("providerUserId").getValueAsText(), equalTo("4444"));
+        assertThat(providerConnxNode.get("displayName").getValueAsText(), equalTo("stnevex"));
+        assertThat(providerConnxNode.get("profileUrl").getValueAsText(), equalTo("http://profileUrl"));
+        assertThat(providerConnxNode.get("imageUrl").getValueAsText(), equalTo("http://imageUrl"));
+        assertThat(providerConnxNode.get("anonymous").getValueAsText(), equalTo("false"));
+        //TODO add assertions on connx
 
         JsonNode userNode = eventNode.get("user");
         assertThat(userNode.get("username").getValueAsText(), equalTo("user1"));
