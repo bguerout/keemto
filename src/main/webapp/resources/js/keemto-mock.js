@@ -24,11 +24,13 @@ $(document).ready(function () {
         type: 'GET',
         responseText:[
             {
-                "timestamp": '1',
+                "timestamp": '1301464994372',
                 "user": 'bguerout',
                 "message": 'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur.',
                 "user": {
-                  "username": 'stnevex'
+                  "username": 'stnevex',
+                  "firstName": 'John',
+                  "lastName": 'Doe'
                 },
                 "providerConnection": {
                   "providerId": 'mail',
@@ -36,17 +38,39 @@ $(document).ready(function () {
                 }
             },
             {
-                "timestamp": '2',
+                "timestamp": '1301464994472',
                 "user": 'stnevex',
                 "message": 'Praesent blandit odio eu enim. Pellentesque sed dui ut augue blandit sodales.',
                 "user": {
-                  "username": 'stnevex'
+                  "username": 'stnevex',
+                  "firstName": 'John',
+                  "lastName": 'Doe'
                 },
                 "providerConnection": {
+                 "id":"twitter-1111",
                  "providerId":"twitter",
                  "providerUserId":"@twitter",
                  "displayName":"stnevex",
                  "profileUrl":"http://twitter.com/stnevex",
+                 "imageUrl":"http://a0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
+                  "anonymous": 'false'
+                }
+            },
+            {
+                "timestamp": '1301464995372',
+                "user": 'stnevex',
+                "message": 'Hello from yammer.',
+                "user": {
+                  "username": 'stnevex',
+                  "firstName": 'John',
+                  "lastName": 'Doe'
+                },
+                "providerConnection": {
+                 "id":"yammer-1111",
+                 "providerId":"yammer",
+                 "providerUserId":"@stnevex",
+                 "displayName":"John Doe",
+                 "profileUrl":"http://yammer.com/stnevex",
                  "imageUrl":"http://a0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
                   "anonymous": 'false'
                 }
@@ -87,17 +111,21 @@ $(document).ready(function () {
         responseText: [
             {
                 "id":"twitter-1111",
-                "displayName":"stnevex",
                 "providerId":"twitter",
+                "providerUserId":"@twitter",
+                "displayName":"stnevex",
                 "profileUrl":"http://twitter.com/stnevex",
-                "imageUrl":"http://twitter.com/stnevex.jpg"
+                "imageUrl":"http://a0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
+                "anonymous": 'false'
             },
             {
-                "id":"yammer-9999",
-                "displayName":"bguerout(error on revoke)",
-                "providerId":"twitter",
-                "profileUrl":"http://yammer.com/bguerout",
-                "imageUrl":"http://yammer.com/bguerout.jpg"
+                "id":"yammer-1111",
+                 "providerId":"yammer",
+                 "providerUserId":"@stnevex",
+                 "displayName":"John Doe",
+                 "profileUrl":"http://yammer.com/stnevex",
+                 "imageUrl":"http://a0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
+                 "anonymous": 'false'
             }
         ]
     });

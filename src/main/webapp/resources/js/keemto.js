@@ -41,6 +41,7 @@
             });
 
             var events = new Keemto.Collections.Events();
+            
             events.fetch({
                 success: function () {
                     new Keemto.Views.Events({
@@ -116,8 +117,7 @@
     Keemto.Models.Session = Backbone.Model.extend({
 
         defaults: {
-            login: "",
-            password: ""
+            login: ""
         },
 
         isAuthenticated: function () {
@@ -144,7 +144,10 @@
     Keemto.Collections.Events = Backbone.Collection.extend({
 
         model: Keemto.Models.Event,
-        url: 'api/events'
+        url: 'api/events',
+        comparator: function(event) {
+          return event.get("timestamp");
+        }
     });
 
     Keemto.Views.Event = Backbone.View.extend({
@@ -348,8 +351,7 @@
         initialize: function () {
             _.bindAll(this, 'render');
             Keemto.activeSession.bind('change', this.render);
-            this.formTemplate = _.template($('#form-template').html());
-            this.authTemplate = _.template($('#authenticated-template').html());
+            this.headerTemplate = _.template($('#header-template').html());
             this.render();
         },
 
@@ -375,12 +377,7 @@
 
         render: function () {
             $(this.el).empty();
-            if (Keemto.activeSession.isAuthenticated()) {
-                $(this.el).html(this.authTemplate(Keemto.activeSession.toJSON()));
-            } else {
-                $(this.el).html(this.formTemplate());
-            }
-
+            $(this.el).html(this.headerTemplate(Keemto.activeSession.toJSON()));
             return this;
         }
     });
