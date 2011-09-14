@@ -17,6 +17,7 @@
 package fr.keemto.core;
 
 import com.google.common.collect.Lists;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,69 +36,74 @@ public class JdbcEventRepositoryIT {
     @Autowired
     private EventRepository repository;
     private ProviderConnection keemtoProviderConnx = new DefaultProviderConnection("keemto");
-    private User testUser = new User("stnevex");
+    private User testUser;
 
-
-    @Test
-    public void shouldReturnANonNullEventsList() throws Exception {
-        List<Event> events = repository.getAllEvents();
-
-        assertThat(events, notNullValue());
+    @Before
+    public void prepare() throws Exception {
+        testUser = new User("stnevex", "John", "Doe", "stnevex@gmail.com");
     }
 
     @Test
-    public void whenEventsExistShouldReturnAllEvents() throws Exception {
+    public void shouldReturnANonNullEventsList() throws Exception {
 
         List<Event> events = repository.getAllEvents();
 
+        assertThat(events.size(), greaterThan(1));
         Event expectedEvent = new Event(1, "hello this is a test", testUser, keemtoProviderConnx);
         assertThat(events, hasItem(expectedEvent));
     }
 
+
     @Test
-    public void shouldReturnMostRecentEventForMail() {
+    public void shouldReturnMostRecentEvent() {
 
         Event mostRecentEvent = repository.getMostRecentEvent(testUser, "mail");
 
-        assertThat(mostRecentEvent, notNullValue());
-        assertThat(mostRecentEvent.getUser(), equalTo(testUser));
-        assertThat(mostRecentEvent.getTimestamp(), equalTo(new Long(1301464284376L)));
-        ProviderConnection providerConnection = mostRecentEvent.getProviderConnection();
-        assertThat(providerConnection.getProviderId(), equalTo("mail"));
-        assertThat(providerConnection.isAnonymous(), is(true));
+        assertEventHasBeenPopulated(mostRecentEvent);
+        Long lastFetchedTime = new Long(1301464284376L);
+        long eventTime = mostRecentEvent.getTimestamp();
+        assertThat(eventTime, equalTo(lastFetchedTime));
     }
 
     @Test
-    public void shouldReturnMostRecentEventForTwitter() {
+    public void shouldReturnMostRecentEventForAnonymousProvider() {
+
+        Event mostRecentEvent = repository.getMostRecentEvent(testUser, "mail");
+
+        ProviderConnection anonymousProvider = mostRecentEvent.getProviderConnection();
+        assertThat(anonymousProvider.isAnonymous(), is(true));
+        assertThat(anonymousProvider.getProviderId(), equalTo("mail"));
+    }
+
+    @Test
+    public void shouldReturnMostRecentEventForSocialProvider() {
 
         Event mostRecentEvent = repository.getMostRecentEvent(testUser, "twitter");
 
-        ProviderConnection providerConnection = mostRecentEvent.getProviderConnection();
-        assertThat(providerConnection.getProviderId(), equalTo("twitter"));
-        assertThat(providerConnection.getProviderUserId(), equalTo("293724331"));
-        assertThat(providerConnection.getDisplayName(), equalTo("@stnevex"));
-        assertThat(providerConnection.getProfileUrl(), equalTo("http://twitter.com/stnevex"));
-        assertThat(providerConnection.getImageUrl(), equalTo("http://a0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png"));
-        assertThat(providerConnection.isAnonymous(), is(false));
+        ProviderConnection socialProvider = mostRecentEvent.getProviderConnection();
+        assertThat(socialProvider.getProviderId(), equalTo("twitter"));
+        assertThat(socialProvider.getProviderUserId(), equalTo("293724331"));
+        assertThat(socialProvider.getDisplayName(), equalTo("@stnevex"));
+        assertThat(socialProvider.getProfileUrl(), equalTo("http://twitter.com/stnevex"));
+        assertThat(socialProvider.getImageUrl(), equalTo("http://a0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png"));
+        assertThat(socialProvider.isAnonymous(), is(false));
     }
 
     @Test
     public void whenUserHasntEventShouldReturnAnInitEvent() {
+
         User userWithoutEvents = new User("userWithoutEvents");
 
         Event mostRecentEvent = repository.getMostRecentEvent(userWithoutEvents, "mail");
 
-        assertThat(mostRecentEvent, notNullValue());
         assertThat(mostRecentEvent instanceof InitializationEvent, is(true));
         assertThat(mostRecentEvent.getUser(), equalTo(userWithoutEvents));
         assertThat(mostRecentEvent.getTimestamp(), equalTo((long) 0));
-        ProviderConnection initialisationProviderConnection = mostRecentEvent.getProviderConnection();
-        assertThat(initialisationProviderConnection.getProviderId(), equalTo("mail"));
-        assertThat(initialisationProviderConnection.isAnonymous(), is(true));
     }
 
     @Test
     public void shouldPersitEvents() throws Exception {
+
         Event fooEvent = new Event(System.currentTimeMillis(), "foo", testUser, keemtoProviderConnx);
         Event barEvent = new Event(System.currentTimeMillis() + 100, "bar", testUser, keemtoProviderConnx);
 
@@ -116,6 +122,14 @@ public class JdbcEventRepositoryIT {
         Event differentEventWithSameTime = new Event(eventTime, "bar", owner, keemtoProviderConnx);
 
         repository.persist(Lists.newArrayList(event, differentEventWithSameTime));
+    }
+
+    private void assertEventHasBeenPopulated(Event event) {
+        assertThat(event, notNullValue());
+        assertThat(event.getMessage(), notNullValue());
+        assertThat(event.getUser(), equalTo(testUser));
+        assertThat(event.getTimestamp(), notNullValue());
+        assertThat(event.getProviderConnection(), notNullValue());
     }
 }
 

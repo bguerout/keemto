@@ -58,6 +58,7 @@
           <constructor-arg value="${twitter.consumerKey}"/>
           <constructor-arg value="${twitter.consumerSecret}"/>
         </bean>
+
         <bean class="org.springframework.social.yammer.api.connect.YammerConnectionFactory">
           <constructor-arg value="${yammer.consumerKey}"/>
           <constructor-arg value="${yammer.consumerSecret}"/>

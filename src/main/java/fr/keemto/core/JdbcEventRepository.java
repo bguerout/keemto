@@ -44,9 +44,11 @@ public class JdbcEventRepository implements EventRepository {
     @Override
     public List<Event> getAllEvents() {
         String eventsSQL =
-                "select ts, username, message, events.providerId, events.providerUserId, " +
-                        "connx.displayName, connx.profileUrl, connx.imageUrl " +
+                "select events.ts, events.message, events.providerId, events.providerUserId, " +
+                        "connx.displayName, connx.profileUrl, connx.imageUrl, user.username, user.firstName, " +
+                        "user.lastName, user.email " +
                         "from events " +
+                        "INNER JOIN keemto_user as user ON events.username = user.username " +
                         "LEFT JOIN UserConnection as connx ON events.providerId = connx.providerId  " +
                         "AND events.provideruserId = connx.providerUserId AND events.username= connx.userId ";
         return jdbcTemplate.query(eventsSQL, new EventRowMapper());
@@ -78,12 +80,14 @@ public class JdbcEventRepository implements EventRepository {
     @Override
     public Event getMostRecentEvent(User user, String providerId) {
         String recentEventsSQL =
-                "select TOP 1 ts, username, message, events.providerId, events.providerUserId, " +
-                        "connx.displayName, connx.profileUrl, connx.imageUrl " +
+                "select TOP 1 events.ts, events.message, events.providerId, events.providerUserId, " +
+                        "connx.displayName, connx.profileUrl, connx.imageUrl, user.username, user.firstName, " +
+                        "user.lastName, user.email " +
                         "from events " +
+                        "INNER JOIN keemto_user as user ON events.username = user.username " +
                         "LEFT JOIN UserConnection as connx ON events.providerId = connx.providerId  " +
                         "AND events.provideruserId = connx.providerUserId AND events.username= connx.userId " +
-                        " where events.username=? AND events.providerId=? ORDER BY ts DESC";
+                        "where events.username=? AND events.providerId=? ORDER BY ts DESC";
         String[] parameters = {user.getUsername(), providerId};
         try {
             return jdbcTemplate.queryForObject(recentEventsSQL, parameters, new EventRowMapper());
@@ -104,12 +108,11 @@ public class JdbcEventRepository implements EventRepository {
     private final class EventRowMapper implements RowMapper<Event> {
         @Override
         public Event mapRow(ResultSet rs, int rowNum) throws SQLException {
-            String username = rs.getString("username");
 
             long timestamp = rs.getLong("ts");
             String message = rs.getString("message");
 
-            User user = new User(username);
+            User user = new UserRowMapper().mapRow(rs, rowNum);
 
             ProviderConnection providerConnection = buildProviderConnection(rs);
 
