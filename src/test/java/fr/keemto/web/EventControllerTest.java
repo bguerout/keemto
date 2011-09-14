@@ -17,10 +17,7 @@
 package fr.keemto.web;
 
 import com.google.common.collect.Lists;
-import fr.keemto.core.DefaultProviderConnection;
-import fr.keemto.core.Event;
-import fr.keemto.core.EventRepository;
-import fr.keemto.core.User;
+import fr.keemto.core.*;
 import org.codehaus.jackson.JsonNode;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,9 +48,9 @@ public class EventControllerTest extends ControllerTestCase {
     @Test
     public void shouldReturnAllEvents() throws Exception {
 
-        User user1 = new User("user1");
-        DefaultProviderConnection providerConnection = new DefaultProviderConnection("yammer", "4444", "stnevex", "http://profileUrl", "http://imageUrl");
-        List<Event> events = Lists.newArrayList(new Event(1, "message", user1, providerConnection));
+        DefaultProviderConnection yammerConnection = new DefaultProviderConnection("yammer", "4444", "stnevex", "http://profileUrl", "http://imageUrl");
+        User user = new User("stnevex","John","Doe","stnevex@gmail.com");
+        List<Event> events = Lists.newArrayList(new Event(1, "message", user, yammerConnection));
         when(eventRepository.getAllEvents()).thenReturn(events);
 
         handlerAdapter.handle(request, response, controller);
@@ -73,10 +70,11 @@ public class EventControllerTest extends ControllerTestCase {
         assertThat(providerConnxNode.get("profileUrl").getValueAsText(), equalTo("http://profileUrl"));
         assertThat(providerConnxNode.get("imageUrl").getValueAsText(), equalTo("http://imageUrl"));
         assertThat(providerConnxNode.get("anonymous").getValueAsText(), equalTo("false"));
-        //TODO add assertions on connx
 
         JsonNode userNode = eventNode.get("user");
-        assertThat(userNode.get("username").getValueAsText(), equalTo("user1"));
+        assertThat(userNode.get("username").getValueAsText(), equalTo("stnevex"));
+        assertThat(userNode.get("firstName").getValueAsText(), equalTo("John"));
+        assertThat(userNode.get("lastName").getValueAsText(), equalTo("Doe"));
     }
 
     @Test

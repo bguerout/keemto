@@ -16,26 +16,20 @@
 
 package fr.keemto.core;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
+import org.springframework.jdbc.core.RowMapper;
 
-import javax.inject.Inject;
-import java.util.List;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-@Repository
-public class JdbcUserRepository implements UserRepository {
 
-    private final JdbcTemplate jdbcTemplate;
-
-    @Inject
-    public JdbcUserRepository(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+public class UserRowMapper implements RowMapper<User> {
 
     @Override
-    public List<User> getAllUsers() {
-        return jdbcTemplate.query("select username,firstName,lastName,email from keemto_user", new UserRowMapper());
-
+    public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+        String username = rs.getString("username");
+        String firstName = rs.getString("firstName");
+        String lastName = rs.getString("lastName");
+        String email = rs.getString("email");
+        return new User(username, firstName, lastName, email);
     }
-
 }

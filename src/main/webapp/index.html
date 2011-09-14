@@ -143,48 +143,46 @@
 
 <!-- Templates -->
 <script type="text/template" id="event-template">
+    <div class="provider-connection">
+        <%if(providerConnection.anonymous == "false"){%>
+        <a class="provider-image" target="_blank" href="<%= providerConnection.profileUrl %>"><img
+                src="<%= providerConnection.imageUrl %>"/></a>
+        <a class="provider-profile-<%=providerConnection.providerId%>" target="_blank"
+           href="<%= providerConnection.profileUrl %>"><%= providerConnection.displayName %></a>
+        <% } else {%>
+        <img class="provider-image" src="resources/img/social/<%=providerConnection.providerId%>.png"/>
+        <%}%>
+    </div>
+    <div class="event-content">
+        <h1><%= user.firstName%> <%= user.lastName%></h1>
 
-        <div class="provider-connection">
-            <%if(providerConnection.anonymous == "false"){%>
-            <a class="provider-img" target="_blank" href="<%= providerConnection.profileUrl %>"><img src="<%= providerConnection.imageUrl %>"/></a>
-            <a class="provider-profile-<%=providerConnection.providerId%>" target="_blank" href="<%= providerConnection.profileUrl %>"><%= providerConnection.displayName %></a>
-             <% } else {%>
-                <img src="resources/img/social/mail.png"/>
-            <%}%>
-        </div>
-        <div class="event-content">
-            <h1><%= user.username %></h1>
-
-            <p><%= message %></p>
-        </div>
-
+        <p><%= message %></p>
+    </div>
 </script>
 
 <script type="text/template" id="connection-template">
-    <a href="<%= profileUrl %>" target="_blank"><%= displayName %></a>
-  <span class="buttons">
-      <a class="delete">Revoke Access</a>
-  </span>
+    <div class="provider-connection">
+        <a class="provider-profile-<%=providerId%>" target="_blank" href="<%= profileUrl %>"><%= displayName %></a>
+    </div>
+    <div class="buttons">
+        <a class="delete">Revoke Access</a>
+    </div>
 </script>
 
-<script type="text/template" id="authenticated-template">
+<script type="text/template" id="header-template">
     <ul id="mainNav">
         <li><a id="panelButton" href="#" title="more">Hide Notifications</a></li>
+        <% if(login != ""){ %>
         <li><a id="connectionsButton" href="#connections" title="more">Manage your connections</a></li>
+        <%}%>
     </ul>
     <div id="loginNav">
+        <% if(login != ""){ %>
         <ul>
             <li><a>Welcome <%= login %></a></li>
             <li><a href="#logout">Logout</a></li>
         </ul>
-    </div>
-</script>
-
-<script type="text/template" id="form-template">
-    <ul id="mainNav">
-        <li><a id="panelButton" href="#" title="more">Hide Notifications</a></li>
-    </ul>
-    <div id="loginNav">
+        <%} else {%>
         <form action="#">
             <fieldset>
                 <label for="login">Login</label><input type="text" id="login" name="login"/>
@@ -192,6 +190,7 @@
             </fieldset>
             <input type="submit" value="Login"/>
         </form>
+        <%}%>
     </div>
 </script>
 

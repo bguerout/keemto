@@ -40,7 +40,7 @@ public class JdbcUserRepositoryIT {
         List<User> users = repository.getAllUsers();
 
         assertThat(users, notNullValue());
-        assertThat(users.size(), greaterThan(0));
+        assertThat(users.size(), equalTo(1));
     }
 
     @Test
@@ -51,6 +51,9 @@ public class JdbcUserRepositoryIT {
         assertThat(users.size(), greaterThan(0));
         User user = users.get(0);
         assertThat(user.getUsername(), equalTo("stnevex"));
+        assertThat(user.getFirstName(), equalTo("John"));
+        assertThat(user.getLastName(), equalTo("Doe"));
+        assertThat(user.getEmail(), equalTo("stnevex@gmail.com"));
 
     }
 

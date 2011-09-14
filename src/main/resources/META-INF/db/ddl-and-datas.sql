@@ -13,12 +13,14 @@ create table keemto_user (
     password varchar not null,
     firstName varchar not null,
     lastName varchar not null,
+    email varchar,
     primary key (username)
  );
 
 
 --DATA
-insert into keemto_user (username, password, firstName, lastName) values ('stnevex', 'test', 'Ben', 'G');
+insert into keemto_user (username, password, firstName, lastName, email) values ('stnevex', 'test', 'John', 'Doe',
+'stnevex@gmail.com');
 
 insert into events (ts,message,username,providerId) values ('1','hello this is a test','stnevex','keemto');
 insert into events (ts,message,username,providerId,providerUserId) values ('1301464284370','First tweet','stnevex','twitter','293724331');

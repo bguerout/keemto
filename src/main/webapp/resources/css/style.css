@@ -319,21 +319,23 @@ ul#mainNav li a:hover {
 #panelContent h1 {
     color: #6A205F;
     font-size: 32px;
-    padding: 25px 0;
+    padding: 25px 0 10px 0;
 }
 
 #panelContent li {
     list-style: none;
-    padding: 5px 10px 6px 7px;
     float: left;
-}
-
-#panelContent li:after {
-    content: '|';
+    width: 150;
+    margin-right: 10px;
 }
 
 #panelContent li a {
     font-size: 14px;
+}
+
+#panelButtons{
+  padding-top: 25px;
+  clear : both;
 }
 
 /* BUTTONS */
@@ -489,25 +491,39 @@ ul#footerNav li a:hover {
 }
 
 .provider-profile-twitter {
-    background: url(../img/social/twitter24x24.png) no-repeat left top;
-    padding-left: 24px;
-    padding-bottom: 24px;
+    background: url(../img/social/twitter_16x16.png) no-repeat left top;
+    padding-left: 20px;
+    width: 70px;
+}
+
+.provider-profile-yammer {
+    background: url(../img/social/yammer_16x16.png) no-repeat left top;
+    padding-left: 20px;
+    width: 80px;
 }
 
 .provider-connection {
     float: left;
     margin-right: 15px;
     margin-top: 15px;
+    width: 80px;
 }
 
-.provider-connection img {
+.provider-image {
+    text-align: center;
     display: block;
     margin-left: auto;
     margin-right: auto;
+    width: 80px;
+}
+
+.small-16{
+  width: 16px;
+  height: 16px;
 }
 
 .provider-connection a {
-    padding-top: 2px;
+
 }
 
 #coreMsg .last {
