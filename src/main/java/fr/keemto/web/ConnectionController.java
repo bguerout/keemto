@@ -16,6 +16,8 @@
 
 package fr.keemto.web;
 
+import fr.keemto.core.ProviderConnection;
+import fr.keemto.core.fetcher.social.SocialProviderConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -54,17 +56,17 @@ public class ConnectionController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public List<ConnectionViewBean> getUserConnections() {
+    public List<ProviderConnection> getUserConnections() {
         MultiValueMap<String, Connection<?>> connectionsByProviderMap = connectionRepository.findAllConnections();
-        return convertUserConnectionsToConnectionViewBean(connectionsByProviderMap);
+        return convertUserConnections(connectionsByProviderMap);
     }
 
     @RequestMapping(value = "/{providerId}-{providerUserId}", method = RequestMethod.GET)
     @ResponseBody
-    public ConnectionViewBean getUserConnections(@PathVariable String providerId, @PathVariable String providerUserId) {
+    public ProviderConnection getUserConnections(@PathVariable String providerId, @PathVariable String providerUserId) {
         //TODO we should use a ConnectionKeyBuilder to convert id to provider*Id
         Connection<?> connection = connectionRepository.getConnection(new ConnectionKey(providerId, providerUserId));
-        return new ConnectionViewBean(connection);
+        return new SocialProviderConnection(connection);
     }
 
     @RequestMapping(value = {"/{providerId}-{providerUserId}"}, method = RequestMethod.DELETE)
@@ -118,11 +120,11 @@ public class ConnectionController {
         return new RedirectView("/#connections", true);
     }
 
-    private List<ConnectionViewBean> convertUserConnectionsToConnectionViewBean(MultiValueMap<String, Connection<?>> connectionsByProviderMap) {
-        List<ConnectionViewBean> userConnections = new ArrayList<ConnectionViewBean>();
+    private List<ProviderConnection> convertUserConnections(MultiValueMap<String, Connection<?>> connectionsByProviderMap) {
+        List<ProviderConnection> userConnections = new ArrayList<ProviderConnection>();
         for (List<Connection<?>> connections : connectionsByProviderMap.values()) {
             for (Connection<?> connx : connections) {
-                userConnections.add(new ConnectionViewBean(connx));
+                userConnections.add(new SocialProviderConnection(connx));
             }
         }
         return userConnections;

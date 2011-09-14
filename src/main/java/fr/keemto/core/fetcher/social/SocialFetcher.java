@@ -21,44 +21,59 @@ import fr.keemto.core.User;
 import fr.keemto.core.fetcher.Fetcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.social.connect.Connection;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public abstract class SocialFetcher<T> implements Fetcher {
+public abstract class SocialFetcher<T, D> implements Fetcher {
 
     private static final Logger log = LoggerFactory.getLogger(SocialFetcher.class);
 
-    private final ApiResolver<T> apiResolver;
+    private final ProviderResolver<T> providerResolver;
     private long delay;
 
-    public SocialFetcher(ApiResolver<T> apiResolver, long delay) {
+    public SocialFetcher(ProviderResolver<T> providerResolver, long delay) {
         super();
-        this.apiResolver = apiResolver;
+        this.providerResolver = providerResolver;
         this.delay = delay;
     }
 
     @Override
     public final List<Event> fetch(User user, long lastFetchedEventTime) {
         List<Event> events = new ArrayList<Event>();
-        List<T> apis = apiResolver.getApis(user);
-
-        logFetchingBeginning(user, apis);
-
-        for (T api : apis) {
-            List<Event> apiEvents = fetchApiEvents(api, lastFetchedEventTime, user);
-            events.addAll(apiEvents);
-            logFetchResult(user, lastFetchedEventTime, apiEvents.size());
+        List<Connection<T>> connections = providerResolver.getConnectionsFor(user);
+        logFetchingBeginning(user, connections);
+        for (Connection<T> connection : connections) {
+            EventBuilder eventBuilder = createBuilder(user, connection);
+            List<Event> eventsFromConnection = fetchConnection(connection, lastFetchedEventTime, eventBuilder);
+            events.addAll(eventsFromConnection);
+            logFetchResult(user, lastFetchedEventTime, eventsFromConnection.size());
         }
         return events;
     }
 
-    private void logFetchingBeginning(User user, List<T> apis) {
-        if (apis.isEmpty()) {
-            log.debug("Unable to fetch User: " + user + "because he does not own Api of type: "
-                    + apiResolver.getApiClass() + " for provider: " + getProviderId());
+    private List<Event> fetchConnection(Connection<T> connection, long lastFetchedEventTime, EventBuilder eventBuilder) {
+        List<Event> events = new ArrayList<Event>();
+        T api = connection.getApi();
+        List<D> fetchedDatas = fetchApi(api, lastFetchedEventTime);
+        for (D data : fetchedDatas) {
+            Event event = convertDataToEvent(data, eventBuilder);
+            events.add(event);
+        }
+        return events;
+    }
+
+    private EventBuilder createBuilder(User user, Connection<T> connection) {
+        SocialProviderConnection providerConnection = new SocialProviderConnection(connection);
+        return new EventBuilder(user, providerConnection);
+    }
+
+    private void logFetchingBeginning(User user, List<Connection<T>> connections) {
+        if (connections.isEmpty()) {
+            log.debug("Unable to fetch User: " + user + "because he does not own connection for provider: " + getProviderId());
         } else {
             log.debug("Fetching provider: " + getProviderId() + " for user: " + user);
         }
@@ -77,7 +92,7 @@ public abstract class SocialFetcher<T> implements Fetcher {
 
     @Override
     public boolean canFetch(User user) {
-        return !apiResolver.getApis(user).isEmpty();
+        return !providerResolver.getConnectionsFor(user).isEmpty();
     }
 
 
@@ -86,7 +101,8 @@ public abstract class SocialFetcher<T> implements Fetcher {
         return delay;
     }
 
-    //TODO find another way to call fetchApiEvents without User attribute.
-    protected abstract List<Event> fetchApiEvents(T api, long lastFetchedEventTime, User user);
+    protected abstract List<D> fetchApi(T api, long lastFetchedEventTime);
+
+    protected abstract Event convertDataToEvent(D data, EventBuilder builder);
 
 }

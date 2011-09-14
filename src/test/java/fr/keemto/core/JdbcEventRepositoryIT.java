@@ -34,6 +34,9 @@ public class JdbcEventRepositoryIT {
 
     @Autowired
     private EventRepository repository;
+    private ProviderConnection keemtoProviderConnx = new DefaultProviderConnection("keemto");
+    private User testUser = new User("stnevex");
+
 
     @Test
     public void shouldReturnANonNullEventsList() throws Exception {
@@ -46,48 +49,73 @@ public class JdbcEventRepositoryIT {
     public void whenEventsExistShouldReturnAllEvents() throws Exception {
 
         List<Event> events = repository.getAllEvents();
-        assertThat(events, hasItem(new Event(1, "tester", "eventTest", "provider")));
+
+        Event expectedEvent = new Event(1, "hello this is a test", testUser, keemtoProviderConnx);
+        assertThat(events, hasItem(expectedEvent));
     }
 
     @Test
-    public void shouldReturnMostRecentEventForUser() {
-        Event mostRecentEvent = repository.getMostRecentEvent(new User("stnevex"), "mail");
+    public void shouldReturnMostRecentEventForMail() {
+
+        Event mostRecentEvent = repository.getMostRecentEvent(testUser, "mail");
 
         assertThat(mostRecentEvent, notNullValue());
-        assertThat(mostRecentEvent.getUser(), equalTo("stnevex"));
+        assertThat(mostRecentEvent.getUser(), equalTo(testUser));
         assertThat(mostRecentEvent.getTimestamp(), equalTo(new Long(1301464284376L)));
-        assertThat(mostRecentEvent.getTimestamp(), equalTo(new Long(1301464284376L)));
-        assertThat(mostRecentEvent.getProviderId(), equalTo("mail"));
+        ProviderConnection providerConnection = mostRecentEvent.getProviderConnection();
+        assertThat(providerConnection.getProviderId(), equalTo("mail"));
+        assertThat(providerConnection.isAnonymous(), is(true));
+    }
+
+    @Test
+    public void shouldReturnMostRecentEventForTwitter() {
+
+        Event mostRecentEvent = repository.getMostRecentEvent(testUser, "twitter");
+
+        ProviderConnection providerConnection = mostRecentEvent.getProviderConnection();
+        assertThat(providerConnection.getProviderId(), equalTo("twitter"));
+        assertThat(providerConnection.getProviderUserId(), equalTo("293724331"));
+        assertThat(providerConnection.getDisplayName(), equalTo("@stnevex"));
+        assertThat(providerConnection.getProfileUrl(), equalTo("http://twitter.com/stnevex"));
+        assertThat(providerConnection.getImageUrl(), equalTo("http://a0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png"));
+        assertThat(providerConnection.isAnonymous(), is(false));
     }
 
     @Test
     public void whenUserHasntEventShouldReturnAnInitEvent() {
-        Event mostRecentEvent = repository.getMostRecentEvent(new User("userWithoutEvents"), "mail");
+        User userWithoutEvents = new User("userWithoutEvents");
+
+        Event mostRecentEvent = repository.getMostRecentEvent(userWithoutEvents, "mail");
 
         assertThat(mostRecentEvent, notNullValue());
-        assertThat(mostRecentEvent.getUser(), equalTo("userWithoutEvents"));
+        assertThat(mostRecentEvent instanceof InitializationEvent, is(true));
+        assertThat(mostRecentEvent.getUser(), equalTo(userWithoutEvents));
         assertThat(mostRecentEvent.getTimestamp(), equalTo((long) 0));
-        assertThat(mostRecentEvent.getProviderId(), equalTo("mail"));
+        ProviderConnection initialisationProviderConnection = mostRecentEvent.getProviderConnection();
+        assertThat(initialisationProviderConnection.getProviderId(), equalTo("mail"));
+        assertThat(initialisationProviderConnection.isAnonymous(), is(true));
     }
 
     @Test
     public void shouldPersitEvents() throws Exception {
-        Event event = new Event(System.currentTimeMillis(), "owner", "message", "provider");
-        Event event2 = new Event(System.currentTimeMillis() + 100, "owner", "message", "provider");
-        repository.persist(Lists.newArrayList(event, event2));
+        Event fooEvent = new Event(System.currentTimeMillis(), "foo", testUser, keemtoProviderConnx);
+        Event barEvent = new Event(System.currentTimeMillis() + 100, "bar", testUser, keemtoProviderConnx);
+
+        repository.persist(Lists.newArrayList(fooEvent, barEvent));
 
         List<Event> allEvents = repository.getAllEvents();
-
-        assertThat(allEvents, hasItem(event));
-        assertThat(allEvents, hasItem(event2));
+        assertThat(allEvents, hasItem(fooEvent));
+        assertThat(allEvents, hasItem(barEvent));
     }
 
     @Test(expected = DuplicateEventException.class)
-    public void shouldThrowExWhenTrying2EventsWithSameTime() throws Exception {
+    public void shouldThrowExWhenTryingToPersist2EventsWithSameTime() throws Exception {
+        User owner = new User("owner");
         long eventTime = System.currentTimeMillis();
-        Event event = new Event(eventTime, "owner", "message", "provider");
-        Event event2 = new Event(eventTime, "owner", "message", "provider");
-        repository.persist(Lists.newArrayList(event, event2));
+        Event event = new Event(eventTime, "foo", owner, keemtoProviderConnx);
+        Event differentEventWithSameTime = new Event(eventTime, "bar", owner, keemtoProviderConnx);
+
+        repository.persist(Lists.newArrayList(event, differentEventWithSameTime));
     }
 }
 

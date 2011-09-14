@@ -16,39 +16,25 @@
 
 package fr.keemto.core.fetcher.social;
 
+import fr.keemto.core.DefaultProviderConnection;
 import fr.keemto.core.Event;
 import fr.keemto.core.User;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import javax.inject.Inject;
-import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:/META-INF/spring/applicationContext.xml"})
-public class FetchingTweetsIT {
+public class EventBuilderTest {
+    @Test
+    public void shouldCreateEventWithEmptyMessageAndCurrentTime() throws Exception {
 
-    @Inject
-    private TwitterFetcher fetcher;
+        DefaultProviderConnection providerConnection = new DefaultProviderConnection("provider");
+        User user = new User("user");
 
-    @Test(timeout = 3000)
-    @Ignore
-    public void fetchTweets() {
-        User user = new User("stnevex");
+        Event event = new EventBuilder(user, providerConnection).build();
 
-        List<Event> events = fetcher.fetch(user, 0);
-
-        assertThat(events.size(), greaterThan(0));
-        for (Event event : events) {
-            assertThat(event.getUser(), equalTo(user));
-        }
+        assertThat(event.getMessage(), equalTo(""));
+        assertThat(event.getTimestamp(), lessThanOrEqualTo(System.currentTimeMillis()));
     }
-
 }

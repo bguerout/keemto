@@ -166,9 +166,6 @@
 
     Keemto.Views.Events = Backbone.View.extend({
 
-        events: {
-            "click #createEventButton": "createEvent"
-        },
 
         initialize: function () {
             _.bindAll(this, 'render', 'addEventView');
@@ -179,7 +176,6 @@
         render: function () {
             $(this.el).empty();
             $(this.el).append('<div class="wrap"></div>');
-            this.$('.wrap').append('<button id="createEventButton">Create Event</button>');
             this.$('.wrap').append('<div id="coreMsg"></div>');
             _(this.collection.models).each(function (event) {
                 this.addEventView(event);
@@ -193,11 +189,6 @@
                 model: event
             }).render().el;
             this.$("#coreMsg").prepend($(eventElement).fadeIn(2500));
-        },
-
-        createEvent: function (event) {
-            this.collection.create();
-            Keemto.log("An dummy event has been created: " + event);
         }
     });
 

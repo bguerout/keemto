@@ -16,13 +16,19 @@
 
 package fr.keemto.core;
 
-/**
- * A NullEvent (from NullPattern) created at EPOCH.
- */
-public class InitializationEvent extends Event {
+public interface ProviderConnection {
 
-    public InitializationEvent(User owner, String providerId) {
-        super(0, "initialization event", owner, new DefaultProviderConnection(providerId));
-    }
+    String getId();
 
+    String getProviderId();
+
+    String getProviderUserId();
+
+    String getDisplayName();
+
+    String getProfileUrl();
+
+    String getImageUrl();
+
+    boolean isAnonymous();
 }

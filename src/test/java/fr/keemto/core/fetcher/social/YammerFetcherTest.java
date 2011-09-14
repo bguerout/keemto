@@ -4,10 +4,10 @@ package fr.keemto.core.fetcher.social;
 import com.google.common.collect.Lists;
 import fr.keemto.core.Event;
 import fr.keemto.core.User;
-import fr.keemto.core.fetcher.social.ApiResolver;
-import fr.keemto.core.fetcher.social.YammerFetcher;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.social.connect.Connection;
+import org.springframework.social.connect.ConnectionKey;
 import org.springframework.social.yammer.api.MessageOperations;
 import org.springframework.social.yammer.api.impl.MessageInfo;
 import org.springframework.social.yammer.api.impl.YammerMessage;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 public class YammerFetcherTest {
 
     private YammerFetcher fetcher;
-    private ApiResolver<YammerTemplate> apiResolver;
+    private ProviderResolver<YammerTemplate> providerResolver;
     private YammerTemplate api;
     private MessageOperations messageOperations;
     private User user;
@@ -35,15 +35,17 @@ public class YammerFetcherTest {
 
         api = mock(YammerTemplate.class);
         messageOperations = mock(MessageOperations.class);
-        apiResolver = mock(ApiResolver.class);
-        fetcher = new YammerFetcher(apiResolver);
+        providerResolver = mock(ProviderResolver.class);
+        fetcher = new YammerFetcher(providerResolver);
         user = new User("bguerout");
 
 
-        when(apiResolver.getApis(eq(user))).thenReturn(Lists.newArrayList(api));
+        Connection connection = mock(Connection.class);
+        when(connection.getApi()).thenReturn(api);
+        ConnectionKey key = new ConnectionKey("yammer", "bguerout-account");
+        when(connection.getKey()).thenReturn(key);
+        when(providerResolver.getConnectionsFor(eq(user))).thenReturn(Lists.<Connection<YammerTemplate>>newArrayList(connection));
         when(api.messageOperations()).thenReturn(messageOperations);
-
-
     }
 
     @Test
@@ -61,8 +63,8 @@ public class YammerFetcherTest {
         Event event = events.get(0);
         assertThat(event.getMessage(), equalTo("foo"));
         assertThat(event.getTimestamp(), equalTo(messageCreationDate.getTime()));
-        assertThat(event.getUser(), equalTo("bguerout"));
-        assertThat(event.getProviderId(), equalTo("yammer"));
+        assertThat(event.getUser(), equalTo(user));
+        assertThat(event.getProviderConnection().getProviderId(), equalTo("yammer"));
     }
 
     @Test

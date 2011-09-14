@@ -39,7 +39,6 @@ h1 {
     font-size: 24px;
     font-weight: normal;
     font-family: 'Arvo', arial, serif;
-    padding: 0 0 20px 0;
 }
 
 h2 {
@@ -489,6 +488,28 @@ ul#footerNav li a:hover {
     margin-bottom: 15px;
 }
 
+.provider-profile-twitter {
+    background: url(../img/social/twitter24x24.png) no-repeat left top;
+    padding-left: 24px;
+    padding-bottom: 24px;
+}
+
+.provider-connection {
+    float: left;
+    margin-right: 15px;
+    margin-top: 15px;
+}
+
+.provider-connection img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.provider-connection a {
+    padding-top: 2px;
+}
+
 #coreMsg .last {
     margin-right: 0 !important;
 }
@@ -689,14 +710,50 @@ ul#footerNav li a:hover {
     padding-left: 30px;
 }
 
+#oauth-confirm-content {
+    display: none;
+}
 
-#basic-modal-content {display:none;}
 /* Overlay */
-#simplemodal-overlay {background-color:#000; cursor:wait;}
+#simplemodal-overlay {
+    background-color: #000;
+    cursor: wait;
+}
+
 /* Container */
-#simplemodal-container {height:120px; width:600px; color:#bbb; background-color:#333; border:4px solid #444; padding:12px;}
-#simplemodal-container .simplemodal-data {padding:8px;}
-#simplemodal-container a.modalCloseImg {background:url(../img/x.png) no-repeat; width:25px; height:29px; display:inline; z-index:3200; position:absolute; top:-15px; right:-16px; cursor:pointer;}
-#simplemodal-container h3 {color:#BBB;}
-#simplemodal-container fieldset {display:inline;}
-#simplemodal-container label {margin-right:5px;}
+#simplemodal-container {
+    height: 120px;
+    width: 600px;
+    color: #bbb;
+    background-color: #333;
+    border: 4px solid #444;
+    padding: 12px;
+}
+
+#simplemodal-container .simplemodal-data {
+    padding: 8px;
+}
+
+#simplemodal-container a.modalCloseImg {
+    background: url(../img/x.png) no-repeat;
+    width: 25px;
+    height: 29px;
+    display: inline;
+    z-index: 3200;
+    position: absolute;
+    top: -15px;
+    right: -16px;
+    cursor: pointer;
+}
+
+#simplemodal-container h3 {
+    color: #BBB;
+}
+
+#simplemodal-container fieldset {
+    display: inline;
+}
+
+#simplemodal-container label {
+    margin-right: 5px;
+}

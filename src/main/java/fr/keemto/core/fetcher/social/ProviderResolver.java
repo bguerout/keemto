@@ -24,13 +24,13 @@ import org.springframework.social.connect.UsersConnectionRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ApiResolver<T> {
+class ProviderResolver<T> {
 
     private final UsersConnectionRepository usersConnectionRepository;
 
     private final Class<T> apiClass;
 
-    public ApiResolver(Class<T> clazz, UsersConnectionRepository usersConnectionRepository) {
+    ProviderResolver(Class<T> clazz, UsersConnectionRepository usersConnectionRepository) {
         this.usersConnectionRepository = usersConnectionRepository;
         this.apiClass = clazz;
     }
@@ -43,9 +43,8 @@ public class ApiResolver<T> {
         return apis;
     }
 
-    private List<Connection<T>> getConnectionsFor(User user) {
-        ConnectionRepository connectionRepository = usersConnectionRepository.createConnectionRepository(user
-                .getUsername());
+    public List<Connection<T>> getConnectionsFor(User user) {
+        ConnectionRepository connectionRepository = usersConnectionRepository.createConnectionRepository(user.getUsername());
         return connectionRepository.findConnections(apiClass);
     }
 
