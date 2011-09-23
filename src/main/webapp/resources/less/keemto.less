@@ -1,0 +1,129 @@
+/* Keemto
+-------------------------------------------------- */
+@import "boostrap/bootstrap.less";
+
+body{
+    padding-top: 75px;
+    background-image: url(../img/clouds.png) ;
+    background-position: left 40px;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 910px;
+}
+
+.tips {
+    .hero-unit;
+    margin-top: 1px;
+    background: url(../img/forkme.png) no-repeat right top #f5f5f5;
+}
+
+.block{
+     background-color: #f5f5f5;
+    .border-radius(6px);
+    padding: 10px 60px 10px 60px;
+    color: gray;
+}
+.events {
+   .event{
+        margin-top: @baseline - 1;
+        padding-top: @baseline - 1;
+        border-bottom: 1px solid @grayLight ;
+        p {
+            #font > .sans-serif(normal,16px);
+        }
+    }
+    blockquote{
+        border-left: 5px solid @grayLight;
+    }
+}
+
+form.login{
+    input{
+        .input-small
+    }
+    float: right;
+}
+
+.alert-message {
+    .fade(2s);
+}
+
+.label {
+    padding: 1px 3px 2px;
+    background-color: #BFBFBF;
+    font-size: 9.75px;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+   .border-radius(3px);
+    &.new {
+        background-color: #46A546;
+    }
+    .fade(2s);
+}
+
+/* Patterns */
+
+.fade(@duration: 0.15s, @opacity: 1) {
+    -webkit-transition: opacity @duration linear;
+    -moz-transition: opacity @duration linear;
+    -ms-transition: opacity @duration linear;
+    -o-transition: opacity @duration linear;
+    transition: opacity @duration linear;
+    opacity: 0;
+    &.in{
+        opacity: @opacity;
+    }
+}
+
+
+/* Jumbotrons
+--------------------------------------------------   */
+.jumbotron {
+  min-width: 940px;
+  padding-top: 40px;
+}
+.jumbotron .inner {
+  background: transparent url(http://twitter.github.com/bootstrap/assets/img/grid-18px.png) top center;
+  padding: 45px 0;
+  -webkit-box-shadow: inset 0 10px 30px rgba(0,0,0,.3);
+     -moz-box-shadow: inset 0 10px 30px rgba(0,0,0,.3);
+         /*box-shadow: inset 0 10px 30px rgba(0,0,0,.3);*/
+}
+.jumbotron h1,
+.jumbotron p {
+  margin-bottom: 9px;
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 1px 1px rgba(0,0,0,.3);
+}
+.jumbotron h1 {
+  font-size: 54px;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(0,0,0,.5);
+}
+.jumbotron p {
+  font-weight: 300;
+}
+.jumbotron .lead {
+  font-size: 20px;
+  line-height: 27px;
+}
+.jumbotron p a {
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Specific jumbotrons
+------------------------- */
+/* main docs page */
+.masthead {
+  background-color: #049cd9;
+  background-repeat: no-repeat;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#be8fc8), to(#eee2f1));
+  background-image: -webkit-linear-gradient(#be8fc8, #eee2f1);
+  background-image: -moz-linear-gradient(#be8fc8, #eee2f1);
+  background-image: -o-linear-gradient(top, #be8fc8, #eee2f1);
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#be8fc8), to(#eee2f1));
+}
+

@@ -24,7 +24,7 @@ $(document).ready(function () {
         type: 'GET',
         responseText:[
             {
-                "timestamp": '1301464994372',
+                "timestamp": 1316611398156,
                 "user": 'bguerout',
                 "message": 'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur.',
                 "user": {
@@ -38,7 +38,7 @@ $(document).ready(function () {
                 }
             },
             {
-                "timestamp": '1301464994472',
+                "timestamp": 1316611398300,
                 "user": 'stnevex',
                 "message": 'Praesent blandit odio eu enim. Pellentesque sed dui ut augue blandit sodales.',
                 "user": {
@@ -57,7 +57,7 @@ $(document).ready(function () {
                 }
             },
             {
-                "timestamp": '1301464995372',
+                "timestamp": 1316611399999,
                 "user": 'stnevex',
                 "message": 'Hello from yammer.',
                 "user": {
@@ -79,32 +79,9 @@ $(document).ready(function () {
 
     });
 
-    //event creation
+    //accounts list
     $.mockjax({
-        url: 'api/events',
-        responseTime: 750,
-        status: 201,
-        contentType: 'text/json',
-        type: 'POST',
-        response: function (settings) {
-            var timestamp = new Date().getTime();
-            this.responseText = {
-                id: timestamp,
-                timestamp: '100',
-                user: 'bguerout',
-                message: timestamp + ' / Ex vix aliquip euismod. Per verear tacimates persequeris ad. Recusabo expetendis ei vix..',
-                providerConnection: {
-                    providerId: 'mail'
-                }
-
-            };
-        }
-
-    });
-
-    //connections list
-    $.mockjax({
-        url: 'api/connections',
+        url: 'api/accounts',
         responseTime: 750,
         contentType: 'text/json',
         type: 'GET',
@@ -131,7 +108,7 @@ $(document).ready(function () {
     });
 
     $.mockjax({
-        url: 'api/connections',
+        url: 'api/accounts',
         responseTime: 750,
         contentType: 'text/json',
         type: 'POST',
@@ -143,14 +120,14 @@ $(document).ready(function () {
 
     //Remove connection
     $.mockjax({
-        url: 'api/connections/twitter-1111',
+        url: 'api/accounts/twitter-1111',
         responseTime: 750,
         contentType: 'text/json',
         type: 'DELETE',
         status: 204
     });
     $.mockjax({
-        url: 'api/connections/yammer-9999',
+        url: 'api/accounts/yammer-9999',
         responseTime: 750,
         contentType: 'text/json',
         type: 'DELETE',
@@ -165,7 +142,7 @@ $(document).ready(function () {
         type: 'POST',
         response: function (settings) {
 
-            if (settings.data.login == '') {
+            if (_.isUndefined(settings.data.j_username) || settings.data.j_username=='') {
                 this.status = 401;
                 this.responseText = {"username":null,"loggedIn":false};
             } else {

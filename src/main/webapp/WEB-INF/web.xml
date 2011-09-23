@@ -92,4 +92,10 @@
     <url-pattern>/admin/h2/*</url-pattern>
   </servlet-mapping>
 
+  <mime-mapping>
+    <!-- Allow application to serve less files -->
+    <extension>less</extension>
+    <mime-type>text/css</mime-type>
+  </mime-mapping>
+
 </web-app>
