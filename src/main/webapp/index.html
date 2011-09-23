@@ -1,17 +1,17 @@
 <!--
   ~ Copyright (C) 2010 Benoit Guerout <bguerout at gmail dot com>
   ~
-  ~  Licensed under the Apache License, Version 2.0 (the "License");
-  ~  you may not use this file except in compliance with the License.
-  ~  You may obtain a copy of the License at
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
   ~
-  ~         http://www.apache.org/licenses/LICENSE-2.0
+  ~        http://www.apache.org/licenses/LICENSE-2.0
   ~
-  ~  Unless required by applicable law or agreed to in writing, software
-  ~  distributed under the License is distributed on an "AS IS" BASIS,
-  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~  See the License for the specific language governing permissions and
-  ~  limitations under the License.
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
   -->
 <!DOCTYPE html>
 <html lang="en">
@@ -21,6 +21,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
+    <link rel="shortcut icon" href="images/favicon.ico">
     <link rel="stylesheet/less" href="resources/less/keemto.less"/>
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
@@ -41,60 +42,61 @@
     <script type="text/javascript" src="resources/js/lib/bootstrap-alerts.js"></script>
     <script type="text/javascript" src="resources/js/lib/bootstrap-scrollspy.js"></script>
     <script type="text/javascript" src="resources/js/keemto.js"></script>
-    <script type="text/javascript" src="resources/js/keemto-mock.js"></script>
-
-    <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" href="images/favicon.ico">
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
-
+    <!--script type="text/javascript" src="resources/js/keemto-mock.js"></script-->
+    <script type="text/javascript" src="resources/dynamic/js/keemto-boostrapper.js"></script>
 </head>
 
 <body>
 
 <div class="topbar">
     <div id="topbar"></div>
-    <div id="alerts" class="container"><!--Alerts will be appended here --></div>
 </div>
 
-<!--header class="jumbotron masthead" id="overview">
-    <div class="inner">
-        <div class="container">
-            <h1>Bootstrap, from Twitter</h1>
-
-            <p class="lead">
-                Bootstrap is a toolkit from Twitter designed to kickstart development of webapps and sites.<br>
-                It includes base CSS and HTML for typography, forms, buttons, tables, grids, navigation, and more.<br>
-            </p>
-
-            <p><strong>Nerd alert:</strong> Bootstrap is <a href="#less" title="Read about using Bootstrap with Less">built
-                with Less</a> and was designed to work out of the gate with modern browsers in mind.</p>
-        </div>
-    </div>
-</header-->
-
 <div class="container">
-
-    <div id="tips"></div>
+    <div id="alerts" class="container"></div>
     <div id="main"></div>
-    <footer><p>&copy; Xebia 2011</p></footer>
-
+    <footer>
+        <p>&copy; Company 2011</p>
+    </footer>
 </div>
 
 <!-- Templates -->
 <script type="text/template" id="events-section-template">
     <div class="page-header">
-        <h1>Events</h1>
+        <h1>Events
+           <button id="show-fetched-button" class="btn info hidden">new Events</button>
+        </h1>
     </div>
-    <div id="events" class="events"></div>
+    <div class="row">
+        <div class="span12 events" id="events"></div>
+        <div class="span4">
+            <h3>Improve your network</h3>
+            <ul class="media-grid">
+                <li>
+                    <a href="#"><img class="thumbnail" src="http://www.gravatar.com/avatar/0a40a289089f2d262cc713c54cae7fa2.png" alt=""><span>bguerout</span></a>
+                </li>
+                <li>
+                    <a href="#"><img class="thumbnail" src="http://placehold.it/60x60" alt="">test</a>
+                </li>
+                <li>
+                    <a href="#">
+                        <img class="thumbnail" src="http://placehold.it/60x60" alt="">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </script>
 
 <script type="text/template" id="event-template">
-    <div class="span1">
-        <a href="#"><img src="{{providerConnection.imageUrl}}"/></a>
+    <div class="span1 profile">
+        {{#if providerConnection.imageUrl}}
+            <a href="#"><img src="{{providerConnection.imageUrl}}"/></a>
+        {{else}}
+          <a href="#"><img src="resources/img/social/mail.png"/></a>
+        {{/if}}
     </div>
-    <div class="span10">
+    <div class="span11">
         <p class="twitter-profile">{{user.firstName}} on <a href="#">{{providerConnection.providerUserId}}</a></p>
         <blockquote>
             <p>{{message}}</p>
@@ -126,9 +128,9 @@
             <!--Accounts will be appended here -->
             </tbody>
         </table>
-        <a class="btn" rel="popover" data-content="And here's some amazing content. It's very engaging. right?"
+        <a class="btn primary " rel="popover" data-content="And here's some amazing content. It's very engaging. right?"
            data-original-title="A Title">Add Twitter Account</a>
-        <a class="btn">Add Yammer Account</a>
+        <a class="btn success">Add Yammer Account</a>
     </div>
 </script>
 
@@ -144,22 +146,41 @@
     </td>
 </script>
 
-<script type="text/template" id="welcome-tip-template">
+<script type="text/template" id="welcome-template">
     <div class="tips">
         <h1>What is ?</h1>
 
-        <p>Vestibulum id ligula porta felis euismod semper. Integer posuere erat a ante venenatis dapibus posuere velit
+        <p>Keemto allows users to be keep in touch Vestibulum id ligula porta felis euismod semper. Integer posuere erat a ante venenatis dapibus posuere velit
             aliquet. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec
-            elit.</p>
-
-        <p>
-            {{#unless authenticated}}
-            <a id="welcome-tip-signin" class="btn info large" href="#login">Sign in and add your accounts
-                now &raquo;</a>
-            {{/unless}}
-            <a class="btn large" href="#events">Just had a look! &raquo;</a>
-            <a class="btn large" data-controls-modal="oauth-confirm" data-backdrop="static">PIN &raquo;</a>
+            elit.
         </p>
+
+        <form class="form-stacked">
+            <fieldset>
+                <div class="clearfix">
+                    <label for="login">Login</label>
+
+                    <div class="input">
+                        <input name="login" size="30" type="text" placeholder="yourlogin@xebia.com">
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label for="password">Password</label>
+
+                    <div class="input">
+                        <input name="password" size="30" type="password">
+                    </div>
+                </div>
+            </fieldset>
+            <div>
+                {{#unless authenticated}}
+                <input type="submit" class="btn info large xlarge" value="Sign in and add your accounts now &raquo;">
+                {{/unless}}
+                <a class="btn large" href="#events">Just had a look! <small>No auth required!</small>&raquo;</a>
+                <a class="btn large" data-controls-modal="oauth-confirm" data-backdrop="static">PIN &raquo;</a>
+            </div>
+        </form>
+
     </div>
 </script>
 
@@ -182,7 +203,7 @@
                         <label for="login">Login</label>
 
                         <div class="input">
-                            <input name="login" size="30" type="text">
+                            <input name="login" size="30" type="text" placeholder="yourlogin@xebia.com">
                         </div>
                     </div>
                     <div class="clearfix">
@@ -193,8 +214,7 @@
                         </div>
                     </div>
                     <div class="actions">
-                         <input type="submit" class="btn info" value="Sign in and add your accounts now &raquo;">
-                        <a href="#events" class="btn">Just had a look! &raquo;</a>
+                        <input type="submit" class="btn" value="Login">
                     </div>
                 </fieldset>
             </form>
@@ -203,16 +223,17 @@
 </script>
 
 <script type="text/template" id="topbar-template">
-    <div class="topbar-inner">
+    <div class="fill">
         <div class="container">
-            <h3><a href="#">Keemto</a></h3>
+            <a class="brand" href="#">Keemto</a>
             <ul class="nav">
-                <li><a href="#">Home</a></li>
-                <li><a id="top-tips" href="#">Hide Tips</a></li>
+                <li class="active"><a href="#events">Home</a></li>
+                <li><a href="https://github.com/bguerout/keemto">Github&raquo;</a></li>
                 {{#if authenticated}}
                 <li><a id="top-accounts" href="#accounts">Manage your accounts</a></li>
                 {{/if}}
             </ul>
+
             {{#if authenticated}}
             <ul class="nav secondary-nav">
                 <li class="dropdown">
@@ -223,15 +244,14 @@
                 </li>
             </ul>
             {{else}}
-            <form action="" class="login">
-                <input type="text" name="login" placeholder="Login">
-                <input type="password" name="password" placeholder="Password">
-                <input type="submit" placeholder="Password">
+            <form action="" class="pull-right">
+                <input name="login" class="input-small" type="text" placeholder="Email">
+                <input name="password" class="input-small" type="password" placeholder="Password">
+                <button class="btn" type="submit">Sign in</button>
             </form>
             {{/if}}
         </div>
     </div>
-
 </script>
 
 
@@ -243,11 +263,12 @@
     </div>
     <div class="modal-body">
 
-        <p>You have successfully created a new connection.</p>
+        <p>You have
+            <successful></successful>ly created a new connection.</p>
 
         <p>To complete the authorization please enter PIN code provided by provider:</p>
 
-        <form action="api/connections/yammer" method="POST">
+        <form action="api/accounts/yammer" method="POST">
             <fieldset>
                 <input type="text" name="oauth_verifier" placeholder="PIN Code">
             </fieldset>
