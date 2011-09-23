@@ -17,124 +17,231 @@
 
     var root = this;
 
-    root.Keemto = {
-        // The top-level namespace. All public Keemto classes will be attached to this.
-        Views: {},
-        Routers: {},
-        Collections: {},
-        Models: {},
+    root.Keemto =
+        (function() {
 
-        log: function (str) {
-            console.log(str);
-        },
+            var notifier;
+            var templates = {};
+            var mainView;
+            var views = [];
+            var authService;
 
-        init: function () {
-            this.activeSession = new Keemto.Models.Session();
+            var registerHandlebarsHelpers = function() {
+                Handlebars.registerHelper('timeago', function(timestamp) {
+                    return $.timeago(new Date(timestamp));
+                });
+            };
 
-            new Keemto.Routers.Authentication();
-            new Keemto.Routers.Main();
-            new Keemto.Routers.Connections();
-            Backbone.history.start();
+            var preCompileTemplates = function() {
+                $("script[type='text/template']").each(function(index) {
+                    var id = $(this).attr('id');
+                    Keemto.log("A new template has been discovered: " + id);
+                    templates[id] = Handlebars.compile($("#" + id).html());
+                });
+            };
 
-            new Keemto.Views.Header({
-                el: $('#navigation')
-            });
+            var setApplicationRenderingForNotifications = function() {
+                notifier.bind("message", function(notification) {
+                    var msg = notification.message;
+                    Keemto.log("[" + notification.level.toUpperCase() + "] " + msg);
+                    var alert = new Keemto.Views.Alert({message:msg, level:notification.level});
+                    $('#alerts').append(alert.el);
+                });
 
-            var events = new Keemto.Collections.Events();
-            events.fetch({
-                success: function () {
-                    new Keemto.Views.Events({
-                        el: $("#main"),
-                        collection: events
-                    });
+                notifier.bind("user:signin", function() {
+                    var loginSuccess = new Keemto.Views.Alert({message:"Authentication successfull!", level:'success'});
+                    var el = loginSuccess.el;
+                    $('#alerts').append(el);
+                });
+            };
+
+            var renderDefaultViews = function() {
+                $("#topbar").append(new Keemto.Views.TopBar().el);
+            };
+
+            var prepareNotifier = function(){
+                notifier = new Keemto.Notifier();
+                setApplicationRenderingForNotifications();
+            };
+
+             var initRouters = function(){
+                authService = new Keemto.Routers.Authentication({notifier: notifier});
+                new Keemto.Routers.Home();
+                Backbone.history.start();
+            };
+
+            return {
+                // The top-level namespace. All public Keemto classes will be attached to this.
+                Views:{},
+                Routers:{},
+                Collections:{},
+                Models:{},
+
+                init:function() {
+                    registerHandlebarsHelpers();
+                    preCompileTemplates();
+                    prepareNotifier();
+                    initRouters();
+                    renderDefaultViews();
+                    Keemto.log("Keemto Client UI has been successfully initialize.");
                 },
-                error: function (collection) {
-                    Keemto.notify({
-                        type: "error",
-                        message: "Error loading events."
-                    });
-                }
-            });
 
-            this.notifier = new Keemto.Notifier();
-            this.notifier.bind("notification:error", function (notification) {
-                Keemto.log("An error has occurred : " + notification.message);
-                alert("An error has occurred : " + notification.message);
-            });
-        },
+                /*
+                Helpers method with application scope
+                */
 
-        notify: function (notification) {
-            this.notifier.notify(notification);
-        },
-
-        //TODO move login handling to an Auth object
-        login: function (login, password) {
-            var self = this;
-            $.ajax({
-                type: "POST",
-                url: "api/login",
-                data: {
-                    j_username: login,
-                    j_password: password
+                log:function(str) {
+                    console.log(str);
                 },
-                dataType: "json",
-                success: function (response) {
-                    if (response.loggedIn) {
-                        var currentUserLogin = response.username;
-                        self.activeSession.set({
-                            login: currentUserLogin
-                        });
-                    } else {
-                        Keemto.notify({
-                            type: "error",
-                            message: "Authentication has failed for user: " + response.username
-                        });
+
+                message:function(notification) {
+                    notifier.fireMessage(notification);
+                },
+
+                listen:function(notificationName, callback) {
+                    notifier.bind(notificationName, callback);
+                },
+
+                login:function(login, password,onSuccess) {
+                    authService.login(login, password,onSuccess);
+                },
+
+                getAuth:function() {
+                    return authService;
+                },
+
+                renderTemplate:function(id, model) {
+                    Keemto.log("Rendering template " + id + " with data " + model);
+                    return templates[id](model);
+                },
+
+                goToView:function(view) {
+                    if (mainView != null) {
+                        mainView.remove();
                     }
+                    mainView = view;
+                    $('#main').append(mainView.el);
                 },
-                error: function (response) {
-                    Keemto.notify({
-                        type: "error",
-                        message: "Authentication has failed."
-                    });
+
+                goToHash:function(hash) {
+                    Backbone.history.navigate(hash, true);
                 }
-            });
-        }
-    };
+            };
+        })();
+
     _.extend(Keemto, Backbone.Events);
 
     //Notifier for error handling
-    Keemto.Notifier = function (a) {
+    Keemto.Notifier = function(a) {
         a || (a = {});
         this.initialize && this.initialize(a)
     };
     _.extend(Keemto.Notifier.prototype, Backbone.Events, {
-        notify: function (notification) {
-            this.trigger("notification:" + notification.type, notification);
+
+        initialize:function(options) {
+            _.bindAll(this, 'fireSignin');
+        },
+
+        fireSignin:function(loginInfo) {
+            this.trigger('user:signin', loginInfo);
+            this.trigger("user:updated", loginInfo);
+        },
+
+        fireMessage:function(notification) {
+            this.trigger("message:" + notification.level, notification);
+            this.trigger("message", notification);
         }
     });
 
-    Keemto.Models.Session = Backbone.Model.extend({
+    Keemto.Models.User = Backbone.Model.extend({
 
-        defaults: {
-            login: "",
-            password: ""
+        defaults:{
+            login:"anonymous"
         },
 
-        isAuthenticated: function () {
-            return Boolean(this.get("login"));
+        isAuthenticated:function() {
+            return Boolean(this.get("login") != 'anonymous');
         }
     });
 
     Keemto.Routers.Authentication = Backbone.Router.extend({
-        routes: {
-            "logout": "logout"
+
+        routes:{
+            "logout":"logout",
+            "login":"showLoginForm"
         },
 
-        logout: function () {
-            Keemto.activeSession.clear();
-            window.location = "";
-        }
+        initialize:function(options) {
+            this.currentUser = new Keemto.Models.User();
+            this.notifier = options.notifier;
+            var loginInfo = {login: this.login, authenticated: this.isUserAuthenticated()};
+            this.currentUser.bind('change:login', _.bind(this.notifier.fireSignin, this.notifier, loginInfo));
+        },
 
+        logout:function() {
+            currentUser.clear();
+            Keemto.goToHash("");
+        },
+
+        showLoginForm:function() {
+            var view = new Keemto.Views.Login();
+            Keemto.goToView(view);
+        },
+
+        login:function(login, password,onSuccess) {
+            var self = this;
+            $.ajax({
+                type:"POST",
+                url:"api/login",
+                data:{
+                    j_username:login,
+                    j_password:password
+                },
+                dataType:"json",
+                success:function(response) {
+                    if (response.loggedIn) {
+                        var currentUserLogin = response.username;
+                        self.currentUser.set({login:currentUserLogin});
+                        _.isUndefined(onSuccess)? Keemto.goToHash("#events"): onSuccess.call();
+                    } else {
+                        Keemto.message({level:"error", message:"Authentication has failed for user: " + response.username});
+                    }
+                },
+                error:function(response) {
+                    Keemto.message({level:"error", message:"Authentication has failed."});
+                }
+            });
+        },
+
+        isUserAuthenticated:function() {
+            return this.currentUser.isAuthenticated();
+        }
+    });
+
+    Keemto.Views.Login = Backbone.View.extend({
+
+        tagName:'section',
+        className:'block',
+
+        events:{
+            "submit form":"submitLoginForm"
+        },
+
+        initialize:function() {
+            this.render();
+        },
+
+        submitLoginForm:function() {
+            var login = this.$('input[name="login"]').val();
+            var password = this.$('input[name="password"]').val();
+            Keemto.getAuth().login(login, password, _.bind(function(){Keemto.goToHash("#accounts");},this));
+            return false;
+        },
+
+        render:function() {
+            $(this.el).html(Keemto.renderTemplate("login-template"));
+            return this;
+        }
     });
 
     //Events
@@ -142,262 +249,329 @@
     Keemto.Models.Event = Backbone.Model.extend({});
 
     Keemto.Collections.Events = Backbone.Collection.extend({
-
-        model: Keemto.Models.Event,
-        url: 'api/events'
+        model:Keemto.Models.Event,
+        url:'api/events',
+        comparator:function(event) {
+            return event.get("timestamp");
+        }
     });
 
-    Keemto.Views.Event = Backbone.View.extend({
-        tagName: 'div',
-        className: 'coreMsgItem',
+    Keemto.Routers.Home = Backbone.Router.extend({
 
-        initialize: function () {
-            _.bindAll(this, 'render');
-            this.template = _.template($('#event-template').html());
-            this.model.bind('change', this.render);
-            this.model.view = this;
+        routes:{
+            "":"home",
+            "events":"showEvents",
+            "accounts":"showAccounts"
         },
 
-        render: function () {
-            $(this.el).html(this.template(this.model.toJSON()));
-            return this;
+        initialize:function() {
+            _.bindAll(this, 'fetchLastEvents');
+            //Events collections is held by router because it must be maintain even if view is destroy.
+            this.events = new Keemto.Collections.Events();
+            this.registerFetchingTask(10000);
+        },
+
+        home:function() {
+            Keemto.log("Routing user to home.");
+            if(Keemto.getAuth().isUserAuthenticated()){
+                Keemto.goToHash("#events");
+            }
+            else{
+                Keemto.goToView(new Keemto.Views.Welcome());
+            }
+        },
+
+        showEvents:function() {
+            var view = new Keemto.Views.Events({collection:this.events});
+            Keemto.goToView(view);
+        },
+
+        showAccounts:function() {
+            Keemto.log("Routing user to accounts hash");
+            var view = new Keemto.Views.Accounts();
+            Keemto.goToView(view);
+        },
+
+        registerFetchingTask:function(delay) {
+            window.setInterval(this.fetchLastEvents, delay);
+        },
+
+        fetchLastEvents:function() {
+            var lastFetchedEvent = this.events.max(
+                function(event) {
+                    return event.attributes.timestamp;
+                });
+
+            var fetchOptions = {};
+            var collectionHasAlreadyBeenFetched = !_.isUndefined(lastFetchedEvent);
+            if (collectionHasAlreadyBeenFetched) {
+                var lastTimestamp = lastFetchedEvent.attributes.timestamp;
+                fetchOptions = {add:true, data:"timestamp=" + lastTimestamp}
+            }
+            Keemto.log("Trying to fetch events newer than :" + lastTimestamp);
+            this.events.fetch(fetchOptions);
         }
     });
 
     Keemto.Views.Events = Backbone.View.extend({
 
+        tagName:'div',
+        className:'content',
+        fetchedEvents: [],
 
-        initialize: function () {
-            _.bindAll(this, 'render', 'addEventView');
-            this.collection.bind('add', this.addEventView);
-            this.render();
+         events:{
+            "click #show-fetched-button":"showFetchedEvents"
         },
 
-        render: function () {
-            $(this.el).empty();
-            $(this.el).append('<div class="wrap"></div>');
-            this.$('.wrap').append('<div id="coreMsg"></div>');
-            _(this.collection.models).each(function (event) {
+        initialize:function() {
+            _.bindAll(this, 'render', 'addEventView','showFetchedButton','showFetchedEvents');
+            this.collection.bind('add', this.showFetchedButton);
+            this.collection.bind('reset', this.render);
+            this.collection.fetch({
+                error:function(collection) {
+                    Keemto.message({level:"error", message:"Error loading events."});
+                }
+            });
+        },
+
+        showFetchedButton: function(model){
+          this.fetchedEvents.push(model);
+          $('title').text('('+this.fetchedEvents.length+')Keemto');
+          this.$("#show-fetched-button").html(this.fetchedEvents.length+' new events');
+          this.$("#show-fetched-button").show();
+        },
+
+        showFetchedEvents: function(){
+          this.$("#show-fetched-button").hide();
+          $('title').text("Keemto");
+          _.each( this.fetchedEvents,this.addEventView);
+        },
+
+        addEventView:function(event) {
+            var eventElement = new Keemto.Views.Event({model:event}).el;
+            this.$("#events").prepend($(eventElement).fadeIn(1000));
+        },
+
+        render:function() {
+            $(this.el).html(Keemto.renderTemplate("events-section-template"));
+            _(this.collection.models).each(function(event) {
                 this.addEventView(event);
             }, this);
 
             return this;
-        },
-
-        addEventView: function (event) {
-            var eventElement = new Keemto.Views.Event({
-                model: event
-            }).render().el;
-            this.$("#coreMsg").prepend($(eventElement).fadeIn(2500));
         }
     });
 
-    //Connections
-    //-----------
-    Keemto.Models.Connection = Backbone.Model.extend({});
+    Keemto.Views.Event = Backbone.View.extend({
+        tagName:'div',
+        className:'event row',
 
-    Keemto.Collections.Connections = Backbone.Collection.extend({
-
-        model: Keemto.Models.Connection,
-        url: 'api/connections'
-    });
-
-    Keemto.Routers.Connections = Backbone.Router.extend({
-        routes: {
-            "connections": "view"
-        },
-
-        view: function () {
-            var panel = $("#panelContent");
-            var connections = new Keemto.Collections.Connections();
-            connections.fetch({
-                success: function () {
-                    panel.empty();
-                    new Keemto.Views.Connections({
-                        el: panel,
-                        collection: connections
-                    });
-                },
-                error: function (collection, response) {
-                    Keemto.notify({
-                        type: "error",
-                        message: "Error loading connections."
-                    });
-                }
-            });
-        }
-    });
-
-    Keemto.Views.Connection = Backbone.View.extend({
-        tagName: 'li',
-        events: {
-            "click a.delete": "revoke"
-        },
-
-        initialize: function () {
-            _.bindAll(this, 'render');
-            this.template = _.template($('#connection-template').html());
-            this.model.bind('change', this.render);
-            this.model.bind('destroy', this.remove);
-            this.model.view = this;
-        },
-
-        render: function () {
-            $(this.el).html(this.template(this.model.toJSON()));
-            return this;
-        },
-
-        revoke: function () {
-            this.model.destroy({
-                success: _.bind(function(model, response) {
-                    $(this.el).fadeOut('slow', function() {
-                        $(this).remove();
-                    })
-                }, this),
-                error: function(model, response) {
-                    Keemto.notify({
-                        type: "error",
-                        message: "Unable to revoke access to this application."
-                    });
-                }});
-            return false;
-        }
-
-    });
-
-    Keemto.Views.Connections = Backbone.View.extend({
-
-        initialize: function () {
-            _.bindAll(this, 'render');
+        initialize:function() {
+            _.bindAll(this, 'render', 'fadeLabel');
             this.render();
         },
 
-        render: function () {
-            $(this.el).append('<h1>Your connections</h1><span>You have allowed Keemto to access the following applications</span><ul></ul>');
+        fadeLabel:function() {
+            var element = this.$(".label");
+            if (element.hasClass('fade')) {
+                this.$(".label").removeClass('in');
+                if (!$.support.transition) {
+                    this.$(".label").remove();
+                }
+            }
+            return this;
+        },
 
-            _(this.collection.models).each(function (connection) {
-                var connectionElement = new Keemto.Views.Connection({
-                    model: connection
-                }).render().el;
-                this.$('ul').append(connectionElement);
-            }, this);
-
-            $(this.el).append('<div id="panelButtons"></div>');
-            this.$("#panelButtons").append(new Keemto.Views.ButtonConnection({buttonId:"twitter", buttonText:"Add Twitter Connection"}).render().el);
-            this.$("#panelButtons").append(new Keemto.Views.ButtonConnection({buttonId:"yammer", buttonText:"Add Yammer Connection"}).render().el);
-            this.$("#panelButtons").append('<span class="buttonLarge"><a>Cancel</a></span>');
-
+        render:function() {
+            var contentEl = Keemto.renderTemplate("event-template", this.model.toJSON());
+            $(this.el).append(contentEl);
+            window.setTimeout(this.fadeLabel, 8000);
             return this;
         }
     });
 
-    Keemto.Views.ButtonConnection = Backbone.View.extend({
-        tagName: 'span',
-        className: 'buttonLarge',
-        events: {
-            "click a": "goToProviderAuthorizeUrl"
-        },
+    //Accounts
+    //-----------
+    Keemto.Models.Account = Backbone.Model.extend({});
 
-        initialize: function (options) {
+    Keemto.Collections.Accounts = Backbone.Collection.extend({
+
+        model:Keemto.Models.Account,
+        url:'api/accounts'
+    });
+
+    Keemto.Views.Accounts = Backbone.View.extend({
+
+        tagName:'div',
+        className:'content',
+
+        initialize:function() {
             _.bindAll(this, 'render');
-            this.buttonText = options.buttonText;
-            this.buttonId = options.buttonId;
+            this.collection = new Keemto.Collections.Accounts();
+            this.collection.bind('reset', this.render);
+            this.collection.fetch({
+                error:function(collection, response) {
+                    Keemto.message({level:"error", message:"Error loading accounts."});
+                }
+            });
         },
 
-        goToProviderAuthorizeUrl: function () {
-            var form = document.createElement("form");
-            form.setAttribute("method", "post");
-            form.setAttribute("action", "api/connections/" + this.buttonId);
-            $('#main').append(form);
-
-            form.submit();
-            return false;
+        render:function() {
+            $(this.el).html(Keemto.renderTemplate("accounts-section-template"));
+            this.collection.each(function(account) {
+                var accElement = new Keemto.Views.Account({model:account}).el;
+                this.$('tbody').append(accElement);
+            }, this);
+            this.configurePopover();
+            return this;
         },
 
-        render: function () {
-            $(this.el).append('<a>' + this.buttonText + '</a>');
+        configurePopover:function() {
+            this.$("a[rel=popover]").popover({offset:10, animate:true}).click(function(e) {
+                e.preventDefault();
+            });
+        },
+    });
+
+    Keemto.Views.Account = Backbone.View.extend({
+        tagName:'tr',
+        className:'odd',
+
+        events:{
+            "click button.danger":"revoke"
+        },
+
+        initialize:function() {
+            _.bindAll(this, 'render', 'revoke', 'remove');
+            this.model.bind('change', this.render, this);
+            this.model.bind('destroy', this.remove, this);
+            this.render();
+        },
+
+        revoke:function() {
+            this.model.destroy({
+                success: function() {
+                    Keemto.message({message:"Account successfuly revoked!", level:'success'});
+                },
+                error:function(model, response) {
+                    Keemto.message({level:"error", message:"Unable to revoke account."});
+                }});
+        },
+
+        remove:function() {
+            $(this.el).remove();
+        },
+
+        render:function() {
+            var accountElement = Keemto.renderTemplate("account-template", this.model.toJSON());
+            $(this.el).append(accountElement);
             return this;
         }
     });
 
     // Home
     // ---------------
-    Keemto.Routers.Main = Backbone.Router.extend({
-        routes: {
-            "": "main"
+    Keemto.Views.TopBar = Backbone.View.extend({
+
+        tagName: 'div',
+        toggleFlag:0,
+
+        events:{
+            "submit form":"submitLoginForm",
+            "click li":"activate"
         },
 
-        main: function () {
-            var panel = $("#panelContent");
-            panel.empty();
-            new Keemto.Views.InfoPanel({
-                el: panel
-            });
-        }
-    });
-
-    Keemto.Views.Header = Backbone.View.extend({
-
-        toggleFlag: 0,
-
-        events: {
-            "click #panelButton": "togglePanelButton",
-            "submit #loginNav form": "submitLoginForm"
-        },
-
-        initialize: function () {
+        initialize:function() {
             _.bindAll(this, 'render');
-            Keemto.activeSession.bind('change', this.render);
-            this.formTemplate = _.template($('#form-template').html());
-            this.authTemplate = _.template($('#authenticated-template').html());
+            Keemto.listen('user:updated', this.render);
             this.render();
         },
 
-        submitLoginForm: function () {
+        submitLoginForm:function() {
             var login = this.$('input[name="login"]').val();
             var password = this.$('input[name="password"]').val();
-            Keemto.login(login, password);
+            Keemto.getAuth().login(login, password);
             return false;
         },
 
-        togglePanelButton: function () {
-            var self = this;
-            var flagStatus = this.toggleFlag++ % 2;
-            $('#panel').slideToggle(500, function () {
-                if (flagStatus == 0) {
-                    self.$('#panelButton').html("Show Notifications");
-                } else {
-                    self.$('#panelButton').html("Hide Notifications");
-                }
+        activate:function(event) {
+            $(this.el).addClass('activate');
+            return true;
+        },
+
+        configureDropdown: function() {
+
+            $("body").bind("click", function (e) {
+                $('.dropdown-toggle').parent("li").removeClass("open");
             });
-            return false;
+            this.$(".dropdown-toggle").click(function (e) {
+                var $li = $(this).parent("li").toggleClass('open');
+                return false;
+            });
         },
 
-        render: function () {
+        render:function() {
             $(this.el).empty();
-            if (Keemto.activeSession.isAuthenticated()) {
-                $(this.el).html(this.authTemplate(Keemto.activeSession.toJSON()));
-            } else {
-                $(this.el).html(this.formTemplate());
-            }
-
+            var isAuthenticated = Keemto.getAuth().isUserAuthenticated();
+            var topbar = Keemto.renderTemplate("topbar-template", {authenticated:isAuthenticated});
+            $(this.el).append(topbar);
+            this.configureDropdown();
             return this;
         }
     });
 
-    Keemto.Views.InfoPanel = Backbone.View.extend({
+    Keemto.Views.Welcome = Backbone.View.extend({
 
-        initialize: function () {
-            _.bindAll(this, 'render');
+        tagName: 'div',
+
+        events:{
+            "submit form":"submitLoginForm"
+        },
+
+        initialize:function() {
             this.render();
         },
 
-        render: function () {
-            $(this.el).append('<h1>What is Keemto ?</h1>');
-            $(this.el).append('<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>');
+        submitLoginForm:function() {
+            var login = this.$('input[name="login"]').val();
+            var password = this.$('input[name="password"]').val();
+            Keemto.getAuth().login(login, password, _.bind(function(){
+                $(this.el).remove();
+                Keemto.goToHash("#accounts");
+            },this));
+            return false;
+        },
+
+        render:function() {
+            var isAuthenticated = Keemto.getAuth().isUserAuthenticated();
+            var tip = Keemto.renderTemplate("welcome-template", {authenticated:isAuthenticated});
+            $(this.el).append(tip);
             return this;
         }
     });
 
+    Keemto.Views.Alert = Backbone.View.extend({
+
+        tagName:'div',
+        className:'alert-message fade in',
+
+        initialize:function() {
+            _.bindAll(this, 'render', 'close');
+            this.render();
+        },
+
+        render:function() {
+            var el = $(this.el);
+            el.addClass(this.options.level);
+            el.attr('data-alert', this.options.level);
+            el.append('<a class="close" href="#">x</a><p>' + this.options.message + '</p>');
+            window.setTimeout(this.close, 4000);
+            return this;
+        },
+
+        close:function() {
+            this.$('a').click();
+        }
+    });
 
 }).call(this);

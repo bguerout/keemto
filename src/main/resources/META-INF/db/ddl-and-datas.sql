@@ -33,4 +33,4 @@ insert into events (ts,message,username,providerId) values ('1301464284376','Mau
 
 
 insert into UserConnection (userId,providerId,providerUserId,rank,displayName,profileUrl,imageUrl,accessToken,secret,refreshToken,expireTime)
-values ('stnevex','twitter','293724331',1,'@stnevex','http://twitter.com/stnevex','http://a0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png','293724331-R8wyHN0CXBZ5BNDri3OrblT4ntYHXi976bLJ0IRm','zkSBVq9MV7Slp4ArUDn6lTTH4etvvbY1S7FOAxNoiGo',null,null);
+values ('stnevex','twitter','293724331',1,'@stnevex','http://twitter.com/stnevex','http://www.gravatar.com/avatar/0a40a289089f2d262cc713c54cae7fa2.png','293724331-R8wyHN0CXBZ5BNDri3OrblT4ntYHXi976bLJ0IRm','zkSBVq9MV7Slp4ArUDn6lTTH4etvvbY1S7FOAxNoiGo',null,null);

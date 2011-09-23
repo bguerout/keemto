@@ -24,11 +24,13 @@ $(document).ready(function () {
         type: 'GET',
         responseText:[
             {
-                "timestamp": '1',
+                "timestamp": 1316611398156,
                 "user": 'bguerout',
                 "message": 'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur.',
                 "user": {
-                  "username": 'stnevex'
+                  "username": 'stnevex',
+                  "firstName": 'John',
+                  "lastName": 'Doe'
                 },
                 "providerConnection": {
                   "providerId": 'mail',
@@ -36,17 +38,39 @@ $(document).ready(function () {
                 }
             },
             {
-                "timestamp": '2',
+                "timestamp": 1316611398300,
                 "user": 'stnevex',
                 "message": 'Praesent blandit odio eu enim. Pellentesque sed dui ut augue blandit sodales.',
                 "user": {
-                  "username": 'stnevex'
+                  "username": 'stnevex',
+                  "firstName": 'John',
+                  "lastName": 'Doe'
                 },
                 "providerConnection": {
+                 "id":"twitter-1111",
                  "providerId":"twitter",
                  "providerUserId":"@twitter",
                  "displayName":"stnevex",
                  "profileUrl":"http://twitter.com/stnevex",
+                 "imageUrl":"http://a0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
+                  "anonymous": 'false'
+                }
+            },
+            {
+                "timestamp": 1316611399999,
+                "user": 'stnevex',
+                "message": 'Hello from yammer.',
+                "user": {
+                  "username": 'stnevex',
+                  "firstName": 'John',
+                  "lastName": 'Doe'
+                },
+                "providerConnection": {
+                 "id":"yammer-1111",
+                 "providerId":"yammer",
+                 "providerUserId":"@stnevex",
+                 "displayName":"John Doe",
+                 "profileUrl":"http://yammer.com/stnevex",
                  "imageUrl":"http://a0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
                   "anonymous": 'false'
                 }
@@ -55,55 +79,36 @@ $(document).ready(function () {
 
     });
 
-    //event creation
+    //accounts list
     $.mockjax({
-        url: 'api/events',
-        responseTime: 750,
-        status: 201,
-        contentType: 'text/json',
-        type: 'POST',
-        response: function (settings) {
-            var timestamp = new Date().getTime();
-            this.responseText = {
-                id: timestamp,
-                timestamp: '100',
-                user: 'bguerout',
-                message: timestamp + ' / Ex vix aliquip euismod. Per verear tacimates persequeris ad. Recusabo expetendis ei vix..',
-                providerConnection: {
-                    providerId: 'mail'
-                }
-
-            };
-        }
-
-    });
-
-    //connections list
-    $.mockjax({
-        url: 'api/connections',
+        url: 'api/accounts',
         responseTime: 750,
         contentType: 'text/json',
         type: 'GET',
         responseText: [
             {
                 "id":"twitter-1111",
-                "displayName":"stnevex",
                 "providerId":"twitter",
+                "providerUserId":"@twitter",
+                "displayName":"stnevex",
                 "profileUrl":"http://twitter.com/stnevex",
-                "imageUrl":"http://twitter.com/stnevex.jpg"
+                "imageUrl":"http://a0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
+                "anonymous": 'false'
             },
             {
-                "id":"yammer-9999",
-                "displayName":"bguerout(error on revoke)",
-                "providerId":"twitter",
-                "profileUrl":"http://yammer.com/bguerout",
-                "imageUrl":"http://yammer.com/bguerout.jpg"
+                "id":"yammer-1111",
+                 "providerId":"yammer",
+                 "providerUserId":"@stnevex",
+                 "displayName":"John Doe",
+                 "profileUrl":"http://yammer.com/stnevex",
+                 "imageUrl":"http://a0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
+                 "anonymous": 'false'
             }
         ]
     });
 
     $.mockjax({
-        url: 'api/connections',
+        url: 'api/accounts',
         responseTime: 750,
         contentType: 'text/json',
         type: 'POST',
@@ -115,14 +120,14 @@ $(document).ready(function () {
 
     //Remove connection
     $.mockjax({
-        url: 'api/connections/twitter-1111',
+        url: 'api/accounts/twitter-1111',
         responseTime: 750,
         contentType: 'text/json',
         type: 'DELETE',
         status: 204
     });
     $.mockjax({
-        url: 'api/connections/yammer-9999',
+        url: 'api/accounts/yammer-9999',
         responseTime: 750,
         contentType: 'text/json',
         type: 'DELETE',
@@ -137,7 +142,7 @@ $(document).ready(function () {
         type: 'POST',
         response: function (settings) {
 
-            if (settings.data.login == '') {
+            if (_.isUndefined(settings.data.j_username) || settings.data.j_username=='') {
                 this.status = 401;
                 this.responseText = {"username":null,"loggedIn":false};
             } else {

@@ -10,7 +10,7 @@ response.setDateHeader ("Expires", 1L); //prevent caching at the proxy server
 $(document).ready(function() {
     Keemto.init();
     <sec:authorize access="isFullyAuthenticated()">
-        Keemto.activeSession.set({login: '<sec:authentication property="principal.username" />'});
+        Keemto.user.set({login: '<sec:authentication property="principal.username" />'});
     </sec:authorize>
 
     <c:if test="${not empty sessionScope.oauthToken}">

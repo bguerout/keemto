@@ -78,7 +78,7 @@ public class ConnectionControllerTest extends ControllerTestCase {
     public void showReturnAllConnections() throws Exception {
 
         request.setMethod("GET");
-        request.setRequestURI("/api/connections");
+        request.setRequestURI("/api/accounts");
 
         MultiValueMap<String, Connection<?>> connections = new LinkedMultiValueMap<String, Connection<?>>();
         connections.add("twitter", new NullConnection<Object>(data));
@@ -104,7 +104,7 @@ public class ConnectionControllerTest extends ControllerTestCase {
     public void whenUserHasNoConnectionShouldReturnEmptyJson() throws Exception {
 
         request.setMethod("GET");
-        request.setRequestURI("/api/connections");
+        request.setRequestURI("/api/accounts");
 
         when(repository.findAllConnections()).thenReturn(new LinkedMultiValueMap<String, Connection<?>>());
 
@@ -119,7 +119,7 @@ public class ConnectionControllerTest extends ControllerTestCase {
     public void showReturnConnectionById() throws Exception {
 
         request.setMethod("GET");
-        request.setRequestURI("/api/connections/twitter-1111");
+        request.setRequestURI("/api/accounts/twitter-1111");
 
         when(repository.getConnection(new ConnectionKey("twitter", "1111"))).thenReturn(new NullConnection<Object>(data));
 
@@ -139,7 +139,7 @@ public class ConnectionControllerTest extends ControllerTestCase {
     public void shouldDeleteConnection() throws Exception {
 
         request.setMethod("DELETE");
-        request.setRequestURI("/api/connections/twitter-9999");
+        request.setRequestURI("/api/accounts/twitter-9999");
 
         handlerAdapter.handle(request, response, controller);
 
@@ -152,7 +152,7 @@ public class ConnectionControllerTest extends ControllerTestCase {
     public void shouldDeleteConnectionBySplittingKeyWithLastIndexOfMinus() throws Exception {
 
         request.setMethod("DELETE");
-        request.setRequestURI("/api/connections/linked-in-9999");
+        request.setRequestURI("/api/accounts/linked-in-9999");
 
         handlerAdapter.handle(request, response, controller);
 
@@ -174,7 +174,7 @@ public class ConnectionControllerTest extends ControllerTestCase {
     public void providerShouldRequestOAuth1CalledBack() throws Exception {
 
         request.setMethod("GET");
-        request.setRequestURI("/api/connections/twitter");
+        request.setRequestURI("/api/accounts/twitter");
         request.setParameter("oauth_token", "xxx");
         Connection newConnectionCreated = mock(Connection.class);
         when(webSupport.completeConnection(any(OAuth1ConnectionFactory.class), any(NativeWebRequest.class))).thenReturn(newConnectionCreated);
@@ -184,14 +184,14 @@ public class ConnectionControllerTest extends ControllerTestCase {
         verify(repository).addConnection(newConnectionCreated);
         assertThat(modelAndView.getView(), Matchers.<Object>instanceOf(RedirectView.class));
         RedirectView view = (RedirectView) modelAndView.getView();
-        assertThat(view.getUrl(), equalTo("/#connections"));
+        assertThat(view.getUrl(), equalTo("/#accounts"));
     }
 
     @Test
     public void userShouldPostPinCodeAsOAuth1CalledBack() throws Exception {
 
         request.setMethod("POST");
-        request.setRequestURI("/api/connections/twitter");
+        request.setRequestURI("/api/accounts/twitter");
         request.setParameter("oauth_verifier", "XXX");
         Connection newConnectionCreated = mock(Connection.class);
         when(webSupport.completeConnection(any(OAuth1ConnectionFactory.class), any(NativeWebRequest.class))).thenReturn(newConnectionCreated);
@@ -201,14 +201,14 @@ public class ConnectionControllerTest extends ControllerTestCase {
         verify(repository).addConnection(newConnectionCreated);
         assertThat(modelAndView.getView(), Matchers.<Object>instanceOf(RedirectView.class));
         RedirectView view = (RedirectView) modelAndView.getView();
-        assertThat(view.getUrl(), equalTo("/#connections"));
+        assertThat(view.getUrl(), equalTo("/#accounts"));
     }
 
     @Test
     public void providerShouldRequestOAuth2CalledBack() throws Exception {
 
         request.setMethod("GET");
-        request.setRequestURI("/api/connections/yammer");
+        request.setRequestURI("/api/accounts/yammer");
         request.setParameter("code", "xxx");
         Connection newConnectionCreated = mock(Connection.class);
         when(webSupport.completeConnection(any(OAuth2ConnectionFactory.class), any(NativeWebRequest.class))).thenReturn(newConnectionCreated);
@@ -218,7 +218,7 @@ public class ConnectionControllerTest extends ControllerTestCase {
         verify(repository).addConnection(newConnectionCreated);
         assertThat(modelAndView.getView(), Matchers.<Object>instanceOf(RedirectView.class));
         RedirectView view = (RedirectView) modelAndView.getView();
-        assertThat(view.getUrl(), equalTo("/#connections"));
+        assertThat(view.getUrl(), equalTo("/#accounts"));
     }
 
 

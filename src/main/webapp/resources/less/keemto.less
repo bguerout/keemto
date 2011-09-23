@@ -1,0 +1,123 @@
+/* Keemto
+-------------------------------------------------- */
+@import "boostrap/bootstrap.less";
+
+ html, body {
+    background-color: #eee;
+}
+
+body{
+    padding-top: 40px;
+}
+
+.container > footer p {
+    text-align: center; /* center align it with the container */
+}
+
+/* The white background content wrapper */
+.content {
+    background-color: #fff;
+    padding: 20px;
+    margin: 0 -20px; /* negative indent the amount of the padding to maintain the grid system */
+    -webkit-border-radius: 0 0 6px 6px;
+       -moz-border-radius: 0 0 6px 6px;
+            border-radius: 0 0 6px 6px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+       -moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+            box-shadow: 0 1px 2px rgba(0,0,0,.15);
+}
+.popover {
+  .content {
+    margin: 0;
+  }
+}
+
+/* Page header tweaks */
+.page-header {
+    background-color: #f5f5f5;
+    padding: 20px 20px 10px;
+    margin: -20px -20px 20px;
+}
+
+/* Give a quick and non-cross-browser friendly divider */
+.content .span4 {
+    margin-left: 0;
+    padding-left: 19px;
+    border-left: 1px solid #eee;
+}
+
+.tips {
+    .hero-unit;
+    margin-top: 1px;
+    background: url(../img/forkme.png) no-repeat right top #f5f5f5;
+}
+
+a {
+  small {
+    font-size: @basefont - 2;
+    color: @grayLight;
+  }
+}
+
+.events {
+   .event{
+        margin-top: @baseline - 1;
+        padding-top: @baseline - 1;
+        border-bottom: 1px solid @grayLight ;
+        p {
+            #font > .sans-serif(normal,16px);
+        }
+    }
+    blockquote{
+        border-left: 5px solid @grayLight;
+    }
+}
+
+form.login{
+    input{
+        .input-small
+    }
+    float: right;
+}
+
+.alert-message {
+    .fade(2s);
+}
+
+.label {
+    padding: 1px 3px 2px;
+    background-color: #BFBFBF;
+    font-size: 9.75px;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+   .border-radius(3px);
+    &.new {
+        background-color: #46A546;
+    }
+    .fade(2s);
+}
+
+/* Patterns */
+
+.fade(@duration: 0.15s, @opacity: 1) {
+    -webkit-transition: opacity @duration linear;
+    -moz-transition: opacity @duration linear;
+    -ms-transition: opacity @duration linear;
+    -o-transition: opacity @duration linear;
+    transition: opacity @duration linear;
+    opacity: 0;
+    &.in{
+        opacity: @opacity;
+    }
+}
+
+.hidden{
+    display :none;
+}
+
+.thumbnail,
+.profile img{
+    max-height: 60px;
+    max-width: 60px;
+}

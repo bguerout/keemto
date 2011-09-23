@@ -36,7 +36,7 @@ import java.util.List;
 
 @Controller
 @Scope(value = "request")
-@RequestMapping(value = "/api/connections")
+@RequestMapping(value = "/api/accounts")
 public class ConnectionController {
 
     private final ConnectionFactoryLocator connectionFactoryLocator;
@@ -117,7 +117,7 @@ public class ConnectionController {
     }
 
     private RedirectView createRedirectView() {
-        return new RedirectView("/#connections", true);
+        return new RedirectView("/#accounts", true);
     }
 
     private List<ProviderConnection> convertUserConnections(MultiValueMap<String, Connection<?>> connectionsByProviderMap) {
