@@ -117,9 +117,7 @@ public class DefaultProviderConnection implements ProviderConnection {
         return "DefaultProviderConnection{" +
                 "providerId='" + providerId + '\'' +
                 ", providerUserId='" + providerUserId + '\'' +
-                ", displayName='" + displayName + '\'' +
-                ", profileUrl='" + profileUrl + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
+                ", displayName='" + displayName +
                 '}';
     }
 }
