@@ -53,6 +53,15 @@ public class JdbcEventRepositoryIT {
         assertThat(events, hasItem(expectedEvent));
     }
 
+    @Test
+    public void shouldReturnOnlyEventsNewerThan() throws Exception {
+        Long newerThan = new Long(1301464284372L);
+
+        List<Event> events = repository.getEvents(newerThan);
+
+        assertThat(events.size(), equalTo(4));
+    }
+
 
     @Test
     public void shouldReturnMostRecentEvent() {
@@ -85,7 +94,7 @@ public class JdbcEventRepositoryIT {
         assertThat(socialProvider.getProviderUserId(), equalTo("293724331"));
         assertThat(socialProvider.getDisplayName(), equalTo("@stnevex"));
         assertThat(socialProvider.getProfileUrl(), equalTo("http://twitter.com/stnevex"));
-        assertThat(socialProvider.getImageUrl(), equalTo("http://a0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png"));
+        assertThat(socialProvider.getImageUrl(), equalTo("http://www.gravatar.com/avatar/0a40a289089f2d262cc713c54cae7fa2.png"));
         assertThat(socialProvider.isAnonymous(), is(false));
     }
 
