@@ -28,6 +28,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class EventControllerTest extends ControllerTestCase {
@@ -46,12 +47,34 @@ public class EventControllerTest extends ControllerTestCase {
     }
 
     @Test
-    public void shouldReturnAllEvents() throws Exception {
+    public void apiExposesAllEvents() throws Exception {
 
+
+        handlerAdapter.handle(request, response, controller);
+
+        verify(eventRepository).getAllEvents();
+
+    }
+
+        @Test
+    public void apiCanFilterEventsByDate() throws Exception {
+
+        request.addParameter("newerThan","1");
+
+        handlerAdapter.handle(request, response, controller);
+
+        verify(eventRepository).getEvents(1);
+
+    }
+
+    @Test
+    public void shouldReturnEventsAsJson() throws Exception {
+
+        request.addParameter("newerThan","1");
         DefaultProviderConnection yammerConnection = new DefaultProviderConnection("yammer", "4444", "stnevex", "http://profileUrl", "http://imageUrl");
         User user = new User("stnevex","John","Doe","stnevex@gmail.com");
         List<Event> events = Lists.newArrayList(new Event(1, "message", user, yammerConnection));
-        when(eventRepository.getAllEvents()).thenReturn(events);
+        when(eventRepository.getEvents(1)).thenReturn(events);
 
         handlerAdapter.handle(request, response, controller);
 

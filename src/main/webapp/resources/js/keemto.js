@@ -59,12 +59,12 @@
                 $("#topbar").append(new Keemto.Views.TopBar().el);
             };
 
-            var prepareNotifier = function(){
+            var prepareNotifier = function() {
                 notifier = new Keemto.Notifier();
                 setApplicationRenderingForNotifications();
             };
 
-             var initRouters = function(){
+            var initRouters = function() {
                 authService = new Keemto.Routers.Authentication({notifier: notifier});
                 new Keemto.Routers.Home();
                 Backbone.history.start();
@@ -87,8 +87,8 @@
                 },
 
                 /*
-                Helpers method with application scope
-                */
+                 Helpers method with application scope
+                 */
 
                 log:function(str) {
                     console.log(str);
@@ -102,8 +102,8 @@
                     notifier.bind(notificationName, callback);
                 },
 
-                login:function(login, password,onSuccess) {
-                    authService.login(login, password,onSuccess);
+                login:function(login, password, onSuccess) {
+                    authService.login(login, password, onSuccess);
                 },
 
                 getAuth:function() {
@@ -188,7 +188,7 @@
             Keemto.goToView(view);
         },
 
-        login:function(login, password,onSuccess) {
+        login:function(login, password, onSuccess) {
             var self = this;
             $.ajax({
                 type:"POST",
@@ -202,7 +202,7 @@
                     if (response.loggedIn) {
                         var currentUserLogin = response.username;
                         self.currentUser.set({login:currentUserLogin});
-                        _.isUndefined(onSuccess)? Keemto.goToHash("#events"): onSuccess.call();
+                        _.isUndefined(onSuccess) ? Keemto.goToHash("#events") : onSuccess.call();
                     } else {
                         Keemto.message({level:"error", message:"Authentication has failed for user: " + response.username});
                     }
@@ -234,7 +234,9 @@
         submitLoginForm:function() {
             var login = this.$('input[name="login"]').val();
             var password = this.$('input[name="password"]').val();
-            Keemto.getAuth().login(login, password, _.bind(function(){Keemto.goToHash("#accounts");},this));
+            Keemto.getAuth().login(login, password, _.bind(function() {
+                Keemto.goToHash("#accounts");
+            }, this));
             return false;
         },
 
@@ -273,10 +275,10 @@
 
         home:function() {
             Keemto.log("Routing user to home.");
-            if(Keemto.getAuth().isUserAuthenticated()){
+            if (Keemto.getAuth().isUserAuthenticated()) {
                 Keemto.goToHash("#events");
             }
-            else{
+            else {
                 Keemto.goToView(new Keemto.Views.Welcome());
             }
         },
@@ -306,7 +308,7 @@
             var collectionHasAlreadyBeenFetched = !_.isUndefined(lastFetchedEvent);
             if (collectionHasAlreadyBeenFetched) {
                 var lastTimestamp = lastFetchedEvent.attributes.timestamp;
-                fetchOptions = {add:true, data:"timestamp=" + lastTimestamp}
+                fetchOptions = {add:true, data: "newerThan=" + lastTimestamp}
             }
             Keemto.log("Trying to fetch events newer than :" + lastTimestamp);
             this.events.fetch(fetchOptions);
@@ -319,12 +321,12 @@
         className:'content',
         fetchedEvents: [],
 
-         events:{
+        events:{
             "click #show-fetched-button":"showFetchedEvents"
         },
 
         initialize:function() {
-            _.bindAll(this, 'render', 'addEventView','showFetchedButton','showFetchedEvents');
+            _.bindAll(this, 'render', 'addEventView', 'showFetchedButton', 'showFetchedEvents');
             this.collection.bind('add', this.showFetchedButton);
             this.collection.bind('reset', this.render);
             this.collection.fetch({
@@ -334,17 +336,17 @@
             });
         },
 
-        showFetchedButton: function(model){
-          this.fetchedEvents.push(model);
-          $('title').text('('+this.fetchedEvents.length+')Keemto');
-          this.$("#show-fetched-button").html(this.fetchedEvents.length+' new events');
-          this.$("#show-fetched-button").show();
+        showFetchedButton: function(model) {
+            this.fetchedEvents.push(model);
+            $('title').text('(' + this.fetchedEvents.length + ')Keemto');
+            this.$("#show-fetched-button").html(this.fetchedEvents.length + ' new events');
+            this.$("#show-fetched-button").show();
         },
 
-        showFetchedEvents: function(){
-          this.$("#show-fetched-button").hide();
-          $('title').text("Keemto");
-          _.each( this.fetchedEvents,this.addEventView);
+        showFetchedEvents: function() {
+            this.$("#show-fetched-button").hide();
+            $('title').text("Keemto");
+            _.each(this.fetchedEvents, this.addEventView);
         },
 
         addEventView:function(event) {
@@ -535,10 +537,10 @@
         submitLoginForm:function() {
             var login = this.$('input[name="login"]').val();
             var password = this.$('input[name="password"]').val();
-            Keemto.getAuth().login(login, password, _.bind(function(){
+            Keemto.getAuth().login(login, password, _.bind(function() {
                 $(this.el).remove();
                 Keemto.goToHash("#accounts");
-            },this));
+            }, this));
             return false;
         },
 
