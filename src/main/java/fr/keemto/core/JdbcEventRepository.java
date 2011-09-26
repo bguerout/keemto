@@ -34,6 +34,13 @@ public class JdbcEventRepository implements EventRepository {
 
     private static final Logger log = LoggerFactory.getLogger(JdbcEventRepository.class);
 
+    public static final String SQL_EVENTS = "select events.ts, events.message, events.providerId, events.providerUserId, " +
+            "connx.displayName, connx.profileUrl, connx.imageUrl, user.username, user.firstName, user.lastName, user.email " +
+            "FROM events " +
+            "INNER JOIN keemto_user as user ON events.username = user.username " +
+            "LEFT JOIN UserConnection as connx ON events.providerId = connx.providerId AND events.providerUserId = connx.providerUserId AND events.username = connx.userId " +
+            "WHERE events.ts > ?";
+
     private final JdbcTemplate jdbcTemplate;
 
     @Inject
@@ -43,15 +50,12 @@ public class JdbcEventRepository implements EventRepository {
 
     @Override
     public List<Event> getAllEvents() {
-        String eventsSQL =
-                "select events.ts, events.message, events.providerId, events.providerUserId, " +
-                        "connx.displayName, connx.profileUrl, connx.imageUrl, user.username, user.firstName, " +
-                        "user.lastName, user.email " +
-                        "from events " +
-                        "INNER JOIN keemto_user as user ON events.username = user.username " +
-                        "LEFT JOIN UserConnection as connx ON events.providerId = connx.providerId  " +
-                        "AND events.provideruserId = connx.providerUserId AND events.username= connx.userId ";
-        return jdbcTemplate.query(eventsSQL, new EventRowMapper());
+        return getEvents(-1);
+    }
+
+    @Override
+    public List<Event> getEvents(long newerThan) {
+        return jdbcTemplate.query(SQL_EVENTS, new Long[]{newerThan}, new EventRowMapper());
     }
 
     @Override
