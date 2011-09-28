@@ -73,7 +73,7 @@
 
   <bean id="twitterFetcher" class="fr.keemto.core.fetcher.social.TwitterFetcher">
     <constructor-arg>
-      <bean class="fr.keemto.core.fetcher.social.ProviderResolver">
+      <bean class="fr.keemto.core.fetcher.social.ConnectionResolver">
         <constructor-arg value="org.springframework.social.twitter.api.Twitter"/>
         <constructor-arg ref="usersConnectionRepository"/>
       </bean>
@@ -82,7 +82,7 @@
 
   <bean id="yammerFetcher" class="fr.keemto.core.fetcher.social.YammerFetcher">
     <constructor-arg>
-      <bean class="fr.keemto.core.fetcher.social.ProviderResolver">
+      <bean class="fr.keemto.core.fetcher.social.ConnectionResolver">
         <constructor-arg value="org.springframework.social.yammer.api.impl.YammerTemplate"/>
         <constructor-arg ref="usersConnectionRepository"/>
       </bean>
