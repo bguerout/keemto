@@ -40,7 +40,7 @@ public class TwitterFetcherTest {
 
     private TwitterFetcher fetcher;
     private Twitter api;
-    private ProviderResolver<Twitter> providerResolver;
+    private ConnectionResolver<Twitter> connectionResolver;
     private TimelineOperations timelineOperations;
 
     private Tweet tweet1;
@@ -52,9 +52,9 @@ public class TwitterFetcherTest {
     public void initBeforeTest() throws Exception {
 
         api = mock(Twitter.class);
-        providerResolver = mock(ProviderResolver.class);
+        connectionResolver = mock(ConnectionResolver.class);
         timelineOperations = mock(TimelineOperations.class);
-        fetcher = new TwitterFetcher(providerResolver);
+        fetcher = new TwitterFetcher(connectionResolver);
 
         user = new User("bguerout");
         tweet1 = createTweet("a tweet", System.currentTimeMillis());
@@ -65,7 +65,7 @@ public class TwitterFetcherTest {
         when(connection.getApi()).thenReturn(api);
         ConnectionKey key = new ConnectionKey("twitter", "bguerout-account");
         when(connection.getKey()).thenReturn(key);
-        when(providerResolver.getConnectionsFor(eq(user))).thenReturn(Lists.<Connection<Twitter>>newArrayList(connection));
+        when(connectionResolver.getConnectionsFor(eq(user))).thenReturn(Lists.<Connection<Twitter>>newArrayList(connection));
         when(api.timelineOperations()).thenReturn(timelineOperations);
         when(timelineOperations.getUserTimeline()).thenReturn(Lists.newArrayList(tweet1, tweet2));
 

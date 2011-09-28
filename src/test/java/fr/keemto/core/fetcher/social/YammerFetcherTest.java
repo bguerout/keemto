@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 public class YammerFetcherTest {
 
     private YammerFetcher fetcher;
-    private ProviderResolver<YammerTemplate> providerResolver;
+    private ConnectionResolver<YammerTemplate> connectionResolver;
     private YammerTemplate api;
     private MessageOperations messageOperations;
     private User user;
@@ -35,8 +35,8 @@ public class YammerFetcherTest {
 
         api = mock(YammerTemplate.class);
         messageOperations = mock(MessageOperations.class);
-        providerResolver = mock(ProviderResolver.class);
-        fetcher = new YammerFetcher(providerResolver);
+        connectionResolver = mock(ConnectionResolver.class);
+        fetcher = new YammerFetcher(connectionResolver);
         user = new User("bguerout");
 
 
@@ -44,7 +44,7 @@ public class YammerFetcherTest {
         when(connection.getApi()).thenReturn(api);
         ConnectionKey key = new ConnectionKey("yammer", "bguerout-account");
         when(connection.getKey()).thenReturn(key);
-        when(providerResolver.getConnectionsFor(eq(user))).thenReturn(Lists.<Connection<YammerTemplate>>newArrayList(connection));
+        when(connectionResolver.getConnectionsFor(eq(user))).thenReturn(Lists.<Connection<YammerTemplate>>newArrayList(connection));
         when(api.messageOperations()).thenReturn(messageOperations);
     }
 

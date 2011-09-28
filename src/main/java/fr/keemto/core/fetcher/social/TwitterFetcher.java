@@ -29,12 +29,12 @@ import java.util.List;
 
 public class TwitterFetcher extends SocialFetcher<Twitter, Tweet> {
 
-    public TwitterFetcher(ProviderResolver<Twitter> providerResolver, long delay) {
-        super(providerResolver, delay);
+    public TwitterFetcher(ConnectionResolver<Twitter> connectionResolver, long delay) {
+        super(connectionResolver, delay);
     }
 
-    public TwitterFetcher(ProviderResolver<Twitter> providerResolver) {
-        this(providerResolver, 60000);
+    public TwitterFetcher(ConnectionResolver<Twitter> connectionResolver) {
+        this(connectionResolver, 60000);
     }
 
     @Override

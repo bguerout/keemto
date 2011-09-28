@@ -14,12 +14,12 @@ import java.util.List;
 
 public class YammerFetcher extends SocialFetcher<YammerTemplate, YammerMessage> {
 
-    public YammerFetcher(ProviderResolver<YammerTemplate> providerResolver, long delay) {
-        super(providerResolver, delay);
+    public YammerFetcher(ConnectionResolver<YammerTemplate> connectionResolver, long delay) {
+        super(connectionResolver, delay);
     }
 
-    public YammerFetcher(ProviderResolver<YammerTemplate> providerResolver) {
-        this(providerResolver, 60000);
+    public YammerFetcher(ConnectionResolver<YammerTemplate> connectionResolver) {
+        this(connectionResolver, 60000);
     }
 
     /*

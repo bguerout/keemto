@@ -36,7 +36,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class SocialFetcherTest {
 
     private StringFetcher fetcher;
-    private ProviderResolver<String> providerResolver;
+    private ConnectionResolver<String> connectionResolver;
     private User user;
     private long since;
 
@@ -44,8 +44,8 @@ public class SocialFetcherTest {
     public void initBeforeTest() throws Exception {
         initMocks(this);
 
-        providerResolver = mock(ProviderResolver.class);
-        fetcher = new StringFetcher(providerResolver);
+        connectionResolver = mock(ConnectionResolver.class);
+        fetcher = new StringFetcher(connectionResolver);
         user = new User("bguerout");
         since = System.currentTimeMillis();
     }
@@ -53,7 +53,7 @@ public class SocialFetcherTest {
     @Test
     public void whenNoEventCanBeFoundThenANonNullListMustBeReturned() {
 
-        when(providerResolver.getConnectionsFor(eq(user))).thenReturn(new ArrayList<Connection<String>>());
+        when(connectionResolver.getConnectionsFor(eq(user))).thenReturn(new ArrayList<Connection<String>>());
 
         List<Event> events = fetcher.fetch(user, since);
 
@@ -65,7 +65,7 @@ public class SocialFetcherTest {
 
         List<Connection<String>> connections = new ArrayList<Connection<String>>();
         connections.add(mockConnectionWithApi("string-api"));
-        when(providerResolver.getConnectionsFor(eq(user))).thenReturn(connections);
+        when(connectionResolver.getConnectionsFor(eq(user))).thenReturn(connections);
 
         // when
         List<Event> events = fetcher.fetch(user, since);
@@ -81,11 +81,11 @@ public class SocialFetcherTest {
     public void shouldFetchAllUserApis() {
 
         // given
-        StringFetcher fetcherWithManyApis = new StringFetcher(providerResolver);
+        StringFetcher fetcherWithManyApis = new StringFetcher(connectionResolver);
         List<Connection<String>> multipleConnections = new ArrayList<Connection<String>>();
         multipleConnections.add(mockConnectionWithApi("string-api"));
         multipleConnections.add(mockConnectionWithApi("another-api"));
-        when(providerResolver.getConnectionsFor(eq(user))).thenReturn(multipleConnections);
+        when(connectionResolver.getConnectionsFor(eq(user))).thenReturn(multipleConnections);
 
         // when
         List<Event> events = fetcherWithManyApis.fetch(user, since);
@@ -101,12 +101,12 @@ public class SocialFetcherTest {
 
         List<Connection<String>> connections = mock(List.class);
         when(connections.isEmpty()).thenReturn(false);
-        when(providerResolver.getConnectionsFor(eq(user))).thenReturn(connections);
+        when(connectionResolver.getConnectionsFor(eq(user))).thenReturn(connections);
 
         boolean canFetch = fetcher.canFetch(user);
 
         assertThat(canFetch, is(true));
-        verify(providerResolver).getConnectionsFor(user);
+        verify(connectionResolver).getConnectionsFor(user);
     }
 
     private Connection mockConnectionWithApi(String api) {
@@ -120,8 +120,8 @@ public class SocialFetcherTest {
 
     private class StringFetcher extends SocialFetcher<String, String> {
 
-        public StringFetcher(ProviderResolver<String> providerResolver) {
-            super(providerResolver, 60000);
+        public StringFetcher(ConnectionResolver<String> connectionResolver) {
+            super(connectionResolver, 60000);
         }
 
         @Override

@@ -32,19 +32,19 @@ public abstract class SocialFetcher<T, D> implements Fetcher {
 
     private static final Logger log = LoggerFactory.getLogger(SocialFetcher.class);
 
-    private final ProviderResolver<T> providerResolver;
+    private final ConnectionResolver<T> connectionResolver;
     private long delay;
 
-    public SocialFetcher(ProviderResolver<T> providerResolver, long delay) {
+    public SocialFetcher(ConnectionResolver<T> connectionResolver, long delay) {
         super();
-        this.providerResolver = providerResolver;
+        this.connectionResolver = connectionResolver;
         this.delay = delay;
     }
 
     @Override
     public final List<Event> fetch(User user, long lastFetchedEventTime) {
         List<Event> events = new ArrayList<Event>();
-        List<Connection<T>> connections = providerResolver.getConnectionsFor(user);
+        List<Connection<T>> connections = connectionResolver.getConnectionsFor(user);
         logFetchingBeginning(user, connections);
         for (Connection<T> connection : connections) {
             EventBuilder eventBuilder = createBuilder(user, connection);
@@ -92,7 +92,7 @@ public abstract class SocialFetcher<T, D> implements Fetcher {
 
     @Override
     public boolean canFetch(User user) {
-        return !providerResolver.getConnectionsFor(user).isEmpty();
+        return !connectionResolver.getConnectionsFor(user).isEmpty();
     }
 
 
