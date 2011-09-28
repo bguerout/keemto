@@ -20,7 +20,6 @@ import com.google.common.collect.Lists;
 import fr.keemto.core.User;
 import fr.keemto.core.UserResolver;
 import fr.keemto.core.fetcher.Fetcher;
-import fr.keemto.core.fetcher.FetcherResolver;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,9 +47,6 @@ public class AutomaticFetchingInitializerTest {
         initializer.setRegistrar(registrar);
         initializer.setEventTaskFactory(taskFactory);
         initializer.setUserResolver(userResolver);
-
-        fetchers = new ArrayList<Fetcher>();
-        fetchers.add(mock(Fetcher.class));
     }
 
     @Test
@@ -61,7 +57,7 @@ public class AutomaticFetchingInitializerTest {
         when(taskFactory.createTasks(user)).thenReturn(tasks);
         when(userResolver.getAllUsers()).thenReturn(Lists.newArrayList(user));
 
-        initializer.registerAllTasks(fetchers);
+        initializer.registerAllTasks();
 
         verify(registrar).registerTasks(tasks);
 
@@ -77,7 +73,7 @@ public class AutomaticFetchingInitializerTest {
         when(taskFactory.createTasks(bguerout)).thenReturn(bgueroutTasks);
         when(taskFactory.createTasks(stnevex)).thenReturn(stnevexTasks);
 
-        initializer.registerAllTasks(fetchers);
+        initializer.registerAllTasks();
 
         verify(userResolver).getAllUsers();
         verify(registrar).registerTasks(bgueroutTasks);
@@ -85,16 +81,5 @@ public class AutomaticFetchingInitializerTest {
 
     }
 
-    @Test
-    public void shouldResolveFetcherWithResolver() throws Exception {
-
-        FetcherResolver resolver = mock(FetcherResolver.class);
-        initializer.setFetcherResolver(resolver);
-        when(resolver.resolveAll()).thenReturn(fetchers);
-
-        initializer.afterPropertiesSet();
-
-        verify(resolver).resolveAll();
-    }
 
 }

@@ -23,7 +23,4 @@ import java.util.List;
 public interface FetcherResolver {
 
     List<Fetcher> resolve(User user);
-
-    List<Fetcher> resolveAll();
-
 }

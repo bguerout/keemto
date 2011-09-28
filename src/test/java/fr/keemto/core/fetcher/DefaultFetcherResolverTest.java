@@ -51,18 +51,6 @@ public class DefaultFetcherResolverTest {
     }
 
     @Test
-    public void shouldResolveAllFetchers() throws Exception {
-
-        List<Fetcher> fetchers = Lists.newArrayList();
-        FetcherResolver resolver = new DefaultFetcherResolver(fetchers);
-
-        List<Fetcher> result = resolver.resolveAll();
-
-        assertThat(fetchers.size(), equalTo(result.size()));
-
-    }
-
-    @Test
     public void shouldResolveFetcherForUser() throws Exception {
 
         Fetcher fetcher = mock(Fetcher.class);

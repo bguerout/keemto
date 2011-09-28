@@ -58,10 +58,4 @@ public class DefaultFetcherResolver implements FetcherResolver {
         }
         return validFetchers;
     }
-
-    @Override
-    public List<Fetcher> resolveAll() {
-        return Collections.unmodifiableList(fetchers);
-    }
-
 }

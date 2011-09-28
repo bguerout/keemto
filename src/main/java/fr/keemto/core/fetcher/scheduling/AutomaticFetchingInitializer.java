@@ -35,11 +35,10 @@ public class AutomaticFetchingInitializer implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        List<Fetcher> fetchers = fetcherResolver.resolveAll();
-        registerAllTasks(fetchers);
+        registerAllTasks();
     }
 
-    protected void registerAllTasks(List<Fetcher> fetchers) {
+    protected void registerAllTasks() {
         for (User user : userResolver.getAllUsers()) {
             List<EventUpdateTask> tasks = taskFactory.createTasks(user);
             registrar.registerTasks(tasks);
