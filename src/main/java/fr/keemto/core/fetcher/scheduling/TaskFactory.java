@@ -19,7 +19,7 @@ package fr.keemto.core.fetcher.scheduling;
 import fr.keemto.core.EventRepository;
 import fr.keemto.core.User;
 import fr.keemto.core.fetcher.Fetcher;
-import fr.keemto.core.fetcher.FetcherResolver;
+import fr.keemto.core.fetcher.FetcherLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,24 +35,20 @@ public class TaskFactory {
 
     private final EventRepository eventRepository;
 
-    private final FetcherResolver fetcherResolver;
+    private final FetcherLocator fetcherLocator;
 
     @Autowired
-    public TaskFactory(EventRepository eventRepository, FetcherResolver fetcherResolver) {
+    public TaskFactory(EventRepository eventRepository, FetcherLocator fetcherLocator) {
         this.eventRepository = eventRepository;
-        this.fetcherResolver = fetcherResolver;
+        this.fetcherLocator = fetcherLocator;
 
     }
 
-    private EventUpdateTask createTask(Fetcher fetcher, User user) {
-        return new EventUpdateTask(fetcher, user, eventRepository);
-    }
+    public List<FetchingTask> createTasks(User user) {
 
-    public List<EventUpdateTask> createTasks(User user) {
-
-        List<EventUpdateTask> tasks = new ArrayList<EventUpdateTask>();
-        for (Fetcher fetcher : fetcherResolver.resolve(user)) {
-            EventUpdateTask task = createTask(fetcher, user);
+        List<FetchingTask> tasks = new ArrayList<FetchingTask>();
+        for (Fetcher fetcher : fetcherLocator.getFetchersFor(user)) {
+            FetchingTask task = new FetchingTask(fetcher, user, eventRepository);
             tasks.add(task);
         }
         return tasks;

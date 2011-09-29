@@ -35,9 +35,9 @@ import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-public class EventUpdateTaskTest {
+public class FetchingTaskTest {
 
-    private EventUpdateTask task;
+    private FetchingTask task;
     private EventRepository eventRepository;
     private Fetcher fetcher;
     private User user;
@@ -51,7 +51,7 @@ public class EventUpdateTaskTest {
         user = new User("user");
         providerConnx = new DefaultProviderConnection("aProvider");
         mostRecentEvent = new Event(9999, "message", user, providerConnx);
-        task = new EventUpdateTask(fetcher, user, eventRepository);
+        task = new FetchingTask(fetcher, user, eventRepository);
 
         when(fetcher.getProviderId()).thenReturn("aProvider");
         when(eventRepository.getMostRecentEvent(any(User.class), eq("aProvider"))).thenReturn(mostRecentEvent);

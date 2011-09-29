@@ -26,15 +26,15 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class EventUpdateTask implements Runnable {
+public class FetchingTask implements Runnable {
 
-    private static final Logger log = LoggerFactory.getLogger(EventUpdateTask.class);
+    private static final Logger log = LoggerFactory.getLogger(FetchingTask.class);
 
     private final Fetcher fetcher;
     private final User user;
     private final EventRepository eventRepository;
 
-    EventUpdateTask(Fetcher fetcher, User user, EventRepository eventRepository) {
+    FetchingTask(Fetcher fetcher, User user, EventRepository eventRepository) {
         this.fetcher = fetcher;
         this.user = user;
         this.eventRepository = eventRepository;

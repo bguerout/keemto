@@ -18,7 +18,6 @@ package fr.keemto.core.fetcher.scheduling;
 
 import fr.keemto.core.User;
 import fr.keemto.core.UserResolver;
-import fr.keemto.core.fetcher.*;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -39,7 +38,7 @@ public class AutomaticFetchingInitializer implements InitializingBean {
 
     protected void registerAllTasks() {
         for (User user : userResolver.getAllUsers()) {
-            List<EventUpdateTask> tasks = taskFactory.createTasks(user);
+            List<FetchingTask> tasks = taskFactory.createTasks(user);
             registrar.registerTasks(tasks);
         }
     }

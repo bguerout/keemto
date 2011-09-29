@@ -20,7 +20,7 @@ import fr.keemto.core.User;
 
 import java.util.List;
 
-public interface FetcherResolver {
+public interface FetcherLocator {
 
-    List<Fetcher> resolve(User user);
+    List<Fetcher> getFetchersFor(User user);
 }

@@ -19,9 +19,7 @@ package fr.keemto.core.fetcher.scheduling;
 import fr.keemto.core.EventRepository;
 import fr.keemto.core.User;
 import fr.keemto.core.fetcher.Fetcher;
-import fr.keemto.core.fetcher.FetcherResolver;
-import fr.keemto.core.fetcher.scheduling.EventUpdateTask;
-import fr.keemto.core.fetcher.scheduling.TaskFactory;
+import fr.keemto.core.fetcher.FetcherLocator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,18 +47,18 @@ public class TaskFactoryTest {
         fetchers = new ArrayList<Fetcher>();
         fetcher = mock(Fetcher.class);
         fetchers.add(fetcher);
-        FetcherResolver fetcherResolver = mock(FetcherResolver.class);
-        when(fetcherResolver.resolve(user)).thenReturn(fetchers);
+        FetcherLocator fetcherLocator = mock(FetcherLocator.class);
+        when(fetcherLocator.getFetchersFor(user)).thenReturn(fetchers);
 
         eventRepository = mock(EventRepository.class);
-        factory = new TaskFactory(eventRepository, fetcherResolver);
+        factory = new TaskFactory(eventRepository, fetcherLocator);
 
     }
 
     @Test
     public void shouldCreateTaskWithUser() throws Exception {
 
-        List<EventUpdateTask> tasks = factory.createTasks(user);
+        List<FetchingTask> tasks = factory.createTasks(user);
 
         assertThat(tasks, notNullValue());
         assertThat(tasks.size(), equalTo(1));
@@ -73,7 +71,7 @@ public class TaskFactoryTest {
         when(fetcher2.canFetch(any(User.class))).thenReturn(true);
         fetchers.add(fetcher2);
 
-        List<EventUpdateTask> tasks = factory.createTasks(user);
+        List<FetchingTask> tasks = factory.createTasks(user);
 
         assertThat(tasks, notNullValue());
         assertThat(tasks.size(), equalTo(2));

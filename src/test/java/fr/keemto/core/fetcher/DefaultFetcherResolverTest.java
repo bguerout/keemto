@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 public class DefaultFetcherResolverTest {
 
     private User user;
-    private FetcherResolver resolver;
+    private FetcherLocator locator;
 
     @Before
     public void initBeforeTest() throws Exception {
@@ -42,9 +42,9 @@ public class DefaultFetcherResolverTest {
     public void shouldResolveANonNullFetcherList() throws Exception {
 
         List<Fetcher> fetchers = Lists.newArrayList();
-        FetcherResolver resolver = new DefaultFetcherResolver(fetchers);
+        FetcherLocator locator = new DefaultFetcherLocator(fetchers);
 
-        List<Fetcher> result = resolver.resolve(user);
+        List<Fetcher> result = locator.getFetchersFor(user);
 
         assertThat(result, notNullValue());
 
@@ -55,10 +55,10 @@ public class DefaultFetcherResolverTest {
 
         Fetcher fetcher = mock(Fetcher.class);
         List<Fetcher> fetchers = Lists.newArrayList(fetcher);
-        resolver = new DefaultFetcherResolver(fetchers);
+        locator = new DefaultFetcherLocator(fetchers);
         when(fetcher.canFetch(user)).thenReturn(true);
 
-        List<Fetcher> fetcherForUser = resolver.resolve(user);
+        List<Fetcher> fetcherForUser = locator.getFetchersFor(user);
 
         assertThat(fetcherForUser, notNullValue());
         assertThat(fetcherForUser.get(0), equalTo(fetcher));
@@ -70,10 +70,10 @@ public class DefaultFetcherResolverTest {
 
         Fetcher invalidFetcher = mock(Fetcher.class);
         List<Fetcher> fetchers = Lists.newArrayList(invalidFetcher);
-        resolver = new DefaultFetcherResolver(fetchers);
+        locator = new DefaultFetcherLocator(fetchers);
         when(invalidFetcher.canFetch(user)).thenReturn(false);
 
-        List<Fetcher> fetcherForUser = resolver.resolve(user);
+        List<Fetcher> fetcherForUser = locator.getFetchersFor(user);
 
         assertThat(fetcherForUser.isEmpty(), is(true));
     }
@@ -84,11 +84,11 @@ public class DefaultFetcherResolverTest {
         Fetcher fetcher = mock(Fetcher.class);
         Fetcher invalidFetcher = mock(Fetcher.class);
         List<Fetcher> fetchers = Lists.newArrayList(fetcher, invalidFetcher);
-        resolver = new DefaultFetcherResolver(fetchers);
+        locator = new DefaultFetcherLocator(fetchers);
         when(fetcher.canFetch(user)).thenReturn(true);
         when(invalidFetcher.canFetch(user)).thenReturn(false);
 
-        List<Fetcher> fetcherForUser = resolver.resolve(user);
+        List<Fetcher> fetcherForUser = locator.getFetchersFor(user);
 
         assertThat(fetcherForUser.size(), equalTo(1));
 

@@ -42,13 +42,13 @@ public class TaskRegistrar {
         this.scheduler = scheduler;
     }
 
-    public void registerTasks(List<EventUpdateTask> tasks) {
-        for (EventUpdateTask task : tasks) {
+    public void registerTasks(List<FetchingTask> tasks) {
+        for (FetchingTask task : tasks) {
             registerTask(task);
         }
     }
 
-    public void registerTask(EventUpdateTask task) {
+    public void registerTask(FetchingTask task) {
         TaskMonitor monitor = getOrCreateManager(task.getUser());
         ScheduledFuture<?> future = scheduler.scheduleWithFixedDelay(task, task.getDelay());
         monitor.addFuture(future);
