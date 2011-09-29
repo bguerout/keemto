@@ -33,20 +33,15 @@ public class DefaultFetcherLocator implements FetcherLocator {
 
     public DefaultFetcherLocator(List<Fetcher> fetchers) {
         this.fetchers = fetchers;
-        handleEmptyFetchersList();
     }
 
-    private void handleEmptyFetchersList() {
-        if (fetchers != null && fetchers.isEmpty()) {
-            log.warn("Fetchers List is empty. This resolver will not be able to resolver fetchers.");
-        }
-    }
 
     @Override
     public List<Fetcher> getFetchersFor(User user) {
         List<Fetcher> userFetchers = new ArrayList<Fetcher>();
         for (Fetcher fetcher : fetchers) {
             if (fetcher.canFetch(user)) {
+                log.info("A new fetcher:" + fetcher + " has been found for user: " + user.getUsername());
                 userFetchers.add(fetcher);
             } else {
                 log.debug("Fetcher " + fetcher.getProviderId()
