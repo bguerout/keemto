@@ -35,7 +35,6 @@ public class AutomaticFetchingInitializerTest {
     private UserResolver userResolver;
     private FetchingTaskFactory fetchingTaskFactory;
     private TaskRegistrar registrar;
-    private List<Fetcher> fetchers;
 
     @Before
     public void initBeforeTest() throws Exception {
@@ -43,10 +42,7 @@ public class AutomaticFetchingInitializerTest {
         userResolver = mock(UserResolver.class);
         fetchingTaskFactory = mock(FetchingTaskFactory.class);
         registrar = mock(TaskRegistrar.class);
-        initializer = new AutomaticFetchingInitializer();
-        initializer.setRegistrar(registrar);
-        initializer.setEventTaskFactory(fetchingTaskFactory);
-        initializer.setUserResolver(userResolver);
+        initializer = new AutomaticFetchingInitializer(userResolver, fetchingTaskFactory, registrar);
     }
 
     @Test

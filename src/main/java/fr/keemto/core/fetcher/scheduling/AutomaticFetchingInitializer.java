@@ -27,9 +27,16 @@ import java.util.List;
 @Component
 public class AutomaticFetchingInitializer implements InitializingBean {
 
-    private UserResolver userResolver;
-    private FetchingTaskFactory fetchingTaskFactory;
-    private TaskRegistrar registrar;
+    private final UserResolver userResolver;
+    private final FetchingTaskFactory fetchingTaskFactory;
+    private final TaskRegistrar registrar;
+
+    @Autowired
+    public AutomaticFetchingInitializer(UserResolver userResolver, FetchingTaskFactory fetchingTaskFactory, TaskRegistrar registrar) {
+        this.userResolver = userResolver;
+        this.fetchingTaskFactory = fetchingTaskFactory;
+        this.registrar = registrar;
+    }
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -42,21 +49,5 @@ public class AutomaticFetchingInitializer implements InitializingBean {
             registrar.registerTasks(tasks);
         }
     }
-
-    @Autowired
-    public void setUserResolver(UserResolver userResolver) {
-        this.userResolver = userResolver;
-    }
-
-    @Autowired
-    public void setEventTaskFactory(FetchingTaskFactory fetchingTaskFactory) {
-        this.fetchingTaskFactory = fetchingTaskFactory;
-    }
-
-    @Autowired
-    public void setRegistrar(TaskRegistrar registrar) {
-        this.registrar = registrar;
-    }
-
 
 }
