@@ -33,9 +33,9 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class TaskFactoryTest {
+public class FetchingTaskFactoryTest {
 
-    private TaskFactory factory;
+    private FetchingTaskFactory fetchingTaskFactory;
     private EventRepository eventRepository;
     private Fetcher fetcher;
     private List<Fetcher> fetchers;
@@ -51,14 +51,14 @@ public class TaskFactoryTest {
         when(fetcherLocator.getFetchersFor(user)).thenReturn(fetchers);
 
         eventRepository = mock(EventRepository.class);
-        factory = new TaskFactory(eventRepository, fetcherLocator);
+        fetchingTaskFactory = new FetchingTaskFactory(eventRepository, fetcherLocator);
 
     }
 
     @Test
     public void shouldCreateTaskWithUser() throws Exception {
 
-        List<FetchingTask> tasks = factory.createTasks(user);
+        List<FetchingTask> tasks = fetchingTaskFactory.createTasks(user);
 
         assertThat(tasks, notNullValue());
         assertThat(tasks.size(), equalTo(1));
@@ -71,7 +71,7 @@ public class TaskFactoryTest {
         when(fetcher2.canFetch(any(User.class))).thenReturn(true);
         fetchers.add(fetcher2);
 
-        List<FetchingTask> tasks = factory.createTasks(user);
+        List<FetchingTask> tasks = fetchingTaskFactory.createTasks(user);
 
         assertThat(tasks, notNullValue());
         assertThat(tasks.size(), equalTo(2));

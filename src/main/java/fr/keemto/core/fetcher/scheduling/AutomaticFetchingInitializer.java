@@ -28,7 +28,7 @@ import java.util.List;
 public class AutomaticFetchingInitializer implements InitializingBean {
 
     private UserResolver userResolver;
-    private TaskFactory taskFactory;
+    private FetchingTaskFactory fetchingTaskFactory;
     private TaskRegistrar registrar;
 
     @Override
@@ -38,7 +38,7 @@ public class AutomaticFetchingInitializer implements InitializingBean {
 
     protected void registerAllTasks() {
         for (User user : userResolver.getAllUsers()) {
-            List<FetchingTask> tasks = taskFactory.createTasks(user);
+            List<FetchingTask> tasks = fetchingTaskFactory.createTasks(user);
             registrar.registerTasks(tasks);
         }
     }
@@ -49,8 +49,8 @@ public class AutomaticFetchingInitializer implements InitializingBean {
     }
 
     @Autowired
-    public void setEventTaskFactory(TaskFactory taskFactory) {
-        this.taskFactory = taskFactory;
+    public void setEventTaskFactory(FetchingTaskFactory fetchingTaskFactory) {
+        this.fetchingTaskFactory = fetchingTaskFactory;
     }
 
     @Autowired

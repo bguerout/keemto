@@ -33,7 +33,7 @@ public class AutomaticFetchingInitializerTest {
 
     private AutomaticFetchingInitializer initializer;
     private UserResolver userResolver;
-    private TaskFactory taskFactory;
+    private FetchingTaskFactory fetchingTaskFactory;
     private TaskRegistrar registrar;
     private List<Fetcher> fetchers;
 
@@ -41,11 +41,11 @@ public class AutomaticFetchingInitializerTest {
     public void initBeforeTest() throws Exception {
         initMocks(this);
         userResolver = mock(UserResolver.class);
-        taskFactory = mock(TaskFactory.class);
+        fetchingTaskFactory = mock(FetchingTaskFactory.class);
         registrar = mock(TaskRegistrar.class);
         initializer = new AutomaticFetchingInitializer();
         initializer.setRegistrar(registrar);
-        initializer.setEventTaskFactory(taskFactory);
+        initializer.setEventTaskFactory(fetchingTaskFactory);
         initializer.setUserResolver(userResolver);
     }
 
@@ -54,7 +54,7 @@ public class AutomaticFetchingInitializerTest {
         User user = new User("bguerout");
 
         ArrayList<FetchingTask> tasks = Lists.newArrayList(mock(FetchingTask.class));
-        when(taskFactory.createTasks(user)).thenReturn(tasks);
+        when(fetchingTaskFactory.createTasks(user)).thenReturn(tasks);
         when(userResolver.getAllUsers()).thenReturn(Lists.newArrayList(user));
 
         initializer.registerAllTasks();
@@ -70,8 +70,8 @@ public class AutomaticFetchingInitializerTest {
         ArrayList<FetchingTask> bgueroutTasks = Lists.newArrayList(mock(FetchingTask.class));
         ArrayList<FetchingTask> stnevexTasks = Lists.newArrayList(mock(FetchingTask.class));
         when(userResolver.getAllUsers()).thenReturn(Lists.newArrayList(bguerout, stnevex));
-        when(taskFactory.createTasks(bguerout)).thenReturn(bgueroutTasks);
-        when(taskFactory.createTasks(stnevex)).thenReturn(stnevexTasks);
+        when(fetchingTaskFactory.createTasks(bguerout)).thenReturn(bgueroutTasks);
+        when(fetchingTaskFactory.createTasks(stnevex)).thenReturn(stnevexTasks);
 
         initializer.registerAllTasks();
 

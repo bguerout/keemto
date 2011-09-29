@@ -29,16 +29,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class TaskFactory {
+public class FetchingTaskFactory {
 
-    private static final Logger log = LoggerFactory.getLogger(TaskFactory.class);
+    private static final Logger log = LoggerFactory.getLogger(FetchingTaskFactory.class);
 
     private final EventRepository eventRepository;
 
     private final FetcherLocator fetcherLocator;
 
     @Autowired
-    public TaskFactory(EventRepository eventRepository, FetcherLocator fetcherLocator) {
+    public FetchingTaskFactory(EventRepository eventRepository, FetcherLocator fetcherLocator) {
         this.eventRepository = eventRepository;
         this.fetcherLocator = fetcherLocator;
 
