@@ -25,14 +25,12 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
 public class DefaultFetcherLocator implements FetcherLocator {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultFetcherLocator.class);
 
     private final List<Fetcher> fetchers;
 
-    @Autowired
     public DefaultFetcherLocator(List<Fetcher> fetchers) {
         this.fetchers = fetchers;
         handleEmptyFetchersList();
