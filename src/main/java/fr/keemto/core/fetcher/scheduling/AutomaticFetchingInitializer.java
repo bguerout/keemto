@@ -31,7 +31,6 @@ public class AutomaticFetchingInitializer implements InitializingBean {
     private UserResolver userResolver;
     private TaskFactory taskFactory;
     private TaskRegistrar registrar;
-    private FetcherResolver fetcherResolver;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -60,9 +59,5 @@ public class AutomaticFetchingInitializer implements InitializingBean {
         this.registrar = registrar;
     }
 
-    @Autowired
-    public void setFetcherResolver(FetcherResolver fetcherResolver) {
-        this.fetcherResolver = fetcherResolver;
-    }
 
 }
