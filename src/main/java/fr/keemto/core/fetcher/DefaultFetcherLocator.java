@@ -19,8 +19,6 @@ package fr.keemto.core.fetcher;
 import fr.keemto.core.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +33,15 @@ public class DefaultFetcherLocator implements FetcherLocator {
         this.fetchers = fetchers;
     }
 
+    @Override
+    public Fetcher getFetcher(String providerId) {
+        for (Fetcher fetcher : fetchers) {
+            if (fetcher.getProviderId().equals(providerId)) {
+                return fetcher;
+            }
+        }
+        throw new FetcherConfigurationException("No fetcher can be found for provider: " + providerId);
+    }
 
     @Override
     public List<Fetcher> getFetchersFor(User user) {
@@ -50,4 +57,6 @@ public class DefaultFetcherLocator implements FetcherLocator {
         }
         return userFetchers;
     }
+
+
 }

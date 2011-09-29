@@ -22,5 +22,8 @@ import java.util.List;
 
 public interface FetcherLocator {
 
+    @Deprecated
     List<Fetcher> getFetchersFor(User user);
+
+    Fetcher getFetcher(String providerId);
 }

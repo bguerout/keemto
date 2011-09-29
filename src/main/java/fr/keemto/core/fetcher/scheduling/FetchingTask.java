@@ -16,6 +16,7 @@
 
 package fr.keemto.core.fetcher.scheduling;
 
+import fr.keemto.core.Account;
 import fr.keemto.core.Event;
 import fr.keemto.core.EventRepository;
 import fr.keemto.core.User;
@@ -43,7 +44,7 @@ public class FetchingTask implements Runnable {
     @Override
     public void run() throws FetchingException {
         log.debug("Task execution has been triggered for " + user);
-        Event mostRecentEvent = eventRepository.getMostRecentEvent(user, fetcher.getProviderId());
+        Event mostRecentEvent = eventRepository.getMostRecentEvent(new Account(user, fetcher.getProviderId()));
         updateEvents(mostRecentEvent);
     }
 

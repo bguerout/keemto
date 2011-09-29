@@ -17,10 +17,7 @@
 package fr.keemto.core.fetcher.scheduling;
 
 import com.google.common.collect.Lists;
-import fr.keemto.core.DefaultProviderConnection;
-import fr.keemto.core.Event;
-import fr.keemto.core.EventRepository;
-import fr.keemto.core.User;
+import fr.keemto.core.*;
 import fr.keemto.core.fetcher.Fetcher;
 import fr.keemto.core.fetcher.FetchingException;
 import org.junit.Before;
@@ -49,12 +46,13 @@ public class FetchingTaskTest {
         fetcher = mock(Fetcher.class);
         eventRepository = mock(EventRepository.class);
         user = new User("user");
+        Account account = new Account(user, "aProvider");
         providerConnx = new DefaultProviderConnection("aProvider");
         mostRecentEvent = new Event(9999, "message", user, providerConnx);
         task = new FetchingTask(fetcher, user, eventRepository);
 
         when(fetcher.getProviderId()).thenReturn("aProvider");
-        when(eventRepository.getMostRecentEvent(any(User.class), eq("aProvider"))).thenReturn(mostRecentEvent);
+        when(eventRepository.getMostRecentEvent(account)).thenReturn(mostRecentEvent);
     }
 
     @Test
@@ -65,7 +63,7 @@ public class FetchingTaskTest {
 
         task.run();
 
-        verify(eventRepository).getMostRecentEvent(user, "aProvider");
+        verify(eventRepository).getMostRecentEvent(new Account(user, "aProvider"));
         verify(fetcher).fetch(eq(user), eq(mostRecentEvent.getTimestamp()));
         verify(eventRepository).persist(events);
     }

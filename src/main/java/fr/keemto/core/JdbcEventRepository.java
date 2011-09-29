@@ -34,12 +34,21 @@ public class JdbcEventRepository implements EventRepository {
 
     private static final Logger log = LoggerFactory.getLogger(JdbcEventRepository.class);
 
-    public static final String SQL_EVENTS = "select events.ts, events.message, events.providerId, events.providerUserId, " +
+    public static final String SQL_EVENTS_NEWERTHAN = "select events.ts, events.message, events.providerId, events.providerUserId, " +
             "connx.displayName, connx.profileUrl, connx.imageUrl, user.username, user.firstName, user.lastName, user.email " +
             "FROM events " +
             "INNER JOIN keemto_user as user ON events.username = user.username " +
             "LEFT JOIN UserConnection as connx ON events.providerId = connx.providerId AND events.providerUserId = connx.providerUserId AND events.username = connx.userId " +
             "WHERE events.ts > ?";
+
+    public static final String SQL_MOSTRECENT_EVENT = "select TOP 1 events.ts, events.message, events.providerId, events.providerUserId, " +
+            "connx.displayName, connx.profileUrl, connx.imageUrl, user.username, user.firstName, " +
+            "user.lastName, user.email " +
+            "from events " +
+            "INNER JOIN keemto_user as user ON events.username = user.username " +
+            "LEFT JOIN UserConnection as connx ON events.providerId = connx.providerId  " +
+            "AND events.provideruserId = connx.providerUserId AND events.username= connx.userId " +
+            "where events.username=? AND events.providerId=? ORDER BY ts DESC";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -55,7 +64,7 @@ public class JdbcEventRepository implements EventRepository {
 
     @Override
     public List<Event> getEvents(long newerThan) {
-        return jdbcTemplate.query(SQL_EVENTS, new Long[]{newerThan}, new EventRowMapper());
+        return jdbcTemplate.query(SQL_EVENTS_NEWERTHAN, new Long[]{newerThan}, new EventRowMapper());
     }
 
     @Override
@@ -82,21 +91,13 @@ public class JdbcEventRepository implements EventRepository {
     }
 
     @Override
-    public Event getMostRecentEvent(User user, String providerId) {
-        String recentEventsSQL =
-                "select TOP 1 events.ts, events.message, events.providerId, events.providerUserId, " +
-                        "connx.displayName, connx.profileUrl, connx.imageUrl, user.username, user.firstName, " +
-                        "user.lastName, user.email " +
-                        "from events " +
-                        "INNER JOIN keemto_user as user ON events.username = user.username " +
-                        "LEFT JOIN UserConnection as connx ON events.providerId = connx.providerId  " +
-                        "AND events.provideruserId = connx.providerUserId AND events.username= connx.userId " +
-                        "where events.username=? AND events.providerId=? ORDER BY ts DESC";
-        String[] parameters = {user.getUsername(), providerId};
+    public Event getMostRecentEvent(Account account) {
+        User user = account.getUser();
+        String[] parameters = {user.getUsername(), account.getProviderId()};
         try {
-            return jdbcTemplate.queryForObject(recentEventsSQL, parameters, new EventRowMapper());
+            return jdbcTemplate.queryForObject(SQL_MOSTRECENT_EVENT, parameters, new EventRowMapper());
         } catch (EmptyResultDataAccessException e) {
-            return createInitializationEvent(user, providerId);
+            return createInitializationEvent(user, account.getProviderId());
         }
     }
 

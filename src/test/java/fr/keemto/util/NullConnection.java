@@ -21,7 +21,7 @@ import org.springframework.social.connect.ConnectionKey;
 import org.springframework.social.connect.support.AbstractConnection;
 
 
-public final class NullConnection<Object> extends AbstractConnection {
+public class NullConnection<Object> extends AbstractConnection {
 
     public NullConnection(ConnectionData data) {
         super(data, new NullApiAdapter());

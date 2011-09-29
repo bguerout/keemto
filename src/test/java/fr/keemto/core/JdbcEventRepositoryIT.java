@@ -66,7 +66,8 @@ public class JdbcEventRepositoryIT {
     @Test
     public void shouldReturnMostRecentEvent() {
 
-        Event mostRecentEvent = repository.getMostRecentEvent(testUser, "mail");
+        Account mailAccount = new Account(testUser, "mail");
+        Event mostRecentEvent = repository.getMostRecentEvent(mailAccount);
 
         assertEventHasBeenPopulated(mostRecentEvent);
         Long lastFetchedTime = new Long(1301464284376L);
@@ -77,7 +78,8 @@ public class JdbcEventRepositoryIT {
     @Test
     public void shouldReturnMostRecentEventForAnonymousProvider() {
 
-        Event mostRecentEvent = repository.getMostRecentEvent(testUser, "mail");
+        Account mailAccount = new Account(testUser, "mail");
+        Event mostRecentEvent = repository.getMostRecentEvent(mailAccount);
 
         ProviderConnection anonymousProvider = mostRecentEvent.getProviderConnection();
         assertThat(anonymousProvider.isAnonymous(), is(true));
@@ -87,7 +89,8 @@ public class JdbcEventRepositoryIT {
     @Test
     public void shouldReturnMostRecentEventForSocialProvider() {
 
-        Event mostRecentEvent = repository.getMostRecentEvent(testUser, "twitter");
+        Account twitterAccount = new Account(testUser, "twitter");
+        Event mostRecentEvent = repository.getMostRecentEvent(twitterAccount);
 
         ProviderConnection socialProvider = mostRecentEvent.getProviderConnection();
         assertThat(socialProvider.getProviderId(), equalTo("twitter"));
@@ -103,7 +106,8 @@ public class JdbcEventRepositoryIT {
 
         User userWithoutEvents = new User("userWithoutEvents");
 
-        Event mostRecentEvent = repository.getMostRecentEvent(userWithoutEvents, "mail");
+        Account noFetchedAccount = new Account(userWithoutEvents, "mail");
+        Event mostRecentEvent = repository.getMostRecentEvent(noFetchedAccount);
 
         assertThat(mostRecentEvent instanceof InitializationEvent, is(true));
         assertThat(mostRecentEvent.getUser(), equalTo(userWithoutEvents));
