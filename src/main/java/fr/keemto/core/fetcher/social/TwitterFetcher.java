@@ -19,6 +19,7 @@ package fr.keemto.core.fetcher.social;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import fr.keemto.core.Event;
+import fr.keemto.core.EventData;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.Twitter;
 
@@ -27,14 +28,14 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-public class TwitterFetcher extends SocialFetcher<Twitter, Tweet> {
+public class TwitterFetcher extends ConnectionFetcher<Twitter, Tweet> {
 
-    public TwitterFetcher(ConnectionResolver<Twitter> connectionResolver, long delay) {
-        super(connectionResolver, delay);
+    public TwitterFetcher(long delay) {
+        super(delay);
     }
 
-    public TwitterFetcher(ConnectionResolver<Twitter> connectionResolver) {
-        this(connectionResolver, 60000);
+    public TwitterFetcher() {
+        this(60000);
     }
 
     @Override
@@ -45,10 +46,10 @@ public class TwitterFetcher extends SocialFetcher<Twitter, Tweet> {
     }
 
     @Override
-    protected Event convertDataToEvent(Tweet tweet, EventBuilder builder) {
+    protected EventData convertDataToEvent(Tweet tweet) {
         Date createdAt = tweet.getCreatedAt();
         String tweetText = tweet.getText();
-        return builder.message(tweetText).timestamp(createdAt.getTime()).build();
+        return new EventData(createdAt.getTime(), tweetText, getProviderId());
     }
 
     @Override

@@ -17,10 +17,14 @@
 package fr.keemto.core.fetcher.social;
 
 import fr.keemto.core.Event;
+import fr.keemto.core.EventData;
 import fr.keemto.core.User;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.social.connect.Connection;
+import org.springframework.social.connect.UsersConnectionRepository;
+import org.springframework.social.twitter.api.Twitter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -38,17 +42,20 @@ public class FetchingTweetsIT {
     @Inject
     private TwitterFetcher fetcher;
 
+    @Inject
+    UsersConnectionRepository usersConnectionRepository;
+
     @Test(timeout = 3000)
     @Ignore
     public void fetchTweets() {
         User user = new User("stnevex");
 
-        List<Event> events = fetcher.fetch(user, 0);
+        Connection<Twitter> connx = usersConnectionRepository.createConnectionRepository("stnevex").findPrimaryConnection(Twitter.class);
 
-        assertThat(events.size(), greaterThan(0));
-        for (Event event : events) {
-            assertThat(event.getUser(), equalTo(user));
-        }
+        List<EventData> datas = fetcher.fetch(connx, 0);
+
+        assertThat(datas.size(), greaterThan(0));
+
     }
 
 }

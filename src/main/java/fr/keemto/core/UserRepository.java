@@ -17,6 +17,8 @@
 package fr.keemto.core;
 
 
-public interface UserRepository extends UserResolver {
+import java.util.List;
 
+public interface UserRepository {
+    List<User> getAllUsers();
 }

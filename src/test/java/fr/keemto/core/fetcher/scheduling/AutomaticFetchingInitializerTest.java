@@ -18,13 +18,11 @@ package fr.keemto.core.fetcher.scheduling;
 
 import com.google.common.collect.Lists;
 import fr.keemto.core.User;
-import fr.keemto.core.UserResolver;
-import fr.keemto.core.fetcher.Fetcher;
+import fr.keemto.core.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -32,17 +30,17 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class AutomaticFetchingInitializerTest {
 
     private AutomaticFetchingInitializer initializer;
-    private UserResolver userResolver;
+    private UserRepository userRepository;
     private FetchingTaskFactory fetchingTaskFactory;
     private TaskRegistrar registrar;
 
     @Before
     public void initBeforeTest() throws Exception {
         initMocks(this);
-        userResolver = mock(UserResolver.class);
+        userRepository = mock(UserRepository.class);
         fetchingTaskFactory = mock(FetchingTaskFactory.class);
         registrar = mock(TaskRegistrar.class);
-        initializer = new AutomaticFetchingInitializer(userResolver, fetchingTaskFactory, registrar);
+        initializer = new AutomaticFetchingInitializer(userRepository, fetchingTaskFactory, registrar);
     }
 
     @Test
@@ -51,7 +49,7 @@ public class AutomaticFetchingInitializerTest {
 
         ArrayList<FetchingTask> tasks = Lists.newArrayList(mock(FetchingTask.class));
         when(fetchingTaskFactory.createTasks(user)).thenReturn(tasks);
-        when(userResolver.getAllUsers()).thenReturn(Lists.newArrayList(user));
+        when(userRepository.getAllUsers()).thenReturn(Lists.newArrayList(user));
 
         initializer.registerAllTasks();
 
@@ -65,13 +63,13 @@ public class AutomaticFetchingInitializerTest {
         User stnevex = new User("stnevex");
         ArrayList<FetchingTask> bgueroutTasks = Lists.newArrayList(mock(FetchingTask.class));
         ArrayList<FetchingTask> stnevexTasks = Lists.newArrayList(mock(FetchingTask.class));
-        when(userResolver.getAllUsers()).thenReturn(Lists.newArrayList(bguerout, stnevex));
+        when(userRepository.getAllUsers()).thenReturn(Lists.newArrayList(bguerout, stnevex));
         when(fetchingTaskFactory.createTasks(bguerout)).thenReturn(bgueroutTasks);
         when(fetchingTaskFactory.createTasks(stnevex)).thenReturn(stnevexTasks);
 
         initializer.registerAllTasks();
 
-        verify(userResolver).getAllUsers();
+        verify(userRepository).getAllUsers();
         verify(registrar).registerTasks(bgueroutTasks);
         verify(registrar).registerTasks(stnevexTasks);
 

@@ -35,7 +35,6 @@ public class TaskRegistrar {
     private static final Logger log = LoggerFactory.getLogger(TaskRegistrar.class);
 
     private final TaskScheduler scheduler;
-    private final List<TaskMonitor> manageableFutures = new ArrayList<TaskRegistrar.TaskMonitor>();
 
     @Autowired
     public TaskRegistrar(TaskScheduler scheduler) {
@@ -49,51 +48,9 @@ public class TaskRegistrar {
     }
 
     public void registerTask(FetchingTask task) {
-        TaskMonitor monitor = getOrCreateManager(task.getUser());
         ScheduledFuture<?> future = scheduler.scheduleWithFixedDelay(task, task.getDelay());
-        monitor.addFuture(future);
-        manageableFutures.add(monitor);
-        log.info("A new fetching task has been registered for user: " + task.getUser()
-                + ". This task will run every " + task.getDelay() + "ms");
+        log.info("A new fetching task has been registered: {}. This task will run every {}ms", new Object[]{task, task.getDelay()});
     }
 
-    public void cancelTasks(User user) {
-        for (TaskMonitor manager : manageableFutures) {
-            if (manager.isOwnedBy(user)) {
-                manager.cancellAllFutures();
-            }
-        }
-    }
 
-    private TaskMonitor getOrCreateManager(User user) {
-        TaskMonitor manager = new TaskMonitor(user);
-        if (manageableFutures.contains(manager)) {
-            return manageableFutures.get(manageableFutures.indexOf(manager));
-        }
-        return manager;
-    }
-
-    private final class TaskMonitor {
-
-        private final Set<ScheduledFuture<?>> scheduledFutures = new LinkedHashSet<ScheduledFuture<?>>();
-        private final User user;
-
-        public TaskMonitor(User user) {
-            this.user = user;
-        }
-
-        public void addFuture(ScheduledFuture<?> future) {
-            scheduledFutures.add(future);
-        }
-
-        public void cancellAllFutures() {
-            for (ScheduledFuture<?> future : scheduledFutures) {
-                future.cancel(false);
-            }
-        }
-
-        public boolean isOwnedBy(User owner) {
-            return user.equals(owner);
-        }
-    }
 }

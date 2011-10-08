@@ -18,6 +18,7 @@ package fr.keemto.core.fetcher.social;
 
 import com.google.common.collect.Lists;
 import fr.keemto.core.Event;
+import fr.keemto.core.EventData;
 import fr.keemto.core.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,32 +41,26 @@ public class TwitterFetcherTest {
 
     private TwitterFetcher fetcher;
     private Twitter api;
-    private ConnectionResolver<Twitter> connectionResolver;
     private TimelineOperations timelineOperations;
 
     private Tweet tweet1;
     private Tweet tweet2;
-    private User user;
     private long since;
+    private Connection connection;
 
     @Before
     public void initBeforeTest() throws Exception {
 
         api = mock(Twitter.class);
-        connectionResolver = mock(ConnectionResolver.class);
         timelineOperations = mock(TimelineOperations.class);
-        fetcher = new TwitterFetcher(connectionResolver);
+        fetcher = new TwitterFetcher();
 
-        user = new User("bguerout");
         tweet1 = createTweet("a tweet", System.currentTimeMillis());
         tweet2 = createTweet("a second tweet", System.currentTimeMillis() + 10);
         since = 0;
 
-        Connection connection = mock(Connection.class);
+        connection = mock(Connection.class);
         when(connection.getApi()).thenReturn(api);
-        ConnectionKey key = new ConnectionKey("twitter", "bguerout-account");
-        when(connection.getKey()).thenReturn(key);
-        when(connectionResolver.getConnectionsFor(eq(user))).thenReturn(Lists.<Connection<Twitter>>newArrayList(connection));
         when(api.timelineOperations()).thenReturn(timelineOperations);
         when(timelineOperations.getUserTimeline()).thenReturn(Lists.newArrayList(tweet1, tweet2));
 
@@ -78,7 +73,7 @@ public class TwitterFetcherTest {
 
     @Test
     public void shouldFetchEventsUsingUserTimeline() {
-        fetcher.fetch(user, since);
+        fetcher.fetch(connection, since);
 
         verify(api).timelineOperations();
         verify(timelineOperations).getUserTimeline();
@@ -86,18 +81,16 @@ public class TwitterFetcherTest {
 
     @Test
     public void shouldConvertTweetsToEvents() {
-        List<Event> events = fetcher.fetch(user, since);
+        List<EventData> datas = fetcher.fetch(connection, since);
 
-        assertThat(events.size(), equalTo(2));
+        assertThat(datas.size(), equalTo(2));
 
-        Event event = events.get(0);
-        assertThat(event.getTimestamp(), equalTo(tweet1.getCreatedAt().getTime()));
-        assertThat(event.getUser(), equalTo(user));
-        assertThat(event.getMessage(), equalTo("a tweet"));
-        assertThat(event.getProviderConnection().getProviderId(), equalTo("twitter"));
+        EventData data = datas.get(0);
+        assertThat(data.getTimestamp(), equalTo(tweet1.getCreatedAt().getTime()));
+        assertThat(data.getMessage(), equalTo("a tweet"));
 
-        event = events.get(1);
-        assertThat(event.getMessage(), equalTo("a second tweet"));
+        data = datas.get(1);
+        assertThat(data.getMessage(), equalTo("a second tweet"));
     }
 
     @Test
@@ -105,11 +98,11 @@ public class TwitterFetcherTest {
 
         long tweet1CreationTime = tweet1.getCreatedAt().getTime();
 
-        List<Event> events = fetcher.fetch(user, tweet1CreationTime);
+        List<EventData> datas = fetcher.fetch(connection, tweet1CreationTime);
 
-        assertThat(events.size(), greaterThan(0));
-        for (Event event : events) {
-            assertThat(event.getTimestamp(), greaterThan(tweet1CreationTime));
+        assertThat(datas.size(), greaterThan(0));
+        for (EventData data : datas) {
+            assertThat(data.getTimestamp(), greaterThan(tweet1CreationTime));
         }
     }
 

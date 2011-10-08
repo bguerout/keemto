@@ -17,7 +17,7 @@
 package fr.keemto.core.fetcher.scheduling;
 
 import fr.keemto.core.User;
-import fr.keemto.core.UserResolver;
+import fr.keemto.core.UserRepository;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,13 +27,13 @@ import java.util.List;
 @Component
 public class AutomaticFetchingInitializer implements InitializingBean {
 
-    private final UserResolver userResolver;
+    private final UserRepository userRepository;
     private final FetchingTaskFactory fetchingTaskFactory;
     private final TaskRegistrar registrar;
 
     @Autowired
-    public AutomaticFetchingInitializer(UserResolver userResolver, FetchingTaskFactory fetchingTaskFactory, TaskRegistrar registrar) {
-        this.userResolver = userResolver;
+    public AutomaticFetchingInitializer(UserRepository userRepository, FetchingTaskFactory fetchingTaskFactory, TaskRegistrar registrar) {
+        this.userRepository = userRepository;
         this.fetchingTaskFactory = fetchingTaskFactory;
         this.registrar = registrar;
     }
@@ -44,7 +44,7 @@ public class AutomaticFetchingInitializer implements InitializingBean {
     }
 
     protected void registerAllTasks() {
-        for (User user : userResolver.getAllUsers()) {
+        for (User user : userRepository.getAllUsers()) {
             List<FetchingTask> tasks = fetchingTaskFactory.createTasks(user);
             registrar.registerTasks(tasks);
         }

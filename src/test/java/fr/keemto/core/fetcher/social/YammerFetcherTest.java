@@ -3,6 +3,7 @@ package fr.keemto.core.fetcher.social;
 
 import com.google.common.collect.Lists;
 import fr.keemto.core.Event;
+import fr.keemto.core.EventData;
 import fr.keemto.core.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,26 +26,20 @@ import static org.mockito.Mockito.when;
 public class YammerFetcherTest {
 
     private YammerFetcher fetcher;
-    private ConnectionResolver<YammerTemplate> connectionResolver;
     private YammerTemplate api;
     private MessageOperations messageOperations;
-    private User user;
+    private Connection connection;
 
     @Before
     public void initBeforeTest() throws Exception {
 
         api = mock(YammerTemplate.class);
         messageOperations = mock(MessageOperations.class);
-        connectionResolver = mock(ConnectionResolver.class);
-        fetcher = new YammerFetcher(connectionResolver);
-        user = new User("bguerout");
+        fetcher = new YammerFetcher();
 
 
-        Connection connection = mock(Connection.class);
+        connection = mock(Connection.class);
         when(connection.getApi()).thenReturn(api);
-        ConnectionKey key = new ConnectionKey("yammer", "bguerout-account");
-        when(connection.getKey()).thenReturn(key);
-        when(connectionResolver.getConnectionsFor(eq(user))).thenReturn(Lists.<Connection<YammerTemplate>>newArrayList(connection));
         when(api.messageOperations()).thenReturn(messageOperations);
     }
 
@@ -56,15 +51,14 @@ public class YammerFetcherTest {
         MessageInfo messageInfo = new MessageInfo(Lists.newArrayList(message), null);
         when(messageOperations.getMessagesSent(0, 0, null, 0)).thenReturn(messageInfo);
 
-        List<Event> events = fetcher.fetch(user, lastFetchedEventTime);
+        List<EventData> datas = fetcher.fetch(connection, lastFetchedEventTime);
 
-        assertThat(events, notNullValue());
-        assertThat(events.isEmpty(), is(false));
-        Event event = events.get(0);
-        assertThat(event.getMessage(), equalTo("foo"));
-        assertThat(event.getTimestamp(), equalTo(messageCreationDate.getTime()));
-        assertThat(event.getUser(), equalTo(user));
-        assertThat(event.getProviderConnection().getProviderId(), equalTo("yammer"));
+        assertThat(datas, notNullValue());
+        assertThat(datas.isEmpty(), is(false));
+        EventData data = datas.get(0);
+        assertThat(data.getMessage(), equalTo("foo"));
+        assertThat(data.getTimestamp(), equalTo(messageCreationDate.getTime()));
+        assertThat(data.getProviderId(), equalTo("yammer"));
     }
 
     @Test
@@ -76,12 +70,12 @@ public class YammerFetcherTest {
         MessageInfo messageInfo = new MessageInfo(Lists.newArrayList(message, message2), null);
         when(messageOperations.getMessagesSent(0, 0, null, 0)).thenReturn(messageInfo);
 
-        List<Event> events = fetcher.fetch(user, lastFetchedEventTime);
+        List<EventData> datas = fetcher.fetch(connection, lastFetchedEventTime);
 
-        assertThat(events, notNullValue());
-        assertThat(events.size(), equalTo(2));
-        assertThat(events.get(0).getMessage(), equalTo("foo"));
-        assertThat(events.get(1).getMessage(), equalTo("bar"));
+        assertThat(datas, notNullValue());
+        assertThat(datas.size(), equalTo(2));
+        assertThat(datas.get(0).getMessage(), equalTo("foo"));
+        assertThat(datas.get(1).getMessage(), equalTo("bar"));
     }
 
     @Test
@@ -92,10 +86,10 @@ public class YammerFetcherTest {
         MessageInfo messageInfo = new MessageInfo(Lists.newArrayList(acceptedMessage, ignoredMessage), null);
         when(messageOperations.getMessagesSent(0, 0, null, 0)).thenReturn(messageInfo);
 
-        List<Event> events = fetcher.fetch(user, lastFetchedEventTime);
+        List<EventData> datas = fetcher.fetch(connection, lastFetchedEventTime);
 
-        assertThat(events, notNullValue());
-        assertThat(events.size(), equalTo(1));
+        assertThat(datas, notNullValue());
+        assertThat(datas.size(), equalTo(1));
     }
 
 

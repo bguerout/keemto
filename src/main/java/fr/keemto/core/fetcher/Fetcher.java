@@ -16,14 +16,14 @@
 
 package fr.keemto.core.fetcher;
 
-import fr.keemto.core.Event;
+import fr.keemto.core.EventData;
 import fr.keemto.core.User;
 
 import java.util.List;
 
-public interface Fetcher {
+public interface Fetcher<T> {
 
-    List<Event> fetch(User user, long lastFetchedEventTime);
+    List<EventData> fetch(T details, long lastFetchedEventTime);
 
     String getProviderId();
 

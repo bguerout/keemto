@@ -58,8 +58,8 @@ public class SocialAccountFactoryTest {
         assertThat(accounts.size(), equalTo(1));
         Account account = accounts.get(0);
         assertThat(account, notNullValue());
-        assertThat(account.getUser(), equalTo(user));
         assertThat(account.getProviderId(), equalTo("twitter"));
+        assertThat(account.getKey().getUser(), equalTo(user));//TODO demeter ...
     }
 
     @Test
@@ -76,23 +76,6 @@ public class SocialAccountFactoryTest {
         assertThat(accounts.size(), equalTo(2));
     }
 
-    @Test
-    public void accountCanFetchItsEvents() throws Exception {
-
-        Fetcher twitterFetcher = mock(Fetcher.class);
-        User user = new User("stnevex");
-        MultiValueMap<String, Connection<?>> connections = new LinkedMultiValueMap<String, Connection<?>>();
-        connections.add("twitter", new DummyConnection("twitter", "mylogin"));
-        setConnectionsForUserIntoRepository("stnevex", connections);
-        when(fetcherLocator.getFetcher("twitter")).thenReturn(twitterFetcher);
-
-        Account account = accountFactory.getAccounts(user).get(0);
-        account.fetch(999L);
-
-        verify(twitterFetcher).fetch(user, 999L);
-
-
-    }
 
     private void setConnectionsForUserIntoRepository(String username, MultiValueMap<String, Connection<?>> connections) {
         ConnectionRepository connectionRepository = mock(ConnectionRepository.class);

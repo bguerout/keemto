@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -37,10 +38,12 @@ public class JdbcEventRepositoryIT {
     private EventRepository repository;
     private ProviderConnection keemtoProviderConnx = new DefaultProviderConnection("keemto");
     private User testUser;
+    private AccountKey key;
 
     @Before
     public void prepare() throws Exception {
         testUser = new User("stnevex", "John", "Doe", "stnevex@gmail.com");
+        key = new AccountKey("mail", "stnevex@gmail.com", testUser);
     }
 
     @Test
@@ -66,10 +69,14 @@ public class JdbcEventRepositoryIT {
     @Test
     public void shouldReturnMostRecentEvent() {
 
-        Account mailAccount = new Account(testUser, "mail");
-        Event mostRecentEvent = repository.getMostRecentEvent(mailAccount);
 
-        assertEventHasBeenPopulated(mostRecentEvent);
+        Event mostRecentEvent = repository.getMostRecentEvent(key);
+
+        assertThat(mostRecentEvent, notNullValue());
+        assertThat(mostRecentEvent.getMessage(), notNullValue());
+        assertThat(mostRecentEvent.getUser(), equalTo(testUser));
+        assertThat(mostRecentEvent.getTimestamp(), notNullValue());
+        assertThat(mostRecentEvent.getProviderConnection(), notNullValue());
         Long lastFetchedTime = new Long(1301464284376L);
         long eventTime = mostRecentEvent.getTimestamp();
         assertThat(eventTime, equalTo(lastFetchedTime));
@@ -78,8 +85,7 @@ public class JdbcEventRepositoryIT {
     @Test
     public void shouldReturnMostRecentEventForAnonymousProvider() {
 
-        Account mailAccount = new Account(testUser, "mail");
-        Event mostRecentEvent = repository.getMostRecentEvent(mailAccount);
+        Event mostRecentEvent = repository.getMostRecentEvent(key);
 
         ProviderConnection anonymousProvider = mostRecentEvent.getProviderConnection();
         assertThat(anonymousProvider.isAnonymous(), is(true));
@@ -89,8 +95,8 @@ public class JdbcEventRepositoryIT {
     @Test
     public void shouldReturnMostRecentEventForSocialProvider() {
 
-        Account twitterAccount = new Account(testUser, "twitter");
-        Event mostRecentEvent = repository.getMostRecentEvent(twitterAccount);
+        AccountKey twitterAccountKey = new AccountKey("twitter", "@stnevex", testUser);
+        Event mostRecentEvent = repository.getMostRecentEvent(twitterAccountKey);
 
         ProviderConnection socialProvider = mostRecentEvent.getProviderConnection();
         assertThat(socialProvider.getProviderId(), equalTo("twitter"));
@@ -104,13 +110,12 @@ public class JdbcEventRepositoryIT {
     @Test
     public void whenUserHasntEventShouldReturnAnInitEvent() {
 
-        User userWithoutEvents = new User("userWithoutEvents");
 
-        Account noFetchedAccount = new Account(userWithoutEvents, "mail");
-        Event mostRecentEvent = repository.getMostRecentEvent(noFetchedAccount);
+        AccountKey noFetchedAccountKey = new AccountKey("mail", "stnevex@gmail.com", new User("userWithoutEvents"));
+        Event mostRecentEvent = repository.getMostRecentEvent(noFetchedAccountKey);
 
         assertThat(mostRecentEvent instanceof InitializationEvent, is(true));
-        assertThat(mostRecentEvent.getUser(), equalTo(userWithoutEvents));
+        assertThat(mostRecentEvent.getUser().getUsername(), equalTo("userWithoutEvents"));
         assertThat(mostRecentEvent.getTimestamp(), equalTo((long) 0));
     }
 
@@ -137,12 +142,5 @@ public class JdbcEventRepositoryIT {
         repository.persist(Lists.newArrayList(event, differentEventWithSameTime));
     }
 
-    private void assertEventHasBeenPopulated(Event event) {
-        assertThat(event, notNullValue());
-        assertThat(event.getMessage(), notNullValue());
-        assertThat(event.getUser(), equalTo(testUser));
-        assertThat(event.getTimestamp(), notNullValue());
-        assertThat(event.getProviderConnection(), notNullValue());
-    }
 }
 

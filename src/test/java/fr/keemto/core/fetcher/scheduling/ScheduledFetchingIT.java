@@ -53,7 +53,7 @@ public class ScheduledFetchingIT {
         private final CountDownLatch latch;
 
         public CountDownTask(CountDownLatch latch, User user) {
-            super(null, user, null);
+            super(null, null);
             this.latch = latch;
         }
 

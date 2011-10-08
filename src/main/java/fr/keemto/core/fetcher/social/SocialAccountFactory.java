@@ -3,7 +3,7 @@ package fr.keemto.core.fetcher.social;
 
 import fr.keemto.core.Account;
 import fr.keemto.core.AccountFactory;
-import fr.keemto.core.AccountKeyAdapter;
+import fr.keemto.core.ConnectionAccountKey;
 import fr.keemto.core.User;
 import fr.keemto.core.fetcher.Fetcher;
 import fr.keemto.core.fetcher.FetcherLocator;
@@ -11,16 +11,20 @@ import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionKey;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.UsersConnectionRepository;
+import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class SocialAccountFactory implements AccountFactory {
 
     private final UsersConnectionRepository usersConnectionRepository;
     private final FetcherLocator fetcherLocator;
 
+    @Inject
     public SocialAccountFactory(UsersConnectionRepository usersConnectionRepository, FetcherLocator fetcherLocator) {
         this.usersConnectionRepository = usersConnectionRepository;
         this.fetcherLocator = fetcherLocator;
@@ -44,8 +48,8 @@ public class SocialAccountFactory implements AccountFactory {
 
     private Account createAccount(User user, Connection<?> connection) {
         Fetcher fetcher = findFetcherForConnection(connection);
-        AccountKeyAdapter accountKey = new AccountKeyAdapter(connection.getKey());
-        return new Account(accountKey, user, fetcher);
+        ConnectionAccountKey accountKey = new ConnectionAccountKey(connection.getKey(), user);
+        return new SocialAccount(accountKey, fetcher, connection);
     }
 
     private Fetcher findFetcherForConnection(Connection<?> connection) {

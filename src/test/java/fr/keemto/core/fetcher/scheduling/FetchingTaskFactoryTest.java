@@ -16,10 +16,11 @@
 
 package fr.keemto.core.fetcher.scheduling;
 
+import fr.keemto.core.Account;
+import fr.keemto.core.AccountFactory;
 import fr.keemto.core.EventRepository;
 import fr.keemto.core.User;
 import fr.keemto.core.fetcher.Fetcher;
-import fr.keemto.core.fetcher.FetcherLocator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,21 +38,19 @@ public class FetchingTaskFactoryTest {
 
     private FetchingTaskFactory fetchingTaskFactory;
     private EventRepository eventRepository;
-    private Fetcher fetcher;
-    private List<Fetcher> fetchers;
+    private List<Account> accounts;
     private final User user = new User("user");
 
     @Before
     public void initBeforeTest() throws Exception {
 
-        fetchers = new ArrayList<Fetcher>();
-        fetcher = mock(Fetcher.class);
-        fetchers.add(fetcher);
-        FetcherLocator fetcherLocator = mock(FetcherLocator.class);
-        when(fetcherLocator.getFetchersFor(user)).thenReturn(fetchers);
+        accounts = new ArrayList<Account>();
+        accounts.add(mock(Account.class));
+        AccountFactory accountFactory = mock(AccountFactory.class);
+        when(accountFactory.getAccounts(user)).thenReturn(accounts);
 
         eventRepository = mock(EventRepository.class);
-        fetchingTaskFactory = new FetchingTaskFactory(eventRepository, fetcherLocator);
+        fetchingTaskFactory = new FetchingTaskFactory(accountFactory, eventRepository);
 
     }
 
@@ -67,9 +66,8 @@ public class FetchingTaskFactoryTest {
     @Test
     public void shouldCreateTasksWithUser() throws Exception {
 
-        Fetcher fetcher2 = mock(Fetcher.class);
-        when(fetcher2.canFetch(any(User.class))).thenReturn(true);
-        fetchers.add(fetcher2);
+        Account acc2 = mock(Account.class);
+        accounts.add(acc2);
 
         List<FetchingTask> tasks = fetchingTaskFactory.createTasks(user);
 

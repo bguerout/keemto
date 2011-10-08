@@ -91,13 +91,13 @@ public class JdbcEventRepository implements EventRepository {
     }
 
     @Override
-    public Event getMostRecentEvent(Account account) {
-        User user = account.getUser();
-        String[] parameters = {user.getUsername(), account.getProviderId()};
+    public Event getMostRecentEvent(AccountKey key) {
+        User user = key.getUser();
+        String[] parameters = {user.getUsername(), key.getProviderId()};
         try {
             return jdbcTemplate.queryForObject(SQL_MOSTRECENT_EVENT, parameters, new EventRowMapper());
         } catch (EmptyResultDataAccessException e) {
-            return createInitializationEvent(user, account.getProviderId());
+            return createInitializationEvent(user, key.getProviderId());
         }
     }
 

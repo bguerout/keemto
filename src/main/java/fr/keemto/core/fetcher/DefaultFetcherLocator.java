@@ -44,6 +44,7 @@ public class DefaultFetcherLocator implements FetcherLocator {
     }
 
     @Override
+    @Deprecated
     public List<Fetcher> getFetchersFor(User user) {
         List<Fetcher> userFetchers = new ArrayList<Fetcher>();
         for (Fetcher fetcher : fetchers) {

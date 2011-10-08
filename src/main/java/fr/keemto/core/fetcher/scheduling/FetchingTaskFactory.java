@@ -16,6 +16,8 @@
 
 package fr.keemto.core.fetcher.scheduling;
 
+import fr.keemto.core.Account;
+import fr.keemto.core.AccountFactory;
 import fr.keemto.core.EventRepository;
 import fr.keemto.core.User;
 import fr.keemto.core.fetcher.Fetcher;
@@ -33,22 +35,22 @@ public class FetchingTaskFactory {
 
     private static final Logger log = LoggerFactory.getLogger(FetchingTaskFactory.class);
 
+    private final AccountFactory accountFactory;
     private final EventRepository eventRepository;
 
-    private final FetcherLocator fetcherLocator;
 
     @Autowired
-    public FetchingTaskFactory(EventRepository eventRepository, FetcherLocator fetcherLocator) {
+    public FetchingTaskFactory(AccountFactory accountFactory, EventRepository eventRepository) {
+        this.accountFactory = accountFactory;
         this.eventRepository = eventRepository;
-        this.fetcherLocator = fetcherLocator;
-
     }
+
 
     public List<FetchingTask> createTasks(User user) {
 
         List<FetchingTask> tasks = new ArrayList<FetchingTask>();
-        for (Fetcher fetcher : fetcherLocator.getFetchersFor(user)) {
-            FetchingTask task = new FetchingTask(fetcher, user, eventRepository);
+        for (Account account : accountFactory.getAccounts(user)) {
+            FetchingTask task = new FetchingTask(account, eventRepository);
             tasks.add(task);
         }
         return tasks;

@@ -36,42 +36,34 @@ public class FetchingTaskTest {
 
     private FetchingTask task;
     private EventRepository eventRepository;
-    private Fetcher fetcher;
-    private User user;
     private Event mostRecentEvent;
-    private DefaultProviderConnection providerConnx;
+    private Account account;
 
     @Before
     public void initBeforeTest() throws Exception {
-        fetcher = mock(Fetcher.class);
         eventRepository = mock(EventRepository.class);
-        user = new User("user");
-        Account account = new Account(user, "aProvider");
-        providerConnx = new DefaultProviderConnection("aProvider");
-        mostRecentEvent = new Event(9999, "message", user, providerConnx);
-        task = new FetchingTask(fetcher, user, eventRepository);
-
-        when(fetcher.getProviderId()).thenReturn("aProvider");
-        when(eventRepository.getMostRecentEvent(account)).thenReturn(mostRecentEvent);
+        account = mock(Account.class);
+        mostRecentEvent = new Event(9999, "message", new User("user"), null);
+        task = new FetchingTask(account, eventRepository);
     }
 
     @Test
     public void shouldPersitFetchedEvents() {
-        Event fetchedEvent = mock(Event.class);
-        ArrayList<Event> events = Lists.newArrayList(fetchedEvent);
-        when(fetcher.fetch(eq(user), eq(mostRecentEvent.getTimestamp()))).thenReturn(events);
+
+        ArrayList<Event> events = new ArrayList<Event>();
+        when(eventRepository.getMostRecentEvent(any(AccountKey.class))).thenReturn(mostRecentEvent);
+        when(account.fetch(anyLong())).thenReturn(events);
 
         task.run();
 
-        verify(eventRepository).getMostRecentEvent(new Account(user, "aProvider"));
-        verify(fetcher).fetch(eq(user), eq(mostRecentEvent.getTimestamp()));
         verify(eventRepository).persist(events);
     }
 
     @Test(expected = FetchingException.class)
     public void whenFetcherFailsShouldThrowException() throws Exception {
 
-        when(fetcher.fetch(eq(user), anyLong())).thenThrow(new RuntimeException());
+        when(eventRepository.getMostRecentEvent(any(AccountKey.class))).thenReturn(mostRecentEvent);
+        when(account.fetch(anyLong())).thenThrow(new RuntimeException());
 
         task.run();
     }
@@ -79,6 +71,7 @@ public class FetchingTaskTest {
     @Test(expected = FetchingException.class)
     public void whenEventRepositoryFailsShouldThrowException() throws Exception {
 
+        when(eventRepository.getMostRecentEvent(any(AccountKey.class))).thenReturn(mostRecentEvent);
         doThrow(new DataRetrievalFailureException("")).when(eventRepository).persist(anyList());
 
         task.run();

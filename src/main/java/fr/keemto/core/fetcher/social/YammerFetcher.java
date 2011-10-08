@@ -3,6 +3,7 @@ package fr.keemto.core.fetcher.social;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import fr.keemto.core.Event;
+import fr.keemto.core.EventData;
 import org.springframework.social.yammer.api.impl.MessageInfo;
 import org.springframework.social.yammer.api.impl.YammerMessage;
 import org.springframework.social.yammer.api.impl.YammerTemplate;
@@ -12,14 +13,14 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-public class YammerFetcher extends SocialFetcher<YammerTemplate, YammerMessage> {
+public class YammerFetcher extends ConnectionFetcher<YammerTemplate, YammerMessage> {
 
-    public YammerFetcher(ConnectionResolver<YammerTemplate> connectionResolver, long delay) {
-        super(connectionResolver, delay);
+    public YammerFetcher(long delay) {
+        super(delay);
     }
 
-    public YammerFetcher(ConnectionResolver<YammerTemplate> connectionResolver) {
-        this(connectionResolver, 60000);
+    public YammerFetcher() {
+        this(60000);
     }
 
     /*
@@ -47,11 +48,11 @@ public class YammerFetcher extends SocialFetcher<YammerTemplate, YammerMessage> 
     }
 
     @Override
-    protected Event convertDataToEvent(YammerMessage message, EventBuilder builder) {
+    protected EventData convertDataToEvent(YammerMessage message) {
         YammerMessage.Body body = message.getBody();
         String messageContent = body.getPlain();
         long messageCreationTime = message.getCreatedAt().getTime();
-        return builder.message(messageContent).timestamp(messageCreationTime).build();
+        return new EventData(messageCreationTime, messageContent, getProviderId());
     }
 
 
