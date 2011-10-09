@@ -43,21 +43,5 @@ public class DefaultFetcherLocator implements FetcherLocator {
         throw new FetcherConfigurationException("No fetcher can be found for provider: " + providerId);
     }
 
-    @Override
-    @Deprecated
-    public List<Fetcher> getFetchersFor(User user) {
-        List<Fetcher> userFetchers = new ArrayList<Fetcher>();
-        for (Fetcher fetcher : fetchers) {
-            if (fetcher.canFetch(user)) {
-                log.info("A new fetcher:" + fetcher + " has been found for user: " + user.getUsername());
-                userFetchers.add(fetcher);
-            } else {
-                log.debug("Fetcher " + fetcher.getProviderId()
-                        + " is rejected because it cannot fetch events for user: " + user + ".");
-            }
-        }
-        return userFetchers;
-    }
-
 
 }

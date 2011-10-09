@@ -27,8 +27,4 @@ public interface Fetcher<T> {
 
     String getProviderId();
 
-    long getDelay();
-
-    boolean canFetch(User user);
-
 }

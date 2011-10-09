@@ -16,9 +16,12 @@
 
 package fr.keemto.core.fetcher.scheduling;
 
+import fr.keemto.core.Account;
+import fr.keemto.core.EventRepository;
 import fr.keemto.core.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -28,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:/META-INF/spring/applicationContext.xml"})
@@ -53,7 +57,7 @@ public class ScheduledFetchingIT {
         private final CountDownLatch latch;
 
         public CountDownTask(CountDownLatch latch, User user) {
-            super(null, null);
+            super(mock(Account.class), mock(EventRepository.class));
             this.latch = latch;
         }
 

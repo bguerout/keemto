@@ -34,13 +34,4 @@ public abstract class ConnectionFetcher<A, D> implements Fetcher<Connection<A>> 
 
     protected abstract EventData convertDataToEvent(D data);
 
-    @Override
-    public boolean canFetch(User user) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public long getDelay() {
-        return delay;
-    }
 }
