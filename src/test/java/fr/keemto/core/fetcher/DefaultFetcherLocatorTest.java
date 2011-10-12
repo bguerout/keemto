@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -42,6 +43,17 @@ public class DefaultFetcherLocatorTest {
 
         assertThat(twitterFetcher, notNullValue());
         assertThat(twitterFetcher, equalTo(fetcher));
+
+    }
+
+    @Test
+    public void canCheckIfProviderHasFetcher() throws Exception {
+        Fetcher fetcher = mock(Fetcher.class);
+        FetcherLocator fetcherLocator = new DefaultFetcherLocator(Lists.newArrayList(fetcher));
+        when(fetcher.getProviderId()).thenReturn("twitter");
+
+        assertThat(fetcherLocator.hasFetcherFor("twitter"), is(true));
+        assertThat(fetcherLocator.hasFetcherFor("unknown"), is(false));
 
     }
 }

@@ -16,27 +16,23 @@
 
 package fr.keemto.web;
 
-import fr.keemto.core.ProviderConnection;
-import fr.keemto.core.fetcher.social.SocialProviderConnection;
+import fr.keemto.core.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.http.HttpStatus;
 import org.springframework.social.connect.*;
 import org.springframework.social.connect.support.OAuth1ConnectionFactory;
 import org.springframework.social.connect.support.OAuth2ConnectionFactory;
 import org.springframework.social.connect.web.ConnectSupport;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Controller
 @Scope(value = "request")
-@RequestMapping(value = "/api/accounts")
+@RequestMapping(value = "/api/connections")
 public class ConnectionController {
 
     private final ConnectionFactoryLocator connectionFactoryLocator;
@@ -54,27 +50,6 @@ public class ConnectionController {
         this.webSupport = webSupport;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    @ResponseBody
-    public List<ProviderConnection> getUserConnections() {
-        MultiValueMap<String, Connection<?>> connectionsByProviderMap = connectionRepository.findAllConnections();
-        return convertUserConnections(connectionsByProviderMap);
-    }
-
-    @RequestMapping(value = "/{providerId}-{providerUserId}", method = RequestMethod.GET)
-    @ResponseBody
-    public ProviderConnection getUserConnections(@PathVariable String providerId, @PathVariable String providerUserId) {
-        //TODO we should use a ConnectionKeyBuilder to convert id to provider*Id
-        Connection<?> connection = connectionRepository.getConnection(new ConnectionKey(providerId, providerUserId));
-        return new SocialProviderConnection(connection);
-    }
-
-    @RequestMapping(value = {"/{providerId}-{providerUserId}"}, method = RequestMethod.DELETE)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @ResponseBody
-    public void removeConnection(@PathVariable String providerId, @PathVariable String providerUserId) {
-        connectionRepository.removeConnection(new ConnectionKey(providerId, providerUserId));
-    }
 
     /**
      * @see org.springframework.social.connect.web.ConnectController
@@ -120,15 +95,8 @@ public class ConnectionController {
         return new RedirectView("/#accounts", true);
     }
 
-    private List<ProviderConnection> convertUserConnections(MultiValueMap<String, Connection<?>> connectionsByProviderMap) {
-        List<ProviderConnection> userConnections = new ArrayList<ProviderConnection>();
-        for (List<Connection<?>> connections : connectionsByProviderMap.values()) {
-            for (Connection<?> connx : connections) {
-                userConnections.add(new SocialProviderConnection(connx));
-            }
-        }
-        return userConnections;
+    private Account toAccount(ConnectionKey connxKey) {
+        return null;
     }
-
 
 }

@@ -74,91 +74,6 @@ public class ConnectionControllerTest extends ControllerTestCase {
                 profileUrl, imageUrl, "accessToken", "secret", "refreshToken", (long) 999);
     }
 
-    @Test
-    public void showReturnAllConnections() throws Exception {
-
-        request.setMethod("GET");
-        request.setRequestURI("/api/accounts");
-
-        MultiValueMap<String, Connection<?>> connections = new LinkedMultiValueMap<String, Connection<?>>();
-        connections.add("twitter", new NullConnection<Object>(data));
-        when(repository.findAllConnections()).thenReturn(connections);
-
-        handlerAdapter.handle(request, response, controller);
-
-        assertThat(response.getStatus(), equalTo(200));
-        JsonNode jsonNode = toJsonNode(response.getContentAsString());
-        assertThat(jsonNode.isArray(), is(true));
-        assertThat(jsonNode.has(0), is(true));
-        JsonNode connx = jsonNode.get(0);
-        assertThat(connx.get("id").getValueAsText(), equalTo("twitter-1111"));
-        assertThat(connx.get("providerId").getValueAsText(), equalTo("twitter"));
-        assertThat(connx.get("displayName").getValueAsText(), equalTo("stnevex"));
-        assertThat(connx.get("profileUrl").getValueAsText(), equalTo("http://twitter.com/stnevex"));
-        assertThat(connx.get("imageUrl").getValueAsText(), equalTo("http://twitter.com/stnevex.jpg"));
-
-
-    }
-
-    @Test
-    public void whenUserHasNoConnectionShouldReturnEmptyJson() throws Exception {
-
-        request.setMethod("GET");
-        request.setRequestURI("/api/accounts");
-
-        when(repository.findAllConnections()).thenReturn(new LinkedMultiValueMap<String, Connection<?>>());
-
-        handlerAdapter.handle(request, response, controller);
-
-        assertThat(response.getStatus(), equalTo(200));
-        JsonNode node = toJsonNode(response.getContentAsString());
-        assertThat(node.size(), equalTo(0));
-    }
-
-    @Test
-    public void showReturnConnectionById() throws Exception {
-
-        request.setMethod("GET");
-        request.setRequestURI("/api/accounts/twitter-1111");
-
-        when(repository.getConnection(new ConnectionKey("twitter", "1111"))).thenReturn(new NullConnection<Object>(data));
-
-        handlerAdapter.handle(request, response, controller);
-
-        assertThat(response.getStatus(), equalTo(200));
-        JsonNode connx = toJsonNode(response.getContentAsString());
-        assertThat(connx.get("id").getTextValue(), equalTo("twitter-1111"));
-        assertThat(connx.get("providerId").getTextValue(), equalTo("twitter"));
-        assertThat(connx.get("displayName").getTextValue(), equalTo("stnevex"));
-        assertThat(connx.get("profileUrl").getTextValue(), equalTo("http://twitter.com/stnevex"));
-        assertThat(connx.get("imageUrl").getTextValue(), equalTo("http://twitter.com/stnevex.jpg"));
-
-    }
-
-    @Test
-    public void shouldDeleteConnection() throws Exception {
-
-        request.setMethod("DELETE");
-        request.setRequestURI("/api/accounts/twitter-9999");
-
-        handlerAdapter.handle(request, response, controller);
-
-        assertThat(response.getStatus(), equalTo(204));
-        verify(repository).removeConnection(new ConnectionKey("twitter", "9999"));
-    }
-
-
-    @Test
-    public void shouldDeleteConnectionBySplittingKeyWithLastIndexOfMinus() throws Exception {
-
-        request.setMethod("DELETE");
-        request.setRequestURI("/api/accounts/linked-in-9999");
-
-        handlerAdapter.handle(request, response, controller);
-
-        assertThat(response.getStatus(), equalTo(204));
-        verify(repository).removeConnection(new ConnectionKey("linked-in", "9999"));
-    }
 
     @Test
     public void shouldBeginConnectionCreationByRedirectUserToProviderUrl() throws Exception {
@@ -174,7 +89,7 @@ public class ConnectionControllerTest extends ControllerTestCase {
     public void providerShouldRequestOAuth1CalledBack() throws Exception {
 
         request.setMethod("GET");
-        request.setRequestURI("/api/accounts/twitter");
+        request.setRequestURI("/api/connections/twitter");
         request.setParameter("oauth_token", "xxx");
         Connection newConnectionCreated = mock(Connection.class);
         when(webSupport.completeConnection(any(OAuth1ConnectionFactory.class), any(NativeWebRequest.class))).thenReturn(newConnectionCreated);
@@ -191,7 +106,7 @@ public class ConnectionControllerTest extends ControllerTestCase {
     public void userShouldPostPinCodeAsOAuth1CalledBack() throws Exception {
 
         request.setMethod("POST");
-        request.setRequestURI("/api/accounts/twitter");
+        request.setRequestURI("/api/connections/twitter");
         request.setParameter("oauth_verifier", "XXX");
         Connection newConnectionCreated = mock(Connection.class);
         when(webSupport.completeConnection(any(OAuth1ConnectionFactory.class), any(NativeWebRequest.class))).thenReturn(newConnectionCreated);
@@ -208,7 +123,7 @@ public class ConnectionControllerTest extends ControllerTestCase {
     public void providerShouldRequestOAuth2CalledBack() throws Exception {
 
         request.setMethod("GET");
-        request.setRequestURI("/api/accounts/yammer");
+        request.setRequestURI("/api/connections/yammer");
         request.setParameter("code", "xxx");
         Connection newConnectionCreated = mock(Connection.class);
         when(webSupport.completeConnection(any(OAuth2ConnectionFactory.class), any(NativeWebRequest.class))).thenReturn(newConnectionCreated);

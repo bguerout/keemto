@@ -34,32 +34,32 @@ public class JdbcEventRepository implements EventRepository {
 
     private static final Logger log = LoggerFactory.getLogger(JdbcEventRepository.class);
 
-    public static final String SQL_EVENTS_NEWERTHAN = "select events.ts, events.message, events.providerId, events.providerUserId, " +
-            "connx.displayName, connx.profileUrl, connx.imageUrl, user.username, user.firstName, user.lastName, user.email " +
+    public static final String SQL_EVENTS_NEWERTHAN = "SELECT events.ts, events.message, events.providerId, events.providerUserId, " +
+            "user.username, user.firstName, user.lastName, user.email " +
             "FROM events " +
             "INNER JOIN keemto_user as user ON events.username = user.username " +
-            "LEFT JOIN UserConnection as connx ON events.providerId = connx.providerId AND events.providerUserId = connx.providerUserId AND events.username = connx.userId " +
             "WHERE events.ts > ?";
 
-    public static final String SQL_MOSTRECENT_EVENT = "select TOP 1 events.ts, events.message, events.providerId, events.providerUserId, " +
-            "connx.displayName, connx.profileUrl, connx.imageUrl, user.username, user.firstName, " +
-            "user.lastName, user.email " +
-            "from events " +
+    public static final String SQL_MOSTRECENT_EVENT = "SELECT TOP 1 events.ts, events.message, events.providerId, events.providerUserId, " +
+            "user.username, user.firstName, user.lastName, user.email " +
+            "FROM events " +
             "INNER JOIN keemto_user as user ON events.username = user.username " +
-            "LEFT JOIN UserConnection as connx ON events.providerId = connx.providerId  " +
-            "AND events.provideruserId = connx.providerUserId AND events.username= connx.userId " +
-            "where events.username=? AND events.providerId=? ORDER BY ts DESC";
+            "WHERE events.username=? AND events.providerId=? ORDER BY ts DESC";
+
+    public static final int SINCE_THE_BEGINNING = -1;
 
     private final JdbcTemplate jdbcTemplate;
+    private final AccountFactory accountFactory;
 
     @Inject
-    public JdbcEventRepository(JdbcTemplate jdbcTemplate) {
+    public JdbcEventRepository(JdbcTemplate jdbcTemplate, AccountFactory accountFactory) {
         this.jdbcTemplate = jdbcTemplate;
+        this.accountFactory = accountFactory;
     }
 
     @Override
     public List<Event> getAllEvents() {
-        return getEvents(-1);
+        return getEvents(SINCE_THE_BEGINNING);
     }
 
     @Override
@@ -76,13 +76,11 @@ public class JdbcEventRepository implements EventRepository {
 
     private void persist(Event event) {
         String insertEvent = "insert into events (ts,message,username,providerId,providerUserId) values(?,?,?,?,?)";
+        AccountKey key = event.getAccount().getKey();
+        User user = key.getUser();
         try {
-            User user = event.getUser();
-            ProviderConnection providerConnx = event.getProviderConnection();
-
             jdbcTemplate.update(insertEvent,
-                    new Object[]{event.getTimestamp(), event.getMessage(), user.getUsername(),
-                            providerConnx.getProviderId(), providerConnx.getProviderUserId()});
+                    new Object[]{event.getTimestamp(), event.getMessage(), user.getUsername(), key.getProviderId(), key.getProviderUserId()});
 
         } catch (DuplicateKeyException e) {
             throw new DuplicateEventException("Unable to persist event " + event +
@@ -91,23 +89,25 @@ public class JdbcEventRepository implements EventRepository {
     }
 
     @Override
-    public Event getMostRecentEvent(AccountKey key) {
+    public Event getMostRecentEvent(Account account) {
+        AccountKey key = account.getKey();
         User user = key.getUser();
         String[] parameters = {user.getUsername(), key.getProviderId()};
         try {
             return jdbcTemplate.queryForObject(SQL_MOSTRECENT_EVENT, parameters, new EventRowMapper());
         } catch (EmptyResultDataAccessException e) {
-            return createInitializationEvent(user, key.getProviderId());
+            return createInitializationEvent(account);
         }
     }
 
-    private Event createInitializationEvent(User user, String providerId) {
+    private Event createInitializationEvent(Account account) {
+        AccountKey key = account.getKey();
         log.info("User: "
-                + user
-                + " hasn't event yet for provider: " + providerId
+                + key.getUser()
+                + " hasn't event yet for provider: " + key.getProviderId()
                 + ". This is propably the first time application tried to fetch user's connections. An initialization event is returned.");
         //TODO check if null object has to be created into repository or in task
-        return new InitializationEvent(user, providerId);
+        return new InitializationEvent(account);
     }
 
     private final class EventRowMapper implements RowMapper<Event> {
@@ -116,22 +116,16 @@ public class JdbcEventRepository implements EventRepository {
 
             long timestamp = rs.getLong("ts");
             String message = rs.getString("message");
-
             User user = new UserRowMapper().mapRow(rs, rowNum);
-
-            ProviderConnection providerConnection = buildProviderConnection(rs);
-
-            return new Event(timestamp, message, user, providerConnection);
+            AccountKey key = mapAccountKey(rs, user);
+            Account account = accountFactory.getAccount(key);
+            return new Event(timestamp, message, account);
         }
 
-        private ProviderConnection buildProviderConnection(ResultSet rs) throws SQLException {
-            //TODO create a ProviderConnection factory
+        private AccountKey mapAccountKey(ResultSet rs, User user) throws SQLException {
             String providerId = rs.getString("providerId");
             String providerUserId = rs.getString("providerUserId");
-            String displayName = rs.getString("displayName");
-            String profileUrl = rs.getString("profileUrl");
-            String imageUrl = rs.getString("imageUrl");
-            return new DefaultProviderConnection(providerId, providerUserId, displayName, profileUrl, imageUrl);
+            return new AccountKey(providerId, providerUserId, user);
         }
     }
 

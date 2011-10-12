@@ -1,27 +1,34 @@
-package fr.keemto.core;
+/*
+ * Copyright (C) 2010 Benoit Guerout <bguerout at gmail dot com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import fr.keemto.core.fetcher.Fetcher;
+package fr.keemto.core;
 
 import java.util.List;
 
-public abstract class Account {
+public interface Account {
 
-    private final AccountKey key;
+    AccountKey getKey();
 
+    String getDisplayName();
 
-    protected Account(AccountKey key) {
-        this.key = key;
-    }
+    String getProfileUrl();
 
-    public String getProviderId() {
-        return key.getProviderId();
-    }
+    String getImageUrl();
 
-    public AccountKey getKey() {
-        return key;
-    }
+    List<Event> fetch(long newerThan);
 
-    public abstract List<Event> fetch(long newerThan);
-
-
+    void revoke();
 }

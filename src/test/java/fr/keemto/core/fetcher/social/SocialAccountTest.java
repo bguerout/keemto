@@ -3,7 +3,7 @@ package fr.keemto.core.fetcher.social;
 import com.google.common.collect.Lists;
 import fr.keemto.core.*;
 import fr.keemto.core.fetcher.Fetcher;
-import fr.keemto.util.DummyConnection;
+import fr.keemto.util.TestConnection;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.social.connect.Connection;
@@ -19,13 +19,15 @@ public class SocialAccountTest {
     private Account account;
     private Connection<?> connection;
     private Fetcher fetcher;
+    private MinimalConnectionRepository repository;
 
     @Before
     public void prepare() throws Exception {
         fetcher = mock(Fetcher.class);
-        connection = new DummyConnection("twitter", "userId");
+        connection = new TestConnection("twitter", "userId");
         AccountKey key = new AccountKey("twitter", "userId", new User("bguerout"));
-        account = new SocialAccount(key, fetcher, connection);
+        repository = mock(MinimalConnectionRepository.class);
+        account = new SocialAccount(key, fetcher, connection, repository);
     }
 
     @Test
@@ -38,7 +40,7 @@ public class SocialAccountTest {
     }
 
     @Test
-    public void shouldCreateEventWithAccountProvider() throws Exception {
+    public void shouldCreateEventWithAccount() throws Exception {
 
         EventData data = new EventData(1, "message", "twitter");
         when(fetcher.fetch(connection, 200L)).thenReturn(Lists.newArrayList(data));
@@ -46,7 +48,7 @@ public class SocialAccountTest {
         List<Event> events = account.fetch(200L);
 
         Event event = events.get(0);
-        assertThat(event.getProviderConnection().getProviderId(), equalTo("twitter"));
+        assertThat(event.getAccount().equals(account), is(true));
     }
 
     @Test
@@ -60,9 +62,8 @@ public class SocialAccountTest {
         assertThat(events.size(), equalTo(1));
         Event event = events.get(0);
         assertThat(event.getTimestamp(), equalTo(1L));
-        assertThat(event.getUser(), equalTo(new User("bguerout")));
         assertThat(event.getMessage(), equalTo("message"));
-        assertThat(event.getProviderConnection().getProviderId(), equalTo("twitter"));
+        assertThat(event.getAccount().equals(account), is(true));
     }
 
     @Test
@@ -76,8 +77,11 @@ public class SocialAccountTest {
 
         assertThat(events.size(), equalTo(2));
 
-
     }
 
-
+    @Test
+    public void shouldRevokeAccount() throws Exception {
+        account.revoke();
+        verify(repository).revoke(connection.getKey());
+    }
 }

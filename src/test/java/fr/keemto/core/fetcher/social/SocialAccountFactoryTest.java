@@ -1,16 +1,13 @@
 package fr.keemto.core.fetcher.social;
 
 import fr.keemto.core.Account;
+import fr.keemto.core.AccountKey;
 import fr.keemto.core.User;
-import fr.keemto.core.fetcher.Fetcher;
 import fr.keemto.core.fetcher.FetcherLocator;
-import fr.keemto.core.fetcher.social.SocialAccountFactory;
-import fr.keemto.util.DummyConnection;
+import fr.keemto.util.TestConnection;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.social.connect.Connection;
-import org.springframework.social.connect.ConnectionRepository;
-import org.springframework.social.connect.UsersConnectionRepository;
+import org.springframework.social.connect.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -46,11 +43,21 @@ public class SocialAccountFactoryTest {
     }
 
     @Test
+    public void canCheckIfFactorySupportsAProvider() throws Exception {
+        when(fetcherLocator.hasFetcherFor("twitter")).thenReturn(true);
+        assertThat(accountFactory.supports("twitter"),is(true));
+
+        when(fetcherLocator.hasFetcherFor("invalid")).thenReturn(false);
+        assertThat(accountFactory.supports("invalid"),is(false));
+
+    }
+
+    @Test
     public void shouldObtainAnAccountWithOneTwitterConnection() throws Exception {
 
         User user = new User("user");
         MultiValueMap<String, Connection<?>> connections = new LinkedMultiValueMap<String, Connection<?>>();
-        connections.add("twitter", new DummyConnection("twitter", "mylogin"));
+        connections.add("twitter", new TestConnection("twitter", "mylogin"));
         setConnectionsForUserIntoRepository("user", connections);
 
         List<Account> accounts = accountFactory.getAccounts(user);
@@ -58,8 +65,9 @@ public class SocialAccountFactoryTest {
         assertThat(accounts.size(), equalTo(1));
         Account account = accounts.get(0);
         assertThat(account, notNullValue());
-        assertThat(account.getProviderId(), equalTo("twitter"));
-        assertThat(account.getKey().getUser(), equalTo(user));//TODO demeter ...
+        AccountKey key = account.getKey();
+        assertThat(key.getProviderId(), equalTo("twitter"));
+        assertThat(key.getUser(), equalTo(user));
     }
 
     @Test
@@ -67,13 +75,45 @@ public class SocialAccountFactoryTest {
 
         User user = new User("user");
         MultiValueMap<String, Connection<?>> connections = new LinkedMultiValueMap<String, Connection<?>>();
-        connections.add("twitter", new DummyConnection("twitter", "mylogin"));
-        connections.add("yammer", new DummyConnection("yammer", "myyammerlogin"));
+        connections.add("twitter", new TestConnection("twitter", "mylogin"));
+        connections.add("yammer", new TestConnection("yammer", "myyammerlogin"));
         setConnectionsForUserIntoRepository("user", connections);
 
         List<Account> accounts = accountFactory.getAccounts(user);
 
         assertThat(accounts.size(), equalTo(2));
+    }
+
+    @Test
+    public void shouldObtainAnAccountByKey() throws Exception {
+
+        User user = new User("user");
+        AccountKey key = new AccountKey("twitter", "@stnevex", user);
+        ConnectionRepository connectionRepository = mock(ConnectionRepository.class);
+        ConnectionKey connxKey = new ConnectionKey("twitter", "@stnevex");
+        when(usersConnectionRepository.createConnectionRepository("user")).thenReturn(connectionRepository);
+        when(connectionRepository.getConnection(connxKey)).thenReturn(new TestConnection("twitter", "@stnevex"));
+
+        Account account = accountFactory.getAccount(key);
+
+        assertThat(account, notNullValue());
+        assertThat(key, equalTo(account.getKey()));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldFailWhenKeyIsInvalid() throws Exception {
+
+        User user = new User("user");
+        AccountKey key = new AccountKey("twitter", "@stnevex", user);
+        ConnectionRepository connectionRepository = mock(ConnectionRepository.class);
+        ConnectionKey connxKey = new ConnectionKey("twitter", "@stnevex");
+        when(usersConnectionRepository.createConnectionRepository("user")).thenReturn(connectionRepository);
+        when(connectionRepository.getConnection(connxKey)).thenThrow(new NoSuchConnectionException(connxKey));
+
+        Account account = accountFactory.getAccount(key);
+
+        assertThat(account, notNullValue());
+        assertThat(key, equalTo(account.getKey()));
     }
 
 

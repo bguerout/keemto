@@ -1,30 +1,20 @@
 package fr.keemto.core.fetcher.social;
 
 
-import fr.keemto.core.Account;
-import fr.keemto.core.AccountFactory;
-import fr.keemto.core.ConnectionAccountKey;
-import fr.keemto.core.User;
+import fr.keemto.core.*;
 import fr.keemto.core.fetcher.Fetcher;
 import fr.keemto.core.fetcher.FetcherLocator;
-import org.springframework.social.connect.Connection;
-import org.springframework.social.connect.ConnectionKey;
-import org.springframework.social.connect.ConnectionRepository;
-import org.springframework.social.connect.UsersConnectionRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.social.connect.*;
 import org.springframework.util.MultiValueMap;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
 public class SocialAccountFactory implements AccountFactory {
 
     private final UsersConnectionRepository usersConnectionRepository;
     private final FetcherLocator fetcherLocator;
 
-    @Inject
     public SocialAccountFactory(UsersConnectionRepository usersConnectionRepository, FetcherLocator fetcherLocator) {
         this.usersConnectionRepository = usersConnectionRepository;
         this.fetcherLocator = fetcherLocator;
@@ -32,24 +22,44 @@ public class SocialAccountFactory implements AccountFactory {
 
     @Override
     public List<Account> getAccounts(User user) {
-        MultiValueMap<String, Connection<?>> allConnections = getConnectionRepository(user);
+        ConnectionRepository connectionRepository = getConnectionRepository(user);
+        MultiValueMap<String, Connection<?>> allConnections = connectionRepository.findAllConnections();
         if (allConnections.isEmpty()) {
             return new ArrayList<Account>();
         }
         List<Account> accounts = new ArrayList<Account>();
         for (List<Connection<?>> connectionsPerProvider : allConnections.values()) {
             for (Connection<?> connection : connectionsPerProvider) {
-                Account account = createAccount(user, connection);
+                Account account = createAccount(user, connection, new MinimalConnectionRepository(connectionRepository));
                 accounts.add(account);
             }
         }
         return accounts;
     }
 
-    private Account createAccount(User user, Connection<?> connection) {
+    @Override
+    public Account getAccount(AccountKey key) {
+        User user = key.getUser();
+        ConnectionKey connectionKey = new ConnectionKey(key.getProviderId(), key.getProviderUserId());
+        ConnectionRepository connectionRepository = getConnectionRepository(user);
+        Connection<?> connection = null;
+        try {
+            connection = connectionRepository.getConnection(connectionKey);
+        } catch (NoSuchConnectionException e) {
+            throw new IllegalArgumentException("No account found for key: " + key, e);
+        }
+        return createAccount(user, connection, new MinimalConnectionRepository(connectionRepository));
+    }
+
+    @Override
+    public boolean supports(String providerId) {
+        return fetcherLocator.hasFetcherFor(providerId);
+    }
+
+    private Account createAccount(User user, Connection<?> connection, MinimalConnectionRepository connxRepo) {
         Fetcher fetcher = findFetcherForConnection(connection);
         ConnectionAccountKey accountKey = new ConnectionAccountKey(connection.getKey(), user);
-        return new SocialAccount(accountKey, fetcher, connection);
+        return new SocialAccount(accountKey, fetcher, connection, connxRepo);
     }
 
     private Fetcher findFetcherForConnection(Connection<?> connection) {
@@ -58,9 +68,8 @@ public class SocialAccountFactory implements AccountFactory {
         return fetcherLocator.getFetcher(providerId);
     }
 
-    private MultiValueMap<String, Connection<?>> getConnectionRepository(User user) {
-        ConnectionRepository connectionRepository = usersConnectionRepository.createConnectionRepository(user.getUsername());
-        return connectionRepository.findAllConnections();
+    private ConnectionRepository getConnectionRepository(User user) {
+        return usersConnectionRepository.createConnectionRepository(user.getUsername());
     }
 
 }

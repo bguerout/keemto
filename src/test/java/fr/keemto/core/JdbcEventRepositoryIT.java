@@ -17,6 +17,7 @@
 package fr.keemto.core;
 
 import com.google.common.collect.Lists;
+import fr.keemto.util.TestAccount;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -36,7 +36,7 @@ public class JdbcEventRepositoryIT {
 
     @Autowired
     private EventRepository repository;
-    private ProviderConnection keemtoProviderConnx = new DefaultProviderConnection("keemto");
+    private Account mailAccount;
     private User testUser;
     private AccountKey key;
 
@@ -44,6 +44,7 @@ public class JdbcEventRepositoryIT {
     public void prepare() throws Exception {
         testUser = new User("stnevex", "John", "Doe", "stnevex@gmail.com");
         key = new AccountKey("mail", "stnevex@gmail.com", testUser);
+        mailAccount = new MailAccount(key);
     }
 
     @Test
@@ -52,7 +53,7 @@ public class JdbcEventRepositoryIT {
         List<Event> events = repository.getAllEvents();
 
         assertThat(events.size(), greaterThan(1));
-        Event expectedEvent = new Event(1, "hello this is a test", testUser, keemtoProviderConnx);
+        Event expectedEvent = new Event(1, "hello this is a test", mailAccount);
         assertThat(events, hasItem(expectedEvent));
     }
 
@@ -65,46 +66,34 @@ public class JdbcEventRepositoryIT {
         assertThat(events.size(), equalTo(4));
     }
 
-
     @Test
     public void shouldReturnMostRecentEvent() {
 
 
-        Event mostRecentEvent = repository.getMostRecentEvent(key);
+        Event mostRecentEvent = repository.getMostRecentEvent(mailAccount);
 
         assertThat(mostRecentEvent, notNullValue());
-        assertThat(mostRecentEvent.getMessage(), notNullValue());
-        assertThat(mostRecentEvent.getUser(), equalTo(testUser));
         assertThat(mostRecentEvent.getTimestamp(), notNullValue());
-        assertThat(mostRecentEvent.getProviderConnection(), notNullValue());
+        assertThat(mostRecentEvent.getMessage(), notNullValue());
+        assertThat(mostRecentEvent.getAccount(), equalTo(mailAccount));
         Long lastFetchedTime = new Long(1301464284376L);
         long eventTime = mostRecentEvent.getTimestamp();
         assertThat(eventTime, equalTo(lastFetchedTime));
     }
 
     @Test
-    public void shouldReturnMostRecentEventForAnonymousProvider() {
-
-        Event mostRecentEvent = repository.getMostRecentEvent(key);
-
-        ProviderConnection anonymousProvider = mostRecentEvent.getProviderConnection();
-        assertThat(anonymousProvider.isAnonymous(), is(true));
-        assertThat(anonymousProvider.getProviderId(), equalTo("mail"));
-    }
-
-    @Test
     public void shouldReturnMostRecentEventForSocialProvider() {
 
-        AccountKey twitterAccountKey = new AccountKey("twitter", "@stnevex", testUser);
-        Event mostRecentEvent = repository.getMostRecentEvent(twitterAccountKey);
+        AccountKey twitterAccountKey = new AccountKey("twitter", "293724331", testUser);
+        TestAccount twitterAccount = new TestAccount(twitterAccountKey, "displayName", "profileUrl", "imageUrl");
 
-        ProviderConnection socialProvider = mostRecentEvent.getProviderConnection();
-        assertThat(socialProvider.getProviderId(), equalTo("twitter"));
-        assertThat(socialProvider.getProviderUserId(), equalTo("293724331"));
-        assertThat(socialProvider.getDisplayName(), equalTo("@stnevex"));
-        assertThat(socialProvider.getProfileUrl(), equalTo("http://twitter.com/stnevex"));
-        assertThat(socialProvider.getImageUrl(), equalTo("http://www.gravatar.com/avatar/0a40a289089f2d262cc713c54cae7fa2.png"));
-        assertThat(socialProvider.isAnonymous(), is(false));
+        Event mostRecentEvent = repository.getMostRecentEvent(twitterAccount);
+
+        Account account = mostRecentEvent.getAccount();
+        assertThat(account.getKey(), equalTo(twitterAccountKey));
+        assertThat(account.getDisplayName(), equalTo("@stnevex"));
+        assertThat(account.getProfileUrl(), equalTo("http://twitter.com/stnevex"));
+        assertThat(account.getImageUrl(), equalTo("http://www.gravatar.com/avatar/0a40a289089f2d262cc713c54cae7fa2.png"));
     }
 
     @Test
@@ -112,18 +101,19 @@ public class JdbcEventRepositoryIT {
 
 
         AccountKey noFetchedAccountKey = new AccountKey("mail", "stnevex@gmail.com", new User("userWithoutEvents"));
-        Event mostRecentEvent = repository.getMostRecentEvent(noFetchedAccountKey);
+        TestAccount noFetchedAccount = new TestAccount(noFetchedAccountKey, "displayName", "profileUrl", "imageUrl");
+        Event mostRecentEvent = repository.getMostRecentEvent(noFetchedAccount);
 
-        assertThat(mostRecentEvent instanceof InitializationEvent, is(true));
-        assertThat(mostRecentEvent.getUser().getUsername(), equalTo("userWithoutEvents"));
+        assertThat(mostRecentEvent, instanceOf(InitializationEvent.class));
+        assertThat(mostRecentEvent.getAccount().getKey(), equalTo(noFetchedAccountKey));
         assertThat(mostRecentEvent.getTimestamp(), equalTo((long) 0));
     }
 
     @Test
     public void shouldPersitEvents() throws Exception {
 
-        Event fooEvent = new Event(System.currentTimeMillis(), "foo", testUser, keemtoProviderConnx);
-        Event barEvent = new Event(System.currentTimeMillis() + 100, "bar", testUser, keemtoProviderConnx);
+        Event fooEvent = new Event(System.currentTimeMillis(), "foo", mailAccount);
+        Event barEvent = new Event(System.currentTimeMillis() + 100, "bar", mailAccount);
 
         repository.persist(Lists.newArrayList(fooEvent, barEvent));
 
@@ -134,10 +124,9 @@ public class JdbcEventRepositoryIT {
 
     @Test(expected = DuplicateEventException.class)
     public void shouldThrowExWhenTryingToPersist2EventsWithSameTime() throws Exception {
-        User owner = new User("owner");
         long eventTime = System.currentTimeMillis();
-        Event event = new Event(eventTime, "foo", owner, keemtoProviderConnx);
-        Event differentEventWithSameTime = new Event(eventTime, "bar", owner, keemtoProviderConnx);
+        Event event = new Event(eventTime, "foo", mailAccount);
+        Event differentEventWithSameTime = new Event(eventTime, "bar", mailAccount);
 
         repository.persist(Lists.newArrayList(event, differentEventWithSameTime));
     }

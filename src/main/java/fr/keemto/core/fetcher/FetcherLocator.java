@@ -23,4 +23,6 @@ import java.util.List;
 public interface FetcherLocator {
 
     Fetcher getFetcher(String providerId);
+
+    boolean hasFetcherFor(String provider);
 }

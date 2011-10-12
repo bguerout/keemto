@@ -16,9 +16,7 @@
 
 package fr.keemto.core.fetcher.scheduling;
 
-import com.google.common.collect.Lists;
 import fr.keemto.core.*;
-import fr.keemto.core.fetcher.Fetcher;
 import fr.keemto.core.fetcher.FetchingException;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +41,7 @@ public class FetchingTaskTest {
     public void initBeforeTest() throws Exception {
         eventRepository = mock(EventRepository.class);
         account = mock(Account.class);
-        mostRecentEvent = new Event(9999, "message", new User("user"), null);
+        mostRecentEvent = new Event(9999, "message", null);
         task = new FetchingTask(account, eventRepository);
     }
 
@@ -51,7 +49,7 @@ public class FetchingTaskTest {
     public void shouldPersitFetchedEvents() {
 
         ArrayList<Event> events = new ArrayList<Event>();
-        when(eventRepository.getMostRecentEvent(any(AccountKey.class))).thenReturn(mostRecentEvent);
+        when(eventRepository.getMostRecentEvent(any(Account.class))).thenReturn(mostRecentEvent);
         when(account.fetch(anyLong())).thenReturn(events);
 
         task.run();
@@ -62,7 +60,7 @@ public class FetchingTaskTest {
     @Test(expected = FetchingException.class)
     public void whenFetcherFailsShouldThrowException() throws Exception {
 
-        when(eventRepository.getMostRecentEvent(any(AccountKey.class))).thenReturn(mostRecentEvent);
+        when(eventRepository.getMostRecentEvent(any(Account.class))).thenReturn(mostRecentEvent);
         when(account.fetch(anyLong())).thenThrow(new RuntimeException());
 
         task.run();
@@ -71,7 +69,7 @@ public class FetchingTaskTest {
     @Test(expected = FetchingException.class)
     public void whenEventRepositoryFailsShouldThrowException() throws Exception {
 
-        when(eventRepository.getMostRecentEvent(any(AccountKey.class))).thenReturn(mostRecentEvent);
+        when(eventRepository.getMostRecentEvent(any(Account.class))).thenReturn(mostRecentEvent);
         doThrow(new DataRetrievalFailureException("")).when(eventRepository).persist(anyList());
 
         task.run();

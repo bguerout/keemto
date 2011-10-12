@@ -13,6 +13,10 @@ public class AccountKey {
         this.user = user;
     }
 
+    public String getId() {
+        return getProviderId() + "-" + getProviderUserId();
+    }
+
     public String getProviderId() {
         return providerId;
     }
@@ -29,7 +33,7 @@ public class AccountKey {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || !(o instanceof AccountKey)) return false;
 
         AccountKey that = (AccountKey) o;
 
@@ -54,7 +58,7 @@ public class AccountKey {
         return "AccountKey{" +
                 "providerId='" + providerId + '\'' +
                 ", providerUserId='" + providerUserId + '\'' +
-                ", user=" + user.getUsername() +
+                ", username=" + user.getUsername() +
                 '}';
     }
 }

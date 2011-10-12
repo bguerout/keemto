@@ -43,5 +43,13 @@ public class DefaultFetcherLocator implements FetcherLocator {
         throw new FetcherConfigurationException("No fetcher can be found for provider: " + providerId);
     }
 
-
+    @Override
+    public boolean hasFetcherFor(String provider) {
+        for (Fetcher fetcher : fetchers) {
+            if (fetcher.getProviderId().equals(provider)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

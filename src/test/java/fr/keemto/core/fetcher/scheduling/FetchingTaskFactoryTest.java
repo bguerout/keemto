@@ -20,7 +20,6 @@ import fr.keemto.core.Account;
 import fr.keemto.core.AccountFactory;
 import fr.keemto.core.EventRepository;
 import fr.keemto.core.User;
-import fr.keemto.core.fetcher.Fetcher;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,7 +29,6 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

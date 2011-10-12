@@ -17,7 +17,6 @@
 package fr.keemto.core.fetcher.scheduling;
 
 import fr.keemto.core.*;
-import fr.keemto.core.fetcher.Fetcher;
 import fr.keemto.core.fetcher.FetchingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +39,7 @@ public class FetchingTask implements Runnable {
     @Override
     public void run() throws FetchingException {
         AccountKey key = account.getKey();
-        Event mostRecentEvent = eventRepository.getMostRecentEvent(key);
+        Event mostRecentEvent = eventRepository.getMostRecentEvent(account);
         log.debug("Task execution has been triggered for {} and last event {}", new Object[]{key, mostRecentEvent.getTimestamp()});
         updateEvents(mostRecentEvent);
     }
@@ -64,8 +63,6 @@ public class FetchingTask implements Runnable {
         StringBuilder message = new StringBuilder();
         message.append("An error has occured when trying to update events for account: ");
         message.append(account.getKey());
-        message.append(" with fetcher: ");
-        message.append(account.getProviderId());
         message.append(". This task will be executed again during next scheduled invocation. Next estimated fetch in :" + getDelay() + "ms");
         throw new FetchingException(message.toString(), e);
     }
@@ -83,8 +80,7 @@ public class FetchingTask implements Runnable {
     @Override
     public String toString() {
         return "FetchingTask{" +
-                "provider=" + account.getProviderId() +
-                ", account=" + account.getKey() +
+                "account=" + account.getKey() +
                 ", delay=" + getDelay() +
                 '}';
     }

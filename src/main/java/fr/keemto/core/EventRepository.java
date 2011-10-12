@@ -24,7 +24,7 @@ public interface EventRepository {
 
     List<Event> getEvents(long newerThan);
 
-    Event getMostRecentEvent(AccountKey key);
+    Event getMostRecentEvent(Account account);
 
     void persist(List<Event> events);
 

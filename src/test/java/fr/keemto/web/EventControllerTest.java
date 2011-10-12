@@ -18,6 +18,7 @@ package fr.keemto.web;
 
 import com.google.common.collect.Lists;
 import fr.keemto.core.*;
+import fr.keemto.util.TestAccount;
 import org.codehaus.jackson.JsonNode;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,10 +57,10 @@ public class EventControllerTest extends ControllerTestCase {
 
     }
 
-        @Test
+    @Test
     public void apiCanFilterEventsByDate() throws Exception {
 
-        request.addParameter("newerThan","1");
+        request.addParameter("newerThan", "1");
 
         handlerAdapter.handle(request, response, controller);
 
@@ -70,10 +71,11 @@ public class EventControllerTest extends ControllerTestCase {
     @Test
     public void shouldReturnEventsAsJson() throws Exception {
 
-        request.addParameter("newerThan","1");
-        DefaultProviderConnection yammerConnection = new DefaultProviderConnection("yammer", "4444", "stnevex", "http://profileUrl", "http://imageUrl");
-        User user = new User("stnevex","John","Doe","stnevex@gmail.com");
-        List<Event> events = Lists.newArrayList(new Event(1, "message", user, yammerConnection));
+        request.addParameter("newerThan", "1");
+        User user = new User("stnevex", "John", "Doe", "stnevex@gmail.com");
+        AccountKey key = new AccountKey("yammer", "4444", user);
+        TestAccount yammerAccount = new TestAccount(key, "stnevex", "http://profileUrl", "http://imageUrl");
+        List<Event> events = Lists.newArrayList(new Event(1, "message", yammerAccount));
         when(eventRepository.getEvents(1)).thenReturn(events);
 
         handlerAdapter.handle(request, response, controller);
@@ -82,19 +84,21 @@ public class EventControllerTest extends ControllerTestCase {
         JsonNode eventsAsJson = toJsonNode(response.getContentAsString());
         assertThat(eventsAsJson.isArray(), is(true));
         assertThat(eventsAsJson.has(0), is(true));
+
         JsonNode eventNode = eventsAsJson.get(0);
         assertThat(eventNode.get("timestamp").getValueAsText(), equalTo("1"));
         assertThat(eventNode.get("message").getValueAsText(), equalTo("message"));
 
-        JsonNode providerConnxNode = eventNode.get("providerConnection");
-        assertThat(providerConnxNode.get("providerId").getValueAsText(), equalTo("yammer"));
-        assertThat(providerConnxNode.get("providerUserId").getValueAsText(), equalTo("4444"));
-        assertThat(providerConnxNode.get("displayName").getValueAsText(), equalTo("stnevex"));
-        assertThat(providerConnxNode.get("profileUrl").getValueAsText(), equalTo("http://profileUrl"));
-        assertThat(providerConnxNode.get("imageUrl").getValueAsText(), equalTo("http://imageUrl"));
-        assertThat(providerConnxNode.get("anonymous").getValueAsText(), equalTo("false"));
+        JsonNode accountNode = eventNode.get("account");
+        assertThat(accountNode.get("displayName").getValueAsText(), equalTo("stnevex"));
+        assertThat(accountNode.get("profileUrl").getValueAsText(), equalTo("http://profileUrl"));
+        assertThat(accountNode.get("imageUrl").getValueAsText(), equalTo("http://imageUrl"));
 
-        JsonNode userNode = eventNode.get("user");
+        JsonNode accountKeyNode = accountNode.get("key");
+        assertThat(accountKeyNode.get("providerId").getValueAsText(), equalTo("yammer"));
+        assertThat(accountKeyNode.get("providerUserId").getValueAsText(), equalTo("4444"));
+
+        JsonNode userNode = accountKeyNode.get("user");
         assertThat(userNode.get("username").getValueAsText(), equalTo("stnevex"));
         assertThat(userNode.get("firstName").getValueAsText(), equalTo("John"));
         assertThat(userNode.get("lastName").getValueAsText(), equalTo("Doe"));

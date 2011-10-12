@@ -20,8 +20,6 @@ import fr.keemto.core.Account;
 import fr.keemto.core.AccountFactory;
 import fr.keemto.core.EventRepository;
 import fr.keemto.core.User;
-import fr.keemto.core.fetcher.Fetcher;
-import fr.keemto.core.fetcher.FetcherLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

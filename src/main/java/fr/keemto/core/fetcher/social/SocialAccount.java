@@ -7,27 +7,53 @@ import org.springframework.social.connect.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SocialAccount extends Account {
+public class SocialAccount implements Account {
 
-    private final Connection<?> connection;
+    private final AccountKey key;
     private final Fetcher<Connection<?>> fetcher;
+    private final Connection<?> connection;
+    private final MinimalConnectionRepository repository;
 
-    public SocialAccount(AccountKey key, Fetcher<Connection<?>> fetcher, Connection<?> connection) {
-        super(key);
+    public SocialAccount(AccountKey key, Fetcher<Connection<?>> fetcher, Connection<?> connection, MinimalConnectionRepository repository) {
+        this.key = key;
         this.connection = connection;
         this.fetcher = fetcher;
+        this.repository = repository;
     }
 
     @Override
     public List<Event> fetch(long newerThan) {
         List<Event> events = new ArrayList<Event>();
         List<EventData> datas = fetcher.fetch(connection, newerThan);
-        AccountKey key = getKey();
         for (EventData data : datas) {
-            ProviderConnection pconnection = new SocialProviderConnection(connection);
-            Event event = new Event(data.getTimestamp(), data.getMessage(), key.getUser(), pconnection);
+            Event event = new Event(data.getTimestamp(), data.getMessage(), this);
             events.add(event);
         }
         return events;
+    }
+
+    @Override
+    public void revoke() {
+        repository.revoke(connection.getKey());
+    }
+
+    @Override
+    public String getDisplayName() {
+        return connection.getDisplayName();
+    }
+
+    @Override
+    public String getProfileUrl() {
+        return connection.getProfileUrl();
+    }
+
+    @Override
+    public String getImageUrl() {
+        return connection.getImageUrl();
+    }
+
+    @Override
+    public AccountKey getKey() {
+        return key;
     }
 }

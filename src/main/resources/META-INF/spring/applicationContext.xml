@@ -74,8 +74,20 @@
     <bean id="fetcherLocator" class="fr.keemto.core.fetcher.DefaultFetcherLocator">
         <constructor-arg>
             <list>
-                <bean id="twitterFetcher" class="fr.keemto.core.fetcher.social.TwitterFetcher"/>
-                <bean id="yammerFetcher" class="fr.keemto.core.fetcher.social.YammerFetcher"/>
+                <bean class="fr.keemto.core.fetcher.social.TwitterFetcher"/>
+                <bean class="fr.keemto.core.fetcher.social.YammerFetcher"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="accountFactory " class="fr.keemto.core.UnifiedAccountFactory">
+        <constructor-arg>
+            <list>
+                <bean class="fr.keemto.core.fetcher.social.SocialAccountFactory">
+                    <constructor-arg ref="usersConnectionRepository"/>
+                    <constructor-arg ref="fetcherLocator"/>
+                </bean>
+                <bean class="fr.keemto.core.MailAccountFactory"/>
             </list>
         </constructor-arg>
     </bean>

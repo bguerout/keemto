@@ -21,8 +21,8 @@ package fr.keemto.core;
  */
 public class InitializationEvent extends Event {
 
-    public InitializationEvent(User owner, String providerId) {
-        super(0, "initialization event", owner, new DefaultProviderConnection(providerId));
+    public InitializationEvent(Account account) {
+        super(0, "initialization event", account);
     }
 
 }
