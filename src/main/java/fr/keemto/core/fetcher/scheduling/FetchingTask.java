@@ -16,7 +16,10 @@
 
 package fr.keemto.core.fetcher.scheduling;
 
-import fr.keemto.core.*;
+import fr.keemto.core.Account;
+import fr.keemto.core.AccountKey;
+import fr.keemto.core.Event;
+import fr.keemto.core.EventRepository;
 import fr.keemto.core.fetcher.FetchingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

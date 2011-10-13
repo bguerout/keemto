@@ -1,12 +1,10 @@
 package fr.keemto.web;
 
-import com.google.common.collect.Lists;
+import fr.keemto.TestAccount;
 import fr.keemto.core.Account;
 import fr.keemto.core.AccountFactory;
 import fr.keemto.core.AccountKey;
 import fr.keemto.core.User;
-import fr.keemto.util.NullConnection;
-import fr.keemto.util.TestAccount;
 import org.codehaus.jackson.JsonNode;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,20 +13,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.social.connect.Connection;
-import org.springframework.social.connect.ConnectionData;
-import org.springframework.social.connect.ConnectionKey;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class AccountControllerTest extends ControllerTestCase {

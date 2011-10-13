@@ -1,14 +1,11 @@
-package fr.keemto.core.fetcher.social;
+package fr.keemto.provider.social.fetcher;
 
 
 import com.google.common.collect.Lists;
-import fr.keemto.core.Event;
 import fr.keemto.core.EventData;
-import fr.keemto.core.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.social.connect.Connection;
-import org.springframework.social.connect.ConnectionKey;
 import org.springframework.social.yammer.api.MessageOperations;
 import org.springframework.social.yammer.api.impl.MessageInfo;
 import org.springframework.social.yammer.api.impl.YammerMessage;
@@ -19,7 +16,6 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

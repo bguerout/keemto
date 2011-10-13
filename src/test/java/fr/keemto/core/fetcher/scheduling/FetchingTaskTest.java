@@ -16,7 +16,9 @@
 
 package fr.keemto.core.fetcher.scheduling;
 
-import fr.keemto.core.*;
+import fr.keemto.core.Account;
+import fr.keemto.core.Event;
+import fr.keemto.core.EventRepository;
 import fr.keemto.core.fetcher.FetchingException;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +29,6 @@ import java.util.ArrayList;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 public class FetchingTaskTest {

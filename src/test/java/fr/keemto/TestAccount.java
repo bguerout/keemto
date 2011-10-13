@@ -1,4 +1,4 @@
-package fr.keemto.util;
+package fr.keemto;
 
 import fr.keemto.core.Account;
 import fr.keemto.core.AccountKey;

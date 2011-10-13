@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package fr.keemto.core.fetcher.social;
+package fr.keemto.provider.social.fetcher;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import fr.keemto.core.Event;
 import fr.keemto.core.EventData;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.Twitter;

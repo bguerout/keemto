@@ -17,8 +17,11 @@
 package fr.keemto.web;
 
 import com.google.common.collect.Lists;
-import fr.keemto.core.*;
-import fr.keemto.util.TestAccount;
+import fr.keemto.TestAccount;
+import fr.keemto.core.AccountKey;
+import fr.keemto.core.Event;
+import fr.keemto.core.EventRepository;
+import fr.keemto.core.User;
 import org.codehaus.jackson.JsonNode;
 import org.junit.Before;
 import org.junit.Test;

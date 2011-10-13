@@ -17,7 +17,8 @@
 package fr.keemto.core;
 
 import com.google.common.collect.Lists;
-import fr.keemto.util.TestAccount;
+import fr.keemto.TestAccount;
+import fr.keemto.provider.MailAccount;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

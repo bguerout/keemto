@@ -1,6 +1,9 @@
-package fr.keemto.core.fetcher.social;
+package fr.keemto.provider.social;
 
-import fr.keemto.core.*;
+import fr.keemto.core.Account;
+import fr.keemto.core.AccountKey;
+import fr.keemto.core.Event;
+import fr.keemto.core.EventData;
 import fr.keemto.core.fetcher.Fetcher;
 import org.springframework.social.connect.Connection;
 

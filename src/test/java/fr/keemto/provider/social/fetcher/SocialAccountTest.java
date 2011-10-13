@@ -1,17 +1,20 @@
-package fr.keemto.core.fetcher.social;
+package fr.keemto.provider.social.fetcher;
 
 import com.google.common.collect.Lists;
+import fr.keemto.TestConnection;
 import fr.keemto.core.*;
 import fr.keemto.core.fetcher.Fetcher;
-import fr.keemto.util.TestConnection;
+import fr.keemto.provider.social.MinimalConnectionRepository;
+import fr.keemto.provider.social.SocialAccount;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.social.connect.Connection;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 
 public class SocialAccountTest {

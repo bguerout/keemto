@@ -16,11 +16,9 @@
 
 package fr.keemto.core.fetcher;
 
-import fr.keemto.core.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DefaultFetcherLocator implements FetcherLocator {

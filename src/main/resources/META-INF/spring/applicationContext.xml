@@ -54,7 +54,7 @@
     <bean id="connectionFactoryLocator" class="org.springframework.social.connect.support.ConnectionFactoryRegistry">
         <property name="connectionFactories">
             <list>
-                <bean class="fr.keemto.social.HttpTwitterConnectionFactory">
+                <bean class="org.springframework.social.twitter.connect.TwitterConnectionFactory">
                     <constructor-arg value="${twitter.consumerKey}"/>
                     <constructor-arg value="${twitter.consumerSecret}"/>
                 </bean>
@@ -74,8 +74,8 @@
     <bean id="fetcherLocator" class="fr.keemto.core.fetcher.DefaultFetcherLocator">
         <constructor-arg>
             <list>
-                <bean class="fr.keemto.core.fetcher.social.TwitterFetcher"/>
-                <bean class="fr.keemto.core.fetcher.social.YammerFetcher"/>
+                <bean class="fr.keemto.provider.social.fetcher.TwitterFetcher"/>
+                <bean class="fr.keemto.provider.social.fetcher.YammerFetcher"/>
             </list>
         </constructor-arg>
     </bean>
@@ -83,11 +83,11 @@
     <bean id="accountFactory " class="fr.keemto.core.UnifiedAccountFactory">
         <constructor-arg>
             <list>
-                <bean class="fr.keemto.core.fetcher.social.SocialAccountFactory">
+                <bean class="fr.keemto.provider.social.SocialAccountFactory">
                     <constructor-arg ref="usersConnectionRepository"/>
                     <constructor-arg ref="fetcherLocator"/>
                 </bean>
-                <bean class="fr.keemto.core.MailAccountFactory"/>
+                <bean class="fr.keemto.provider.MailAccountFactory"/>
             </list>
         </constructor-arg>
     </bean>

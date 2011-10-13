@@ -1,4 +1,4 @@
-package fr.keemto.core.fetcher.social;
+package fr.keemto.provider.social;
 
 
 import fr.keemto.core.*;

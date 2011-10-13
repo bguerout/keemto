@@ -2,7 +2,7 @@ package fr.keemto.web.security;
 
 public interface LoginService {
 
-  LoginStatus getStatus();
+    LoginStatus getStatus();
 
-  LoginStatus login(String username, String password);
+    LoginStatus login(String username, String password);
 }

@@ -1,10 +1,10 @@
-package fr.keemto.core.fetcher.social;
+package fr.keemto.provider.social;
 
+import fr.keemto.TestConnection;
 import fr.keemto.core.Account;
 import fr.keemto.core.AccountKey;
 import fr.keemto.core.User;
 import fr.keemto.core.fetcher.FetcherLocator;
-import fr.keemto.util.TestConnection;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.social.connect.*;
@@ -15,7 +15,8 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class SocialAccountFactoryTest {
@@ -45,10 +46,10 @@ public class SocialAccountFactoryTest {
     @Test
     public void canCheckIfFactorySupportsAProvider() throws Exception {
         when(fetcherLocator.hasFetcherFor("twitter")).thenReturn(true);
-        assertThat(accountFactory.supports("twitter"),is(true));
+        assertThat(accountFactory.supports("twitter"), is(true));
 
         when(fetcherLocator.hasFetcherFor("invalid")).thenReturn(false);
-        assertThat(accountFactory.supports("invalid"),is(false));
+        assertThat(accountFactory.supports("invalid"), is(false));
 
     }
 

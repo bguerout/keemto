@@ -20,7 +20,6 @@ import fr.keemto.core.Event;
 import fr.keemto.core.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,7 +43,7 @@ public class EventController {
         return eventRepository.getAllEvents();
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/api/events",params = "newerThan")
+    @RequestMapping(method = RequestMethod.GET, value = "/api/events", params = "newerThan")
     @ResponseBody
     public List<Event> getEvents(@RequestParam("newerThan") long newerThan) {
         return eventRepository.getEvents(newerThan);

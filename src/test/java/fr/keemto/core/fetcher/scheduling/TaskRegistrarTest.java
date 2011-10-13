@@ -17,12 +17,9 @@
 package fr.keemto.core.fetcher.scheduling;
 
 import com.google.common.collect.Lists;
-import fr.keemto.core.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.scheduling.TaskScheduler;
-
-import java.util.concurrent.ScheduledFuture;
 
 import static org.mockito.Mockito.*;
 

@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package fr.keemto.core.fetcher.social;
+package fr.keemto.provider.social.fetcher;
 
-import fr.keemto.core.Event;
 import fr.keemto.core.EventData;
 import fr.keemto.core.User;
 import org.junit.Ignore;
@@ -32,7 +31,6 @@ import javax.inject.Inject;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 
 @RunWith(SpringJUnit4ClassRunner.class)

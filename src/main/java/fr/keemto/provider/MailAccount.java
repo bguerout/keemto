@@ -1,4 +1,8 @@
-package fr.keemto.core;
+package fr.keemto.provider;
+
+import fr.keemto.core.Account;
+import fr.keemto.core.AccountKey;
+import fr.keemto.core.Event;
 
 import java.util.ArrayList;
 import java.util.List;

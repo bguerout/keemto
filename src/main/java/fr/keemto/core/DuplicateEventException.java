@@ -1,7 +1,7 @@
 package fr.keemto.core;
 
 
-public class DuplicateEventException extends RuntimeException{
+public class DuplicateEventException extends RuntimeException {
 
     public DuplicateEventException(String s) {
         super(s);

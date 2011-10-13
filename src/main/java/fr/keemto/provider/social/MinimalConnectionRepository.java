@@ -1,4 +1,4 @@
-package fr.keemto.core;
+package fr.keemto.provider.social;
 
 import org.springframework.social.connect.ConnectionKey;
 import org.springframework.social.connect.ConnectionRepository;

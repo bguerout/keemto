@@ -17,7 +17,6 @@
 package fr.keemto.core.fetcher;
 
 import fr.keemto.core.EventData;
-import fr.keemto.core.User;
 
 import java.util.List;
 

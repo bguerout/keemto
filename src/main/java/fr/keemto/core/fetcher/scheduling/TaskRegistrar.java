@@ -16,17 +16,13 @@
 
 package fr.keemto.core.fetcher.scheduling;
 
-import fr.keemto.core.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 
 @Component

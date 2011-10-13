@@ -14,26 +14,20 @@
  * limitations under the License.
  */
 
-package fr.keemto.core.fetcher.social;
+package fr.keemto.provider.social.fetcher;
 
 import com.google.common.collect.Lists;
-import fr.keemto.core.Event;
 import fr.keemto.core.EventData;
 import fr.keemto.core.User;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.springframework.social.connect.Connection;
-import org.springframework.social.connect.ConnectionKey;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Matchers.eq;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ConnectionFetcherTest {
 
