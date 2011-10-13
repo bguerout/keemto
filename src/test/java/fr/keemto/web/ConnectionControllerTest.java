@@ -89,7 +89,7 @@ public class ConnectionControllerTest extends ControllerTestCase {
     public void providerShouldRequestOAuth1CalledBack() throws Exception {
 
         request.setMethod("GET");
-        request.setRequestURI("/api/connections/twitter");
+        request.setRequestURI("/connect/twitter");
         request.setParameter("oauth_token", "xxx");
         Connection newConnectionCreated = mock(Connection.class);
         when(webSupport.completeConnection(any(OAuth1ConnectionFactory.class), any(NativeWebRequest.class))).thenReturn(newConnectionCreated);
@@ -106,7 +106,7 @@ public class ConnectionControllerTest extends ControllerTestCase {
     public void userShouldPostPinCodeAsOAuth1CalledBack() throws Exception {
 
         request.setMethod("POST");
-        request.setRequestURI("/api/connections/twitter");
+        request.setRequestURI("/connect/twitter");
         request.setParameter("oauth_verifier", "XXX");
         Connection newConnectionCreated = mock(Connection.class);
         when(webSupport.completeConnection(any(OAuth1ConnectionFactory.class), any(NativeWebRequest.class))).thenReturn(newConnectionCreated);
@@ -123,7 +123,7 @@ public class ConnectionControllerTest extends ControllerTestCase {
     public void providerShouldRequestOAuth2CalledBack() throws Exception {
 
         request.setMethod("GET");
-        request.setRequestURI("/api/connections/yammer");
+        request.setRequestURI("/connect/yammer");
         request.setParameter("code", "xxx");
         Connection newConnectionCreated = mock(Connection.class);
         when(webSupport.completeConnection(any(OAuth2ConnectionFactory.class), any(NativeWebRequest.class))).thenReturn(newConnectionCreated);

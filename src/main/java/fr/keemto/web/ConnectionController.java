@@ -32,7 +32,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 @Scope(value = "request")
-@RequestMapping(value = "/api/connections")
+@RequestMapping(value = "/connect")
 public class ConnectionController {
 
     private final ConnectionFactoryLocator connectionFactoryLocator;
