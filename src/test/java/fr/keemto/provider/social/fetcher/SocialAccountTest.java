@@ -22,15 +22,13 @@ public class SocialAccountTest {
     private Account account;
     private Connection<?> connection;
     private Fetcher fetcher;
-    private MinimalConnectionRepository repository;
 
     @Before
     public void prepare() throws Exception {
         fetcher = mock(Fetcher.class);
         connection = new TestConnection("twitter", "userId");
         AccountKey key = new AccountKey("twitter", "userId", new User("bguerout"));
-        repository = mock(MinimalConnectionRepository.class);
-        account = new SocialAccount(key, fetcher, connection, repository);
+        account = new SocialAccount(key, fetcher, connection);
     }
 
     @Test
@@ -82,9 +80,4 @@ public class SocialAccountTest {
 
     }
 
-    @Test
-    public void shouldRevokeAccount() throws Exception {
-        account.revoke();
-        verify(repository).revoke(connection.getKey());
-    }
 }

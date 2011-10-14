@@ -9,4 +9,6 @@ public interface AccountFactory {
     Account getAccount(AccountKey key);
 
     boolean supports(String providerId);
+
+    void revoke(AccountKey key);
 }

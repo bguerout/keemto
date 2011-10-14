@@ -28,18 +28,29 @@ public class UnifiedAccountFactory implements AccountFactory {
     @Override
     public Account getAccount(AccountKey key) {
         String providerId = key.getProviderId();
-        for (AccountFactory factory : factories) {
-            if (factory.supports(providerId)) {
-                log.debug("A factory has been found for " + key);
-                return factory.getAccount(key);
-            }
-        }
-        throw new IllegalArgumentException("Unable to find an account factory for " + key
-                + ". Please check if provider " + key.getProviderId() + " is a valid provider.");
+        return findFactory(providerId).getAccount(key);
+
+    }
+
+    @Override
+    public void revoke(AccountKey key) {
+        String providerId = key.getProviderId();
+        findFactory(providerId).revoke(key);
     }
 
     @Override
     public boolean supports(String providerId) {
         return true;
+    }
+
+    private AccountFactory findFactory(String providerId) {
+        for (AccountFactory factory : factories) {
+            if (factory.supports(providerId)) {
+                log.debug("A factory has been found for " + providerId);
+                return factory;
+            }
+        }
+        throw new IllegalArgumentException("Unable to find an account factory for " + providerId
+                + ". Please check if provider " + providerId + " is a valid provider.");
     }
 }

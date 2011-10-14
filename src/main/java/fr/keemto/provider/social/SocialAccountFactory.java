@@ -30,7 +30,7 @@ public class SocialAccountFactory implements AccountFactory {
         List<Account> accounts = new ArrayList<Account>();
         for (List<Connection<?>> connectionsPerProvider : allConnections.values()) {
             for (Connection<?> connection : connectionsPerProvider) {
-                Account account = createAccount(user, connection, new MinimalConnectionRepository(connectionRepository));
+                Account account = createAccount(user, connection);
                 accounts.add(account);
             }
         }
@@ -48,7 +48,7 @@ public class SocialAccountFactory implements AccountFactory {
         } catch (NoSuchConnectionException e) {
             throw new IllegalArgumentException("No account found for key: " + key, e);
         }
-        return createAccount(user, connection, new MinimalConnectionRepository(connectionRepository));
+        return createAccount(user, connection);
     }
 
     @Override
@@ -56,10 +56,16 @@ public class SocialAccountFactory implements AccountFactory {
         return fetcherLocator.hasFetcherFor(providerId);
     }
 
-    private Account createAccount(User user, Connection<?> connection, MinimalConnectionRepository connxRepo) {
+    @Override
+    public void revoke(AccountKey key) {
+        ConnectionRepository connectionRepository = getConnectionRepository(key.getUser());
+        connectionRepository.removeConnection(new ConnectionKey(key.getProviderId(), key.getProviderUserId()));
+    }
+
+    private Account createAccount(User user, Connection<?> connection) {
         Fetcher fetcher = findFetcherForConnection(connection);
         ConnectionAccountKey accountKey = new ConnectionAccountKey(connection.getKey(), user);
-        return new SocialAccount(accountKey, fetcher, connection, connxRepo);
+        return new SocialAccount(accountKey, fetcher, connection);
     }
 
     private Fetcher findFetcherForConnection(Connection<?> connection) {

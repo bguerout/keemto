@@ -65,7 +65,6 @@ public class UnifiedAccountFactoryTest {
     @Test
     public void shouldObtainAccountForKey() throws Exception {
 
-        User user = new User("test");
         Account account = mock(Account.class);
         AccountKey key = new AccountKey("provider", "userId", new User("test"));
         AccountFactory factory1 = mock(AccountFactory.class);
@@ -78,6 +77,19 @@ public class UnifiedAccountFactoryTest {
 
         assertThat(result, equalTo(account));
         verify(factory1).getAccount(key);
+    }
+
+    @Test
+    public void shouldRevokeAccountForKey() throws Exception {
+
+        AccountKey key = new AccountKey("provider", "userId", new User("test"));
+        AccountFactory factory1 = mock(AccountFactory.class);
+        UnifiedAccountFactory unifiedFactory = new UnifiedAccountFactory(Lists.newArrayList(factory1));
+        when(factory1.supports("provider")).thenReturn(true);
+
+        unifiedFactory.revoke(key);
+
+        verify(factory1).revoke(key);
     }
 
 }

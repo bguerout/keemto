@@ -25,4 +25,8 @@ public class MailAccountFactory implements AccountFactory {
         return "mail".equals(providerId);
     }
 
+    @Override
+    public void revoke(AccountKey key) {
+        throw new UnsupportedOperationException();
+    }
 }

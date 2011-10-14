@@ -14,12 +14,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -39,12 +41,17 @@ public class AccountControllerTest extends ControllerTestCase {
     public void initBeforeTest() throws Exception {
         initMocks(this);
 
+        user = new User("stnevex");
         controller = new AccountController(accountFactory);
 
         request.addHeader("Accept", "application/json");
+        request.setUserPrincipal(new Principal() {
+            @Override
+            public String getName() {
+                return user.getUsername();
+            }
+        });
 
-        user = new User("bguerout");
-        SecurityContextHolder.getContext().setAuthentication(new TestingAuthenticationToken(user, null));
 
         String providerUserId = "1111";
         String providerId = "twitter";
@@ -56,10 +63,10 @@ public class AccountControllerTest extends ControllerTestCase {
     }
 
     @Test
-    public void showReturnAllConnections() throws Exception {
+    public void showReturnAllAccounts() throws Exception {
 
         request.setMethod("GET");
-        request.setRequestURI("/api/accounts");
+        request.setRequestURI("/api/users/stnevex/accounts");
         List<Account> accounts = new ArrayList<Account>();
         accounts.add(account);
         when(accountFactory.getAccounts(user)).thenReturn(accounts);
@@ -85,7 +92,7 @@ public class AccountControllerTest extends ControllerTestCase {
     public void whenUserHasNoConnectionShouldReturnEmptyJson() throws Exception {
 
         request.setMethod("GET");
-        request.setRequestURI("/api/accounts");
+        request.setRequestURI("/api/users/stnevex/accounts");
         when(accountFactory.getAccounts(user)).thenReturn(new ArrayList<Account>());
 
         handlerAdapter.handle(request, response, controller);
@@ -95,39 +102,18 @@ public class AccountControllerTest extends ControllerTestCase {
         assertThat(node.size(), equalTo(0));
     }
 
-    @Test
-    public void showReturnConnectionById() throws Exception {
-
-        request.setMethod("GET");
-        request.setRequestURI("/api/accounts/twitter-1111");
-        when(accountFactory.getAccount(key)).thenReturn(account);
-
-        handlerAdapter.handle(request, response, controller);
-
-        assertThat(response.getStatus(), equalTo(200));
-        JsonNode connx = toJsonNode(response.getContentAsString());
-
-        assertThat(connx.get("displayName").getTextValue(), equalTo("stnevex"));
-        assertThat(connx.get("profileUrl").getTextValue(), equalTo("http://twitter.com/stnevex"));
-        assertThat(connx.get("imageUrl").getTextValue(), equalTo("http://twitter.com/stnevex.jpg"));
-
-        JsonNode keyNode = connx.get("key");
-        assertThat(keyNode.get("id").getValueAsText(), equalTo("twitter-1111"));
-        assertThat(keyNode.get("providerId").getValueAsText(), equalTo("twitter"));
-
-    }
 
     @Test
     public void shouldDeleteConnection() throws Exception {
 
         request.setMethod("DELETE");
-        request.setRequestURI("/api/accounts/twitter-1111");
+        request.setRequestURI("/api/users/stnevex/accounts/twitter-1111");
         when(accountFactory.getAccount(key)).thenReturn(account);
 
         handlerAdapter.handle(request, response, controller);
 
         assertThat(response.getStatus(), equalTo(204));
-        assertThat(account.hasBeenRevoked(), is(true));
+        verify(accountFactory).revoke(key);
     }
 
 
@@ -135,7 +121,7 @@ public class AccountControllerTest extends ControllerTestCase {
     public void shouldDeleteConnectionBySplittingKeyWithLastIndexOfMinus() throws Exception {
 
         request.setMethod("DELETE");
-        request.setRequestURI("/api/accounts/linked-in-9999");
+        request.setRequestURI("/api/users/stnevex/accounts/linked-in-9999");
         when(accountFactory.getAccount(new AccountKey("linked-in", "9999", user))).thenReturn(account);
 
         handlerAdapter.handle(request, response, controller);

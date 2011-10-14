@@ -15,13 +15,11 @@ public class SocialAccount implements Account {
     private final AccountKey key;
     private final Fetcher<Connection<?>> fetcher;
     private final Connection<?> connection;
-    private final MinimalConnectionRepository repository;
 
-    public SocialAccount(AccountKey key, Fetcher<Connection<?>> fetcher, Connection<?> connection, MinimalConnectionRepository repository) {
+    public SocialAccount(AccountKey key, Fetcher<Connection<?>> fetcher, Connection<?> connection) {
         this.key = key;
         this.connection = connection;
         this.fetcher = fetcher;
-        this.repository = repository;
     }
 
     @Override
@@ -35,10 +33,6 @@ public class SocialAccount implements Account {
         return events;
     }
 
-    @Override
-    public void revoke() {
-        repository.revoke(connection.getKey());
-    }
 
     @Override
     public String getDisplayName() {

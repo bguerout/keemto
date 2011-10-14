@@ -21,11 +21,6 @@ public class MailAccount implements Account {
     }
 
     @Override
-    public void revoke() {
-        throw new UnsupportedOperationException("You cannot remove a mail account.");
-    }
-
-    @Override
     public AccountKey getKey() {
         return key;
     }
