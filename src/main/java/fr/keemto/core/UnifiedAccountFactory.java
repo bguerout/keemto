@@ -46,7 +46,6 @@ public class UnifiedAccountFactory implements AccountFactory {
     private AccountFactory findFactory(String providerId) {
         for (AccountFactory factory : factories) {
             if (factory.supports(providerId)) {
-                log.debug("A factory has been found for " + providerId);
                 return factory;
             }
         }

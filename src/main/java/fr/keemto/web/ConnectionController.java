@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
@@ -57,6 +58,7 @@ public class ConnectionController {
     @RequestMapping(value = "/{providerId}", method = RequestMethod.POST)
     public RedirectView connect(@PathVariable String providerId, NativeWebRequest request) {
         ConnectionFactory<?> connectionFactory = connectionFactoryLocator.getConnectionFactory(providerId);
+        //request.setAttribute("oauthProviderId", providerId, RequestAttributes.SCOPE_SESSION);
         return new RedirectView(webSupport.buildOAuthUrl(connectionFactory, request));
     }
 
@@ -94,9 +96,4 @@ public class ConnectionController {
     private RedirectView createRedirectView() {
         return new RedirectView("/#accounts", true);
     }
-
-    private Account toAccount(ConnectionKey connxKey) {
-        return null;
-    }
-
 }

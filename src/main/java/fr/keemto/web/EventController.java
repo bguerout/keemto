@@ -18,6 +18,8 @@ package fr.keemto.web;
 
 import fr.keemto.core.Event;
 import fr.keemto.core.EventRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +31,8 @@ import java.util.List;
 
 @Controller
 public class EventController {
+
+    private static final Logger log = LoggerFactory.getLogger(EventController.class);
 
     private final EventRepository eventRepository;
 
@@ -46,6 +50,7 @@ public class EventController {
     @RequestMapping(method = RequestMethod.GET, value = "/api/events", params = "newerThan")
     @ResponseBody
     public List<Event> getEvents(@RequestParam("newerThan") long newerThan) {
+        log.debug("A client has requested events newerThan: " + newerThan);
         return eventRepository.getEvents(newerThan);
     }
 
