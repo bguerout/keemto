@@ -64,7 +64,7 @@
 <script type="text/template" id="events-section-template">
     <div class="page-header">
         <h1>Events
-           <button id="show-fetched-button" class="btn info hidden">new Events</button>
+            <button id="show-fetched-button" class="btn info hidden">new Events</button>
         </h1>
     </div>
     <div class="row">
@@ -73,7 +73,9 @@
             <h3>Improve your network</h3>
             <ul class="media-grid">
                 <li>
-                    <a href="#"><img class="thumbnail" src="http://www.gravatar.com/avatar/0a40a289089f2d262cc713c54cae7fa2.png" alt=""><span>bguerout</span></a>
+                    <a href="#"><img class="thumbnail"
+                                     src="http://www.gravatar.com/avatar/0a40a289089f2d262cc713c54cae7fa2.png"
+                                     alt=""><span>bguerout</span></a>
                 </li>
                 <li>
                     <a href="#"><img class="thumbnail" src="http://placehold.it/60x60" alt="">test</a>
@@ -90,14 +92,14 @@
 
 <script type="text/template" id="event-template">
     <div class="span1 profile">
-        {{#if providerConnection.imageUrl}}
-            <a href="#"><img src="{{providerConnection.imageUrl}}"/></a>
+        {{#if account.imageUrl}}
+        <a href="#"><img src="{{account.imageUrl}}"/></a>
         {{else}}
-          <a href="#"><img src="resources/img/social/mail.png"/></a>
+        <a href="#"><img src="resources/img/social/mail.png"/></a>
         {{/if}}
     </div>
     <div class="span11">
-        <p class="twitter-profile">{{user.firstName}} on <a href="#">{{providerConnection.providerUserId}}</a></p>
+        <p class="twitter-profile">{{account.key.user.firstName}} on <a href="#">{{account.key.providerUserId}}</a></p>
         <blockquote>
             <p>{{message}}</p>
             <small>
@@ -128,19 +130,19 @@
             <!--Accounts will be appended here -->
             </tbody>
         </table>
-        <a class="btn primary " rel="popover" data-content="And here's some amazing content. It's very engaging. right?"
-           data-original-title="A Title">Add Twitter Account</a>
-        <a class="btn success">Add Yammer Account</a>
+        <a class="btn primary " rel="popover"
+           data-content="And here's some amazing content. It's very engaging. right?"
+           data-original-title="A Title">popover</a>
     </div>
 </script>
 
 <script type="text/template" id="account-template">
     <td>
-        <a href="#"><img src="{{imageUrl}}"/></a>
+        <a href="#"><img class="thumbnail-small" src="{{imageUrl}}"/></a>
     </td>
-    <td><a href="#">{{providerId}}</a></td>
+    <td><a href="#">{{key.providerId}}</a></td>
     <td>{{displayName}}</td>
-    <td>32</td>
+    <td>-</td>
     <td>
         <button class="btn danger">Revoke Access</button>
     </td>
@@ -150,7 +152,8 @@
     <div class="tips">
         <h1>What is ?</h1>
 
-        <p>Keemto allows users to be keep in touch Vestibulum id ligula porta felis euismod semper. Integer posuere erat a ante venenatis dapibus posuere velit
+        <p>Keemto allows users to be keep in touch Vestibulum id ligula porta felis euismod semper. Integer posuere erat
+            a ante venenatis dapibus posuere velit
             aliquet. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec
             elit.
         </p>
@@ -176,7 +179,8 @@
                 {{#unless authenticated}}
                 <input type="submit" class="btn info large xlarge" value="Sign in and add your accounts now &raquo;">
                 {{/unless}}
-                <a class="btn large" href="#events">Just had a look! <small>No auth required!</small>&raquo;</a>
+                <a class="btn large" href="#events">Just had a look!
+                    <small>No auth required!</small>&raquo;</a>
                 <a class="btn large" data-controls-modal="oauth-confirm" data-backdrop="static">PIN &raquo;</a>
             </div>
         </form>
@@ -229,17 +233,17 @@
             <ul class="nav">
                 <li class="active"><a href="#events">Home</a></li>
                 <li><a href="https://github.com/bguerout/keemto">Github&raquo;</a></li>
-                {{#if authenticated}}
-                <li><a id="top-accounts" href="#accounts">Manage your accounts</a></li>
-                {{/if}}
+                {{#unless isAnonymous}}
+                <li><a href="#accounts">Manage your accounts</a></li>
+                {{/unless}}
             </ul>
 
-            {{#if authenticated}}
+            {{#unless isAnonymous}}
             <ul class="nav secondary-nav">
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle">test</a>
+                    <a href="#" class="dropdown-toggle">{{login}}</a>
                     <ul class="dropdown-menu">
-                        <li><a href="#logout">logout</a></li>
+                        <li><a href="logout">logout</a></li>
                     </ul>
                 </li>
             </ul>
@@ -249,7 +253,7 @@
                 <input name="password" class="input-small" type="password" placeholder="Password">
                 <button class="btn" type="submit">Sign in</button>
             </form>
-            {{/if}}
+            {{/unless}}
         </div>
     </div>
 </script>
@@ -263,19 +267,18 @@
     </div>
     <div class="modal-body">
 
-        <p>You have
-            <successful></successful>ly created a new connection.</p>
+        <p>You have added a new Account.</p>
 
         <p>To complete the authorization please enter PIN code provided by provider:</p>
 
-        <form action="api/accounts/yammer" method="POST">
+        <form action="connect/yammer" method="POST">
             <fieldset>
                 <input type="text" name="oauth_verifier" placeholder="PIN Code">
             </fieldset>
         </form>
     </div>
     <div class="modal-footer">
-        <a href="#" class="btn primary">Finish</a>
+        <a href="#" class="btn primary" onclick="">Finish</a>
     </div>
 </div>
 
