@@ -17,12 +17,12 @@ import java.util.List;
 @Controller
 @Scope(value = "request")
 @RequestMapping(value = "/api/users")
-public class AccountController {
+public class UserController {
 
     private final AccountFactory accountFactory;
 
     @Autowired
-    public AccountController(AccountFactory accountFactory) {
+    public UserController(AccountFactory accountFactory) {
         this.accountFactory = accountFactory;
     }
 

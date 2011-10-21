@@ -11,8 +11,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -25,11 +23,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class AccountControllerTest extends ControllerTestCase {
+public class UserControllerTest extends ControllerTestCase {
 
     private static final Logger log = LoggerFactory.getLogger(ConnectionControllerTest.class);
 
-    private AccountController controller;
+    private UserController controller;
 
     @Mock
     private AccountFactory accountFactory;
@@ -42,7 +40,7 @@ public class AccountControllerTest extends ControllerTestCase {
         initMocks(this);
 
         user = new User("stnevex");
-        controller = new AccountController(accountFactory);
+        controller = new UserController(accountFactory);
 
         request.addHeader("Accept", "application/json");
         request.setUserPrincipal(new Principal() {
