@@ -1,12 +1,7 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: ben
-  Date: 21/10/11
-  Time: 08:30
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head><title>Simple jsp page</title></head>
-<body>Place your content here</body>
-</html>
+<%@ page contentType="application/json" isErrorPage="true" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:out escapeXml="false" value='{
+"type":500,
+"exception":"${exception.class.name}",
+"message":"${exception.message}"
+}'/>

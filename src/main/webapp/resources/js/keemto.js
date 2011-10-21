@@ -58,6 +58,10 @@
                     var el = loginSuccess.el;
                     $('#alerts').append(el);
                 });
+
+                $('body').ajaxError(function(e, jqxhr, settings, exception) {
+                  Keemto.log(e, jqxhr, settings, exception);
+                });
             };
 
             var initRouters = function() {
