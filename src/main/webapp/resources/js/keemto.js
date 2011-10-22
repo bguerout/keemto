@@ -60,7 +60,7 @@
                 });
 
                 $('body').ajaxError(function(e, jqxhr, settings, exception) {
-                  Keemto.log(e, jqxhr, settings, exception);
+                    Keemto.log(e, jqxhr, settings, exception);
                 });
             };
 
@@ -119,7 +119,7 @@
                                 var currentUserLogin = response.username;
                                 user.set({login:currentUserLogin});
                                 notifier.fire("user:signin");
-                                _.isUndefined(onSuccess) ? Keemto.navigateToHash("#events") : onSuccess.call();
+                                _.isUndefined(onSuccess) ? Keemto.navigateToHash("#timeline") : onSuccess.call();
                             } else {
                                 Keemto.message({level:"error", message:"Authentication has failed for user: " + response.username});
                             }
@@ -240,8 +240,14 @@
     Keemto.Models.Event = Backbone.Model.extend({});
 
     Keemto.Collections.Events = Backbone.Collection.extend({
+
         model:Keemto.Models.Event,
         url:'api/events',
+
+        initialize:function(options) {
+            this.name = options.name;
+        },
+
         comparator:function(event) {
             return event.get("timestamp");
         }
@@ -251,14 +257,14 @@
 
         routes:{
             "":"home",
-            "events":"showEvents",
+            "timeline":"showTimeline",
             "accounts":"showAccounts"
         },
 
         initialize:function(options) {
             _.bindAll(this, 'fetchLastEvents', 'showAccounts');
             //Events collections is held by router because it must be maintain even if view is destroy.
-            this.events = new Keemto.Collections.Events();
+            this.events = new Keemto.Collections.Events({name:"Timeline"});
             this.registerFetchingTask(10000);
             this.user = options.user;
         },
@@ -273,9 +279,9 @@
             }
         },
 
-        showEvents:function() {
-            var view = new Keemto.Views.Events({collection:this.events});
-            Keemto.showAsMainView(view);
+        showTimeline:function() {
+            var timeline = new Keemto.Views.Events({collection:this.events});
+            Keemto.showAsMainView(timeline);
         },
 
         showAccounts:function() {
@@ -346,7 +352,7 @@
         },
 
         render:function() {
-            $(this.el).html(Keemto.renderTemplate("events-section-template"));
+            $(this.el).html(Keemto.renderTemplate("events-section-template", {"name":this.collection.name}));
             _(this.collection.models).each(function(event) {
                 this.addEventView(event);
             }, this);
