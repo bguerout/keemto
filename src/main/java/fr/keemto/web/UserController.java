@@ -15,7 +15,6 @@ import java.security.Principal;
 import java.util.List;
 
 @Controller
-@Scope(value = "request")
 @RequestMapping(value = "/api/users")
 public class UserController {
 
