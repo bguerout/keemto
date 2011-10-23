@@ -43,7 +43,7 @@ public class FetchingTask implements Runnable {
     public void run() throws FetchingException {
         AccountKey key = account.getKey();
         Event mostRecentEvent = eventRepository.getMostRecentEvent(account);
-        log.debug("Task execution has been triggered for {} and last event {}", new Object[]{key, mostRecentEvent.getTimestamp()});
+        log.debug("Task execution has been triggered for {} and last event {}", key, mostRecentEvent.getTimestamp());
         updateEvents(mostRecentEvent);
     }
 
@@ -72,7 +72,7 @@ public class FetchingTask implements Runnable {
 
     private void logFetchedEvents(List<Event> events) {
         for (Event event : events) {
-            log.debug("A new Event has been fetched: " + event);
+            log.debug("A new Event has been fetched: {}", event);
         }
     }
 

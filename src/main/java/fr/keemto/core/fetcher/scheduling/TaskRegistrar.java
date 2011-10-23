@@ -45,7 +45,7 @@ public class TaskRegistrar {
 
     public void registerTask(FetchingTask task) {
         ScheduledFuture<?> future = scheduler.scheduleWithFixedDelay(task, task.getDelay());
-        log.info("A new fetching task has been registered: {}. This task will run every {}ms", new Object[]{task, task.getDelay()});
+        log.info("A new fetching task has been registered: {}. This task will run every {}ms", task, task.getDelay());
     }
 
 

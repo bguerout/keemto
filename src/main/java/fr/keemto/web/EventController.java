@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -35,6 +37,7 @@ public class EventController {
     private static final Logger log = LoggerFactory.getLogger(EventController.class);
 
     private final EventRepository eventRepository;
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd-hh:mm:ss,z");
 
     @Autowired
     public EventController(EventRepository repository) {
@@ -50,7 +53,8 @@ public class EventController {
     @RequestMapping(method = RequestMethod.GET, value = "/api/events", params = "newerThan")
     @ResponseBody
     public List<Event> getEvents(@RequestParam("newerThan") long newerThan) {
-        log.debug("A client has requested events newerThan: " + newerThan);
+        String date = DATE_FORMAT.format(new Date(newerThan));
+        log.debug("A client has requested events newer than {}", date);
         return eventRepository.getEvents(newerThan);
     }
 

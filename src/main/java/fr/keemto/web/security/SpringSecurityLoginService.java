@@ -1,8 +1,8 @@
 package fr.keemto.web.security;
 
 import fr.keemto.core.User;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,7 +14,8 @@ import org.springframework.stereotype.Service;
 
 @Service("springLoginService")
 public class SpringSecurityLoginService implements LoginService {
-    private Log log = LogFactory.getLog(SpringSecurityLoginService.class);
+
+    private static final Logger log = LoggerFactory.getLogger(SpringSecurityLoginService.class);
 
     @Autowired(required = false)
     @Qualifier("authenticationManager")
@@ -36,11 +37,11 @@ public class SpringSecurityLoginService implements LoginService {
 
         try {
             Authentication auth = authenticationManager.authenticate(token);
-            log.debug("Login succeeded for user: " + username);
+            log.debug("Login succeeded for user: {}", username);
             SecurityContextHolder.getContext().setAuthentication(auth);
             return new LoginStatus(auth.isAuthenticated(), auth.getName());
         } catch (BadCredentialsException e) {
-            log.warn("Invalid credentials for user :" + username);
+            log.warn("Invalid credentials for user: {}", username);
             //TODO add reason into response
             //TODO access denied page must be overriden to send back json
             return new LoginStatus(false, username);
