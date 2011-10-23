@@ -40,7 +40,7 @@
             };
 
             var renderDefaultViews = function() {
-                $("#topbar").append(new Keemto.Views.TopBar({model:user}).render().el);
+                $("#topbar").append(new Keemto.Common.TopBarView({model:user}).render().el);
             };
 
             var prepareNotifier = function() {
@@ -49,12 +49,12 @@
                 notifier.bind("message", function(notification) {
                     var msg = notification.message;
                     Keemto.log("[" + notification.level.toUpperCase() + "] " + msg);
-                    var alert = new Keemto.Views.Alert({message:msg, level:notification.level});
+                    var alert = new Keemto.Common.AlertView({message:msg, level:notification.level});
                     $('#alerts').append(alert.el);
                 });
 
                 notifier.bind("user:signin", function() {
-                    var loginSuccess = new Keemto.Views.Alert({message:"Authentication successfull!", level:'success'});
+                    var loginSuccess = new Keemto.Common.AlertView({message:"Authentication successfull!", level:'success'});
                     var el = loginSuccess.el;
                     $('#alerts').append(el);
                 });
@@ -65,22 +65,20 @@
             };
 
             var initRouters = function() {
-                new Keemto.Routers.Authentication({user:user});
-                new Keemto.Routers.Home({user:user});
+                new Keemto.Common.Routers({user:user});
                 Backbone.history.start();
             };
 
             return {
                 // The top-level namespace. All public Keemto classes will be attached to this.
-                Views:{},
-                Routers:{},
-                Collections:{},
-                Models:{},
+                Common:{},
+                Timeline:{},
+                Manage:{},
 
                 init:function(options) {
-                    options || (options = {user:new Keemto.Models.User()});
+                    options || (options = {user:new Keemto.Common.User()});
                     user = options.user;
-                    notifier = new Keemto.Notifier();
+                    notifier = new Keemto.Common.Notifier();
                     prepareNotifier();
                     registerHandlebarsHelpers();
                     preCompileTemplates();
@@ -155,7 +153,10 @@
 
     _.extend(Keemto, Backbone.Events);
 
-    Keemto.Models.User = Backbone.Model.extend({
+    /*---------------------------------------------------------------------------------------------------------------
+     COMMON
+     ---------------------------------------------------------------------------------------------------------------*/
+    Keemto.Common.User = Backbone.Model.extend({
 
         defaults:{
             login:"anonymous"
@@ -173,11 +174,11 @@
         }
     });
 
-    Keemto.Notifier = function(a) {
+    Keemto.Common.Notifier = function(a) {
         a || (a = {});
         this.initialize && this.initialize(a)
     };
-    _.extend(Keemto.Notifier.prototype, Backbone.Events, {
+    _.extend(Keemto.Common.Notifier.prototype, Backbone.Events, {
 
         initialize:function(options) {
             _.bindAll(this, 'fire');
@@ -193,101 +194,51 @@
         }
     });
 
+    Keemto.Common.Account = Backbone.Model.extend({});
 
-    Keemto.Routers.Authentication = Backbone.Router.extend({
+    Keemto.Common.Event = Backbone.Model.extend({});
+
+    Keemto.Common.Routers = Backbone.Router.extend({
 
         routes:{
+            "":"showHome",
+            "timeline":"showTimeline",
+            "accounts":"showAccounts",
             "login":"showLoginForm"
         },
 
-        showLoginForm:function() {
-            var view = new Keemto.Views.Login();
-            Keemto.showAsMainView(view);
-        }
-
-    });
-
-    Keemto.Views.Login = Backbone.View.extend({
-
-        tagName:'section',
-        className:'block',
-
-        events:{
-            "submit form":"submitLoginForm"
-        },
-
-        initialize:function() {
-            this.render();
-        },
-
-        submitLoginForm:function() {
-            var login = this.$('input[name="login"]').val();
-            var password = this.$('input[name="password"]').val();
-            Keemto.authenticate(login, password, _.bind(function() {
-                Keemto.navigateToHash("#accounts");
-            }, this));
-            return false;
-        },
-
-        render:function() {
-            $(this.el).html(Keemto.renderTemplate("login-template"));
-            return this;
-        }
-    });
-
-    //Events
-    //------
-    Keemto.Models.Event = Backbone.Model.extend({});
-
-    Keemto.Collections.Events = Backbone.Collection.extend({
-
-        model:Keemto.Models.Event,
-        url:'api/events',
-
         initialize:function(options) {
-            this.name = options.name;
-        },
-
-        comparator:function(event) {
-            return event.get("timestamp");
-        }
-    });
-
-    Keemto.Routers.Home = Backbone.Router.extend({
-
-        routes:{
-            "":"home",
-            "timeline":"showTimeline",
-            "accounts":"showAccounts"
-        },
-
-        initialize:function(options) {
-            _.bindAll(this, 'fetchLastEvents', 'showAccounts');
+            _.bindAll(this, 'fetchLastEvents');
             //Events collections is held by router because it must be maintain even if view is destroy.
-            this.events = new Keemto.Collections.Events({name:"Timeline"});
+            this.events = new Keemto.Timeline.Events({name:"Timeline"});
             this.registerFetchingTask(10000);
             this.user = options.user;
         },
 
-        home:function() {
+        showHome:function() {
             Keemto.log("Routing user to home.");
             if (Keemto.isUserAuthenticated()) {
                 Keemto.navigateToHash("#events");
             }
             else {
-                Keemto.showAsMainView(new Keemto.Views.Welcome());
+                Keemto.showAsMainView(new Keemto.Common.WelcomeView());
             }
         },
 
         showTimeline:function() {
-            var timeline = new Keemto.Views.Events({collection:this.events});
+            var timeline = new Keemto.Timeline.View({collection:this.events});
             Keemto.showAsMainView(timeline);
         },
 
         showAccounts:function() {
             Keemto.log("Routing user to accounts hash");
-            var accounts = new Keemto.Collections.Accounts({user:this.user});
-            var view = new Keemto.Views.Accounts({collection:accounts});
+            var userAccounts = new Keemto.Manage.UserAccounts({user:this.user});
+            var view = new Keemto.Manage.View({collection:userAccounts});
+            Keemto.showAsMainView(view);
+        },
+
+        showLoginForm:function() {
+            var view = new Keemto.Common.LoginView();
             Keemto.showAsMainView(view);
         },
 
@@ -305,25 +256,49 @@
             var collectionHasAlreadyBeenFetched = !_.isUndefined(lastFetchedEvent);
             if (collectionHasAlreadyBeenFetched) {
                 var lastTimestamp = lastFetchedEvent.attributes.timestamp;
-                fetchOptions = {add:true, data:"newerThan=" + lastTimestamp}
+                var fetchOptions = {add:true, data:"newerThan=" + lastTimestamp}
             }
             Keemto.log("Trying to fetch events newer than :" + lastTimestamp);
             this.events.fetch(fetchOptions);
         }
     });
 
-    Keemto.Views.Events = Backbone.View.extend({
+    /*---------------------------------------------------------------------------------------------------------------
+     TIMELINE
+     ---------------------------------------------------------------------------------------------------------------*/
+
+    Keemto.Timeline.Events = Backbone.Collection.extend({
+
+        model:Keemto.Common.Event,
+        url:'api/events',
+
+        initialize:function(options) {
+            this.name = options.name;
+        },
+
+        comparator:function(event) {
+            return event.get("timestamp");
+        }
+    });
+
+    Keemto.Timeline.RandomAccounts = Backbone.Collection.extend({
+
+        model:Keemto.Common.Account,
+        url:'api/accounts/random'
+    });
+
+    Keemto.Timeline.View = Backbone.View.extend({
 
         tagName:'div',
         className:'content',
         fetchedEvents:[],
 
         events:{
-            "click #show-fetched-button":"showFetchedEvents"
+            "click #show-fetched-button":"addFetchedEvents"
         },
 
         initialize:function() {
-            _.bindAll(this, 'render', 'addEventView', 'showFetchedButton', 'showFetchedEvents');
+            _.bindAll(this, 'render', 'addEvents', 'addAccounts', 'showFetchedButton');
             this.collection.bind('add', this.showFetchedButton);
             this.collection.bind('reset', this.render);
             this.collection.fetch({
@@ -340,28 +315,33 @@
             this.$("#show-fetched-button").show();
         },
 
-        showFetchedEvents:function() {
+        addFetchedEvents:function() {
             this.$("#show-fetched-button").hide();
             $('title').text("Keemto");
-            _.each(this.fetchedEvents, this.addEventView);
+            _.each(this.fetchedEvents, this.addEvents);
         },
 
-        addEventView:function(event) {
-            var eventElement = new Keemto.Views.Event({model:event}).el;
+        addEvents:function(event) {
+            var eventElement = new Keemto.Timeline.EventView({model:event}).el;
+            this.$("#events").prepend($(eventElement).fadeIn(1000));
+        },
+
+        addAccounts:function(event) {
+            var accountElement = new Keemto.Timeline.EventView({model:event}).el;
             this.$("#events").prepend($(eventElement).fadeIn(1000));
         },
 
         render:function() {
-            $(this.el).html(Keemto.renderTemplate("events-section-template", {"name":this.collection.name}));
+            $(this.el).html(Keemto.renderTemplate("timeline-section-template", {"name":this.collection.name}));
             _(this.collection.models).each(function(event) {
-                this.addEventView(event);
+                this.addEvents(event);
             }, this);
 
             return this;
         }
     });
 
-    Keemto.Views.Event = Backbone.View.extend({
+    Keemto.Timeline.EventView = Backbone.View.extend({
         tagName:'div',
         className:'event row',
 
@@ -389,13 +369,13 @@
         }
     });
 
-    //Accounts
-    //-----------
-    Keemto.Models.Account = Backbone.Model.extend({});
+    /*---------------------------------------------------------------------------------------------------------------
+     MANAGE
+     ---------------------------------------------------------------------------------------------------------------*/
 
-    Keemto.Collections.Accounts = Backbone.Collection.extend({
+    Keemto.Manage.UserAccounts = Backbone.Collection.extend({
 
-        model:Keemto.Models.Account,
+        model:Keemto.Common.Account,
 
         initialize:function(options) {
             this.login = options.user.get("login");
@@ -406,7 +386,7 @@
         }
     });
 
-    Keemto.Views.Accounts = Backbone.View.extend({
+    Keemto.Manage.View = Backbone.View.extend({
 
         tagName:'div',
         className:'content',
@@ -422,14 +402,14 @@
         },
 
         render:function() {
-            $(this.el).html(Keemto.renderTemplate("accounts-section-template"));
+            $(this.el).html(Keemto.renderTemplate("manageaccounts-section-template"));
             this.collection.each(function(account) {
-                var accElement = new Keemto.Views.Account({model:account}).el;
+                var accElement = new Keemto.Manage.AccountView({model:account}).el;
                 this.$('tbody').append(accElement);
             }, this);
 
-            this.$('#accounts').append(new Keemto.Views.ButtonConnection({id:"twitter", className:'btn primary'}).render().el);
-            this.$('#accounts').append(new Keemto.Views.ButtonConnection({id:"yammer", className:'btn success'}).render().el);
+            this.$('#accounts').append(new Keemto.Manage.ProviderButton({id:"twitter", className:'btn primary'}).render().el);
+            this.$('#accounts').append(new Keemto.Manage.ProviderButton({id:"yammer", className:'btn success'}).render().el);
             this.configurePopover();
             return this;
         },
@@ -441,58 +421,7 @@
         }
     });
 
-    Keemto.Views.ButtonConnection = Backbone.View.extend({
-        tagName:'a',
-        events:{
-            "click":"connect"
-        },
-
-        initialize:function(options) {
-            _.bindAll(this, 'render');
-            this.buttonText = options.buttonText;
-        },
-
-        connect:function() {
-            var form = document.createElement("form");
-            form.setAttribute("method", "post");
-            form.setAttribute("action", "connect/" + this.id);
-            $('body').append(form);
-            form.submit();
-            return false;
-        },
-
-        render:function() {
-            $(this.el).text("Add " + this.id + " account");
-            return this;
-        }
-    });
-
-    Keemto.Views.OAuthConfirmPopup = Backbone.View.extend({
-        events:{
-            "click .modal-footer a":"connect"
-        },
-
-        initialize:function(options) {
-            _.bindAll(this, 'render');
-            this.buttonText = options.buttonText;
-        },
-
-        connect:function() {
-            var form = document.createElement("form");
-            form.setAttribute("method", "post");
-            form.setAttribute("action", "connect/" + this.id);
-            $('body').append(form);
-            form.submit();
-            return false;
-        },
-
-        render:function() {
-            $(this.el).append("Add " + this.id + " account");
-            return this;
-        }
-    });
-
-    Keemto.Views.Account = Backbone.View.extend({
+    Keemto.Manage.AccountView = Backbone.View.extend({
         tagName:'tr',
         className:'odd',
 
@@ -522,15 +451,95 @@
         },
 
         render:function() {
-            var accountElement = Keemto.renderTemplate("account-template", this.model.toJSON());
+            var accountElement = Keemto.renderTemplate("revokable-account-template", this.model.toJSON());
             $(this.el).append(accountElement);
             return this;
         }
     });
 
-    // Home
-    // ---------------
-    Keemto.Views.TopBar = Backbone.View.extend({
+    Keemto.Manage.ProviderButton = Backbone.View.extend({
+        tagName:'a',
+        events:{
+            "click":"connect"
+        },
+
+        initialize:function(options) {
+            _.bindAll(this, 'render');
+            this.buttonText = options.buttonText;
+        },
+
+        connect:function() {
+            var form = document.createElement("form");
+            form.setAttribute("method", "post");
+            form.setAttribute("action", "connect/" + this.id);
+            $('body').append(form);
+            form.submit();
+            return false;
+        },
+
+        render:function() {
+            $(this.el).text("Add " + this.id + " account");
+            return this;
+        }
+    });
+
+    Keemto.Common.OAuthConfirmPopup = Backbone.View.extend({
+        events:{
+            "click .modal-footer a":"connect"
+        },
+
+        initialize:function(options) {
+            _.bindAll(this, 'render');
+            this.buttonText = options.buttonText;
+        },
+
+        connect:function() {
+            var form = document.createElement("form");
+            form.setAttribute("method", "post");
+            form.setAttribute("action", "connect/" + this.id);
+            $('body').append(form);
+            form.submit();
+            return false;
+        },
+
+        render:function() {
+            $(this.el).append("Add " + this.id + " account");
+            return this;
+        }
+    });
+
+    /*---------------------------------------------------------------------------------------------------------------
+     VIEWS
+     ---------------------------------------------------------------------------------------------------------------*/
+    Keemto.Common.LoginView = Backbone.View.extend({
+
+        tagName:'section',
+        className:'block',
+
+        events:{
+            "submit form":"submitLoginForm"
+        },
+
+        initialize:function() {
+            this.render();
+        },
+
+        submitLoginForm:function() {
+            var login = this.$('input[name="login"]').val();
+            var password = this.$('input[name="password"]').val();
+            Keemto.authenticate(login, password, _.bind(function() {
+                Keemto.navigateToHash("#accounts");
+            }, this));
+            return false;
+        },
+
+        render:function() {
+            $(this.el).html(Keemto.renderTemplate("login-template"));
+            return this;
+        }
+    });
+
+    Keemto.Common.TopBarView = Backbone.View.extend({
 
         tagName:'div',
 
@@ -576,7 +585,7 @@
         }
     });
 
-    Keemto.Views.Welcome = Backbone.View.extend({
+    Keemto.Common.WelcomeView = Backbone.View.extend({
 
         tagName:'div',
 
@@ -606,7 +615,7 @@
         }
     });
 
-    Keemto.Views.Alert = Backbone.View.extend({
+    Keemto.Common.AlertView = Backbone.View.extend({
 
         tagName:'div',
         className:'alert-message fade in',
@@ -629,5 +638,6 @@
             this.$('a').click();
         }
     });
+
 
 }).call(this);

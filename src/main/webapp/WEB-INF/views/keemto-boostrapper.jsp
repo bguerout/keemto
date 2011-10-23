@@ -13,7 +13,7 @@ $(document).ready(function() {
     </sec:authorize>
 
     <sec:authorize access="isAuthenticated()">
-        Keemto.init({user:new Keemto.Models.User({login: '<sec:authentication property="principal.username" />'})});
+        Keemto.init({user:new Keemto.Common.User({login: '<sec:authentication property="principal.username" />'})});
     </sec:authorize>
 
     <c:if test="${not empty sessionScope.oauthToken}">

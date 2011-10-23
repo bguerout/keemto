@@ -61,7 +61,7 @@
 </div>
 
 <!-- Templates -->
-<script type="text/template" id="events-section-template">
+<script type="text/template" id="timeline-section-template">
     <div class="page-header">
         <h1>{{name}}
             <button id="show-fetched-button" class="btn info hidden">new Events</button>
@@ -69,13 +69,15 @@
     </div>
     <div class="row">
         <div class="span12 events" id="events"></div>
-        <div class="span4">
+        <div class="span4" id="random-accounts">
             <h3>Improve your network</h3>
             <ul class="media-grid">
                 <li>
-                    <a href="#"><img class="thumbnail"
-                                     src="http://www.gravatar.com/avatar/0a40a289089f2d262cc713c54cae7fa2.png"
-                                     alt=""><span>bguerout</span></a>
+                    <a href="#">
+                        <img class="thumbnail" src="http://www.gravatar.com/avatar/0a40a289089f2d262cc713c54cae7fa2.png"
+                             alt="">
+                        <span>bguerout</span>
+                    </a>
                 </li>
                 <li>
                     <a href="#"><img class="thumbnail" src="http://placehold.it/60x60" alt="">test</a>
@@ -109,7 +111,7 @@
     </div>
 </script>
 
-<script type="text/template" id="accounts-section-template">
+<script type="text/template" id="manageaccounts-section-template">
     <div class="page-header">
         <h1>Accounts
             <small>You have allowed Keemto to access the following applications :</small>
@@ -136,7 +138,7 @@
     </div>
 </script>
 
-<script type="text/template" id="account-template">
+<script type="text/template" id="revokable-account-template">
     <td>
         <a href="#"><img class="thumbnail-small" src="{{imageUrl}}"/></a>
     </td>
