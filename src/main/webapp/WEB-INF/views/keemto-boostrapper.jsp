@@ -17,6 +17,6 @@ $(document).ready(function() {
     </sec:authorize>
 
     <c:if test="${not empty sessionScope.oauthToken}">
-        $('#oauth-confirm').modal({show:true,backdrop:true});
+      new Keemto.Common.OAuthConfirmPopup().render();
     </c:if>
 });

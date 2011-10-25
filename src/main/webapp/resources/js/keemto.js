@@ -298,7 +298,7 @@
         },
 
         initialize:function() {
-            _.bindAll(this, 'render', 'addEvents', 'addAccounts', 'showFetchedButton');
+            _.bindAll(this, 'render', 'addEvent', 'addAccounts', 'showFetchedButton');
             this.collection.bind('add', this.showFetchedButton);
             this.collection.bind('reset', this.render);
             this.collection.fetch({
@@ -318,23 +318,21 @@
         addFetchedEvents:function() {
             this.$("#show-fetched-button").hide();
             $('title').text("Keemto");
-            _.each(this.fetchedEvents, this.addEvents);
+            _.each(this.fetchedEvents, this.addEvent);
         },
 
-        addEvents:function(event) {
+        addEvent:function(event) {
             var eventElement = new Keemto.Timeline.EventView({model:event}).el;
             this.$("#events").prepend($(eventElement).fadeIn(1000));
         },
 
         addAccounts:function(event) {
-            var accountElement = new Keemto.Timeline.EventView({model:event}).el;
-            this.$("#events").prepend($(eventElement).fadeIn(1000));
         },
 
         render:function() {
             $(this.el).html(Keemto.renderTemplate("timeline-section-template", {"name":this.collection.name}));
             _(this.collection.models).each(function(event) {
-                this.addEvents(event);
+                this.addEvent(event);
             }, this);
 
             return this;
@@ -465,7 +463,6 @@
 
         initialize:function(options) {
             _.bindAll(this, 'render');
-            this.buttonText = options.buttonText;
         },
 
         connect:function() {
@@ -484,27 +481,18 @@
     });
 
     Keemto.Common.OAuthConfirmPopup = Backbone.View.extend({
-        events:{
-            "click .modal-footer a":"connect"
-        },
 
-        initialize:function(options) {
+        initialize:function() {
             _.bindAll(this, 'render');
-            this.buttonText = options.buttonText;
-        },
-
-        connect:function() {
-            var form = document.createElement("form");
-            form.setAttribute("method", "post");
-            form.setAttribute("action", "connect/" + this.id);
-            $('body').append(form);
-            form.submit();
-            return false;
+            this.providerId = 'yammer';
         },
 
         render:function() {
-            $(this.el).append("Add " + this.id + " account");
-            return this;
+            $('#oauth-confirm').modal({show:true, backdrop:true});
+            $('#oauth-confirm-button').click(function() {
+                $('#oauth-confirm-form').submit();
+                Keemto.log("OAuth Verifier Confirmation has been submitted for " + this.providerId);
+            });
         }
     });
 

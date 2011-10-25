@@ -273,14 +273,14 @@
 
         <p>To complete the authorization please enter PIN code provided by provider:</p>
 
-        <form action="connect/yammer" method="POST">
+        <form id="oauth-confirm-form" action="connect/yammer" method="POST">
             <fieldset>
                 <input type="text" name="oauth_verifier" placeholder="PIN Code">
             </fieldset>
         </form>
     </div>
     <div class="modal-footer">
-        <a href="#" class="btn primary" onclick="">Finish</a>
+        <button id="oauth-confirm-button" class="btn primary">Finish</button>
     </div>
 </div>
 

@@ -31,6 +31,7 @@
     <security:intercept-url pattern="/api/events*" access="permitAll" method="GET"/>
     <security:intercept-url pattern="/api/accounts/random" access="permitAll" method="GET"/>
 	<security:intercept-url pattern="/api/**" access="isAuthenticated()"/>
+    <security:intercept-url pattern="/connect/**" access="isAuthenticated()"/>
 	
     <!-- Resources -->
     <security:intercept-url pattern="/" access="permitAll"/>
