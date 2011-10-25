@@ -37,7 +37,7 @@ public class EventController {
     private static final Logger log = LoggerFactory.getLogger(EventController.class);
 
     private final EventRepository eventRepository;
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd-hh:mm:ss,z");
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd-hh:mm:ss");
 
     @Autowired
     public EventController(EventRepository repository) {
