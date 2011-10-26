@@ -17,9 +17,13 @@
 package fr.keemto.core.fetcher.scheduling;
 
 import com.google.common.collect.Lists;
+import fr.keemto.core.AccountKey;
+import fr.keemto.core.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.scheduling.TaskScheduler;
+
+import java.util.concurrent.ScheduledFuture;
 
 import static org.mockito.Mockito.*;
 
@@ -54,4 +58,23 @@ public class TaskRegistrarTest {
         verify(scheduler, timeout(2)).scheduleWithFixedDelay(task, task.getDelay());
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldFailWhenAccountKeyCannotBeCancelled() throws Exception {
+
+        registrar.findAndCancelTask(new AccountKey("provider", "userId", new User("bguerout")));
+    }
+
+    @Test
+    public void shouldCancelTask() throws Exception {
+        AccountKey key = new AccountKey("provider", "userId", new User("bguerout"));
+        FetchingTask task = mock(FetchingTask.class);
+        ScheduledFuture future = mock(ScheduledFuture.class);
+        when(task.getFetchedAccountKey()).thenReturn(key);
+        when(scheduler.scheduleWithFixedDelay(task, task.getDelay())).thenReturn(future);
+        registrar.registerTask(task);
+
+        registrar.findAndCancelTask(key);
+
+        verify(future).cancel(true);
+    }
 }

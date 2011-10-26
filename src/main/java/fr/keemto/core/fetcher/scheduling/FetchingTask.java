@@ -80,6 +80,10 @@ public class FetchingTask implements Runnable {
         return 60000; //TODO link delay to fetcher
     }
 
+    public AccountKey getFetchedAccountKey() {
+        return account.getKey();
+    }
+
     @Override
     public String toString() {
         return "FetchingTask{" +

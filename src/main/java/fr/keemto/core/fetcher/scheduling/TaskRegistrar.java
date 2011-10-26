@@ -16,12 +16,14 @@
 
 package fr.keemto.core.fetcher.scheduling;
 
+import fr.keemto.core.AccountKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 
@@ -31,6 +33,8 @@ public class TaskRegistrar {
     private static final Logger log = LoggerFactory.getLogger(TaskRegistrar.class);
 
     private final TaskScheduler scheduler;
+
+    private final List<ScheduledTask> scheduledTasks = new ArrayList<ScheduledTask>();
 
     @Autowired
     public TaskRegistrar(TaskScheduler scheduler) {
@@ -45,7 +49,35 @@ public class TaskRegistrar {
 
     public void registerTask(FetchingTask task) {
         ScheduledFuture<?> future = scheduler.scheduleWithFixedDelay(task, task.getDelay());
-        log.info("A new fetching task has been registered: {}. This task will run every {}ms", task, task.getDelay());
+        ScheduledTask scheduledTask = new ScheduledTask(future, task.getFetchedAccountKey());
+        scheduledTasks.add(scheduledTask);
+        log.info("A new fetching task has been registered: {}. This task is going to run every {}ms", task, task.getDelay());
+    }
+
+    public void findAndCancelTask(AccountKey key) {
+        for (ScheduledTask scheduledTask : scheduledTasks) {
+            if (scheduledTask.key.equals(key)) {
+                scheduledTask.cancel();
+                log.info("Task for account {} has been cancelled", key);
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Unable to cancel task for account:" + key);
+    }
+
+    private static class ScheduledTask {
+        private static final boolean INTERRUPT_IF_RUNNING = true;
+        private final ScheduledFuture<?> future;
+        private final AccountKey key;
+
+        private ScheduledTask(ScheduledFuture<?> future, AccountKey key) {
+            this.future = future;
+            this.key = key;
+        }
+
+        public void cancel() {
+            future.cancel(INTERRUPT_IF_RUNNING);
+        }
     }
 
 
