@@ -25,7 +25,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class UserControllerTest extends ControllerTestCase {
 
-    private static final Logger log = LoggerFactory.getLogger(ConnectionControllerTest.class);
+    private static final Logger log = LoggerFactory.getLogger(UserControllerTest.class);
 
     private UserController controller;
 
