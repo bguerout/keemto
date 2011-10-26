@@ -11,6 +11,8 @@ import org.springframework.web.servlet.view.RedirectView;
 
 public class HashConnectController extends ConnectController {
 
+    private static final String ACCOUNTS_VIEW = "/#accounts";
+
     public HashConnectController(ConnectionFactoryLocator connectionFactoryLocator, ConnectionRepository connectionRepository) {
         super(connectionFactoryLocator, connectionRepository);
     }
@@ -22,21 +24,21 @@ public class HashConnectController extends ConnectController {
 
     @Override
     protected String connectView() {
-        return "/#accounts";
+        return ACCOUNTS_VIEW;
     }
 
     @Override
     protected String connectView(String providerId) {
-        return "/#accounts";
+        return ACCOUNTS_VIEW;
     }
 
     @Override
     protected String connectedView(String providerId) {
-        return "/#accounts";
+        return ACCOUNTS_VIEW;
     }
 
     @Override
     protected RedirectView connectionStatusRedirect(String providerId) {
-        return new RedirectView("/#accounts", true);
+        return new RedirectView(ACCOUNTS_VIEW, true);
     }
 }
