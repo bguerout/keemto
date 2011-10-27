@@ -55,14 +55,19 @@ public class TaskRegistrar {
     }
 
     public void findAndCancelTask(AccountKey key) {
+        ScheduledTask task = findTask(key);
+        task.cancel();
+        scheduledTasks.remove(task);
+        log.info("Task for account {} has been cancelled and removed from registry", key);
+    }
+
+    private ScheduledTask findTask(AccountKey key) {
         for (ScheduledTask scheduledTask : scheduledTasks) {
             if (scheduledTask.key.equals(key)) {
-                scheduledTask.cancel();
-                log.info("Task for account {} has been cancelled", key);
-                return;
+                return scheduledTask;
             }
         }
-        throw new IllegalArgumentException("Unable to cancel task for account:" + key);
+        throw new IllegalArgumentException("No task seems to be registered for account:" + key);
     }
 
     private static class ScheduledTask {
