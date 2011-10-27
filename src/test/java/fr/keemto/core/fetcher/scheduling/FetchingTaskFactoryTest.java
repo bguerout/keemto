@@ -16,10 +16,7 @@
 
 package fr.keemto.core.fetcher.scheduling;
 
-import fr.keemto.core.Account;
-import fr.keemto.core.AccountFactory;
-import fr.keemto.core.EventRepository;
-import fr.keemto.core.User;
+import fr.keemto.core.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,6 +26,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.Matchers.refEq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -38,14 +36,14 @@ public class FetchingTaskFactoryTest {
     private EventRepository eventRepository;
     private List<Account> accounts;
     private final User user = new User("user");
+    private AccountFactory accountFactory;
 
     @Before
     public void initBeforeTest() throws Exception {
 
         accounts = new ArrayList<Account>();
         accounts.add(mock(Account.class));
-        AccountFactory accountFactory = mock(AccountFactory.class);
-        when(accountFactory.getAccounts(user)).thenReturn(accounts);
+        accountFactory = mock(AccountFactory.class);
 
         eventRepository = mock(EventRepository.class);
         fetchingTaskFactory = new FetchingTaskFactory(accountFactory, eventRepository);
@@ -54,6 +52,8 @@ public class FetchingTaskFactoryTest {
 
     @Test
     public void shouldCreateTaskWithUser() throws Exception {
+
+        when(accountFactory.getAccounts(user)).thenReturn(accounts);
 
         List<FetchingTask> tasks = fetchingTaskFactory.createTasks(user);
 
@@ -64,6 +64,8 @@ public class FetchingTaskFactoryTest {
     @Test
     public void shouldCreateTasksWithUser() throws Exception {
 
+        when(accountFactory.getAccounts(user)).thenReturn(accounts);
+
         Account acc2 = mock(Account.class);
         accounts.add(acc2);
 
@@ -71,6 +73,21 @@ public class FetchingTaskFactoryTest {
 
         assertThat(tasks, notNullValue());
         assertThat(tasks.size(), equalTo(2));
+    }
+
+
+    @Test
+    public void shouldCreateTaskBasedOnKey() throws Exception {
+
+        AccountKey key = new AccountKey("provider", "userId", new User("bguerout"));
+        Account account = mock(Account.class);
+        when(accountFactory.getAccount(key)).thenReturn(account);
+        when(account.getKey()).thenReturn(key);
+
+        FetchingTask task = fetchingTaskFactory.createTask(key);
+
+        assertThat(task, notNullValue());
+        assertThat(task.getFetchedAccountKey(), equalTo(key));
     }
 
 }

@@ -16,10 +16,7 @@
 
 package fr.keemto.core.fetcher.scheduling;
 
-import fr.keemto.core.Account;
-import fr.keemto.core.AccountFactory;
-import fr.keemto.core.EventRepository;
-import fr.keemto.core.User;
+import fr.keemto.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,4 +51,8 @@ public class FetchingTaskFactory {
         return tasks;
     }
 
+    public FetchingTask createTask(AccountKey key) {
+        Account account = accountFactory.getAccount(key);
+        return new FetchingTask(account, eventRepository);
+    }
 }
