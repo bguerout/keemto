@@ -16,6 +16,7 @@
 
 package fr.keemto.web;
 
+import fr.keemto.core.AccountInterceptor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +28,7 @@ import org.springframework.social.connect.UsersConnectionRepository;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -36,12 +38,15 @@ public class ConnectionRepositoryConfigTest {
 
     @Mock
     private UsersConnectionRepository usersConnectionRepository;
+    private AccountInterceptor interceptor;
 
     @Before
     public void prepare() throws Exception {
         initMocks(this);
         connectionRepositoryConfig = new ConnectionRepositoryConfig();
         connectionRepositoryConfig.usersConnectionRepository = usersConnectionRepository;
+        interceptor = mock(AccountInterceptor.class);
+        connectionRepositoryConfig.accountInterceptor = interceptor;
     }
 
     @After
@@ -59,9 +64,26 @@ public class ConnectionRepositoryConfigTest {
 
         ConnectionRepository repo = connectionRepositoryConfig.connectionRepository();
 
-        assertThat(repo, equalTo(connectionRepository));
         verify(usersConnectionRepository).createConnectionRepository("user");
     }
+
+    @Test
+    public void shouldCreateAnObservableConnectionRepository() {
+
+        ConnectionRepository connectionRepository = mock(ConnectionRepository.class);
+        when(usersConnectionRepository.createConnectionRepository("user")).thenReturn(connectionRepository);
+        TestingAuthenticationToken principal = new TestingAuthenticationToken("user", null);
+        SecurityContextHolder.getContext().setAuthentication(principal);
+
+        ConnectionRepository repo = connectionRepositoryConfig.connectionRepository();
+        repo.findAllConnections();
+
+        assertThat(repo, instanceOf(ObservableConnectionRepository.class));
+        assertThat(((ObservableConnectionRepository) repo).getInterceptor(), equalTo(interceptor));
+        verify(connectionRepository).findAllConnections();
+
+    }
+
 
     @Test(expected = IllegalStateException.class)
     public void shouldThrowExceptionWhenPrincipalCannotBeRetrieved() {

@@ -64,7 +64,7 @@ public class SocialAccountFactory implements AccountFactory {
 
     private Account createAccount(User user, Connection<?> connection) {
         Fetcher fetcher = findFetcherForConnection(connection);
-        ConnectionAccountKey accountKey = new ConnectionAccountKey(connection.getKey(), user);
+        SocialAccountKey accountKey = new SocialAccountKey(connection.getKey(), user);
         return new SocialAccount(accountKey, fetcher, connection);
     }
 

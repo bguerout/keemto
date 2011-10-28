@@ -1,19 +1,15 @@
-package fr.keemto.web;
+package fr.keemto.core.fetcher.scheduling;
 
-import fr.keemto.core.Account;
+import fr.keemto.core.AccountInterceptor;
 import fr.keemto.core.AccountKey;
-import fr.keemto.core.fetcher.scheduling.FetchingTask;
-import fr.keemto.core.fetcher.scheduling.FetchingTaskFactory;
-import fr.keemto.core.fetcher.scheduling.TaskRegistrar;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import static org.mockito.Mockito.*;
 
-public class AccountInterceptorTest {
+public class SchedulingUpdaterTest {
 
-    private AccountInterceptor interceptor;
+    private AccountInterceptor updater;
     private TaskRegistrar registrar;
     private FetchingTaskFactory taskFactory;
 
@@ -22,16 +18,15 @@ public class AccountInterceptorTest {
     public void setUp() throws Exception {
         registrar = mock(TaskRegistrar.class);
         taskFactory = mock(FetchingTaskFactory.class);
-        interceptor = new AccountInterceptor(registrar, taskFactory);
+        updater = new SchedulingUpdater(registrar, taskFactory);
     }
 
     @Test
     public void whenAccountIsCreatedShouldCreateATask() throws Exception {
 
-        Account account = mock(Account.class);
         AccountKey key = mock(AccountKey.class);
-        when(account.getKey()).thenReturn(key);
-        interceptor.accountCreated(account);
+
+        updater.accountCreated(key);
 
         verify(taskFactory).createTask(key);
     }
@@ -39,11 +34,11 @@ public class AccountInterceptorTest {
     @Test
     public void whenAccountIsCreatedShouldAddTaskToRegistrar() throws Exception {
 
-        Account account = mock(Account.class);
+        AccountKey key = mock(AccountKey.class);
         FetchingTask task = mock(FetchingTask.class);
-        when(taskFactory.createTask(any(AccountKey.class))).thenReturn(task);
+        when(taskFactory.createTask(key)).thenReturn(task);
 
-        interceptor.accountCreated(account);
+        updater.accountCreated(key);
 
         verify(registrar).registerTask(task);
 
@@ -54,7 +49,7 @@ public class AccountInterceptorTest {
 
         AccountKey key = mock(AccountKey.class);
 
-        interceptor.accountDeleted(key);
+        updater.accountDeleted(key);
 
         verify(registrar).findAndCancelTask(key);
 

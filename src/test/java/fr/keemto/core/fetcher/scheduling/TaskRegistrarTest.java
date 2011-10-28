@@ -77,4 +77,6 @@ public class TaskRegistrarTest {
 
         verify(future).cancel(true);
     }
+
+
 }

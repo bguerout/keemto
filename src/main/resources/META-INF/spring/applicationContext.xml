@@ -70,7 +70,6 @@
     <task:scheduler id="scheduler" pool-size="10"/>
     <task:executor id="executor" pool-size="10"/>
 
-
     <bean id="fetcherLocator" class="fr.keemto.core.fetcher.DefaultFetcherLocator">
         <constructor-arg>
             <list>

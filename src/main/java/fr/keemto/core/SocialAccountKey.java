@@ -3,9 +3,9 @@ package fr.keemto.core;
 
 import org.springframework.social.connect.ConnectionKey;
 
-public class ConnectionAccountKey extends AccountKey {
+public class SocialAccountKey extends AccountKey {
 
-    public ConnectionAccountKey(ConnectionKey key, User user) {
+    public SocialAccountKey(ConnectionKey key, User user) {
         super(key.getProviderId(), key.getProviderUserId(), user);
     }
 

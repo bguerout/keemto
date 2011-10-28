@@ -15,13 +15,13 @@
  */
 package fr.keemto.web;
 
+import fr.keemto.core.AccountInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.social.connect.ConnectionFactoryLocator;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.UsersConnectionRepository;
 
@@ -34,7 +34,7 @@ public class ConnectionRepositoryConfig {
     protected UsersConnectionRepository usersConnectionRepository;
 
     @Inject
-    protected ConnectionFactoryLocator connectionFactoryLocator;
+    protected AccountInterceptor accountInterceptor;
 
     @Bean
     @Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
@@ -43,7 +43,9 @@ public class ConnectionRepositoryConfig {
         if (authentication == null) {
             throw new IllegalStateException("Unable to get a ConnectionRepository: no user signed in");
         }
-        return usersConnectionRepository.createConnectionRepository(authentication.getName());
+        String username = authentication.getName();
+        ConnectionRepository connectionRepository = usersConnectionRepository.createConnectionRepository(username);
+        return new ObservableConnectionRepository(username, connectionRepository, accountInterceptor);
     }
 
 }
