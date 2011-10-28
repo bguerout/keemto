@@ -1,4 +1,4 @@
-package fr.keemto.core;
+package fr.keemto.provider.social;
 
 public class EventData {
     private final long timestamp;

@@ -2,7 +2,7 @@ package fr.keemto.provider.social.fetcher;
 
 
 import com.google.common.collect.Lists;
-import fr.keemto.core.EventData;
+import fr.keemto.provider.social.EventData;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.social.connect.Connection;

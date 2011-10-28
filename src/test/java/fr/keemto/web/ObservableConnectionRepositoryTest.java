@@ -1,7 +1,7 @@
 package fr.keemto.web;
 
 import fr.keemto.core.AccountInterceptor;
-import fr.keemto.core.SocialAccountKey;
+import fr.keemto.provider.social.SocialAccountKey;
 import fr.keemto.core.User;
 import org.junit.Before;
 import org.junit.Test;

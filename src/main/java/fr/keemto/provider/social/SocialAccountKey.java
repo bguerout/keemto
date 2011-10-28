@@ -1,6 +1,8 @@
-package fr.keemto.core;
+package fr.keemto.provider.social;
 
 
+import fr.keemto.core.AccountKey;
+import fr.keemto.core.User;
 import org.springframework.social.connect.ConnectionKey;
 
 public class SocialAccountKey extends AccountKey {

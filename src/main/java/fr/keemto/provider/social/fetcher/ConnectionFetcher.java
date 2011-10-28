@@ -1,6 +1,6 @@
 package fr.keemto.provider.social.fetcher;
 
-import fr.keemto.core.EventData;
+import fr.keemto.provider.social.EventData;
 import fr.keemto.core.fetcher.Fetcher;
 import org.springframework.social.connect.Connection;
 

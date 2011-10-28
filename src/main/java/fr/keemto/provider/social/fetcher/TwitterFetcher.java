@@ -18,7 +18,7 @@ package fr.keemto.provider.social.fetcher;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import fr.keemto.core.EventData;
+import fr.keemto.provider.social.EventData;
 import org.springframework.social.twitter.api.Tweet;
 import org.springframework.social.twitter.api.Twitter;
 

@@ -16,7 +16,7 @@
 
 package fr.keemto.core.fetcher;
 
-import fr.keemto.core.EventData;
+import fr.keemto.provider.social.EventData;
 
 import java.util.List;
 

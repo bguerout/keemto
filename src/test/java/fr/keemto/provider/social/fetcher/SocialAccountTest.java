@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import fr.keemto.TestConnection;
 import fr.keemto.core.*;
 import fr.keemto.core.fetcher.Fetcher;
-import fr.keemto.provider.social.MinimalConnectionRepository;
+import fr.keemto.provider.social.EventData;
 import fr.keemto.provider.social.SocialAccount;
 import org.junit.Before;
 import org.junit.Test;

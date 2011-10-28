@@ -16,7 +16,7 @@
 
 package fr.keemto.provider.social.fetcher;
 
-import fr.keemto.core.EventData;
+import fr.keemto.provider.social.EventData;
 import fr.keemto.core.User;
 import org.junit.Ignore;
 import org.junit.Test;
