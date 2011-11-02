@@ -72,21 +72,6 @@
         <div class="span4" id="random-accounts">
             <h3>Improve your network</h3>
             <ul class="media-grid">
-                <li>
-                    <a href="#">
-                        <img class="thumbnail" src="http://www.gravatar.com/avatar/0a40a289089f2d262cc713c54cae7fa2.png"
-                             alt="">
-                        <span>bguerout</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#"><img class="thumbnail" src="http://placehold.it/60x60" alt="">test</a>
-                </li>
-                <li>
-                    <a href="#">
-                        <img class="thumbnail" src="http://placehold.it/60x60" alt="">
-                    </a>
-                </li>
             </ul>
         </div>
     </div>
@@ -101,7 +86,7 @@
         {{/if}}
     </div>
     <div class="span11">
-        <p class="twitter-profile">{{account.key.user.firstName}} on <a href="#">{{account.key.providerUserId}}</a></p>
+        <p class="twitter-profile">{{account.key.user.firstName}} on <a href="{{account.profileUrl}}">{{account.key.providerUserId}}</a></p>
         <blockquote>
             <p>{{message}}</p>
             <small>
@@ -110,6 +95,16 @@
         </blockquote>
     </div>
 </script>
+
+<script type="text/template" id="random-account-template">
+    <li>
+        <a href="{{profileUrl}}">
+            <img class="thumbnail" src="{{imageUrl}}" alt="">
+            <span>{{displayName}}</span>
+        </a>
+    </li>
+</script>
+
 
 <script type="text/template" id="manageaccounts-section-template">
     <div class="page-header">

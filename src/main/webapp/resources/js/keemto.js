@@ -66,6 +66,8 @@
 
             var initRouters = function() {
                 new Keemto.Common.Routers({user:user});
+                new Keemto.Manage.Routers({user:user});
+                new Keemto.Timeline.Routers();
                 Backbone.history.start();
             };
 
@@ -202,9 +204,37 @@
 
         routes:{
             "":"showHome",
-            "timeline":"showTimeline",
-            "accounts":"showAccounts",
             "login":"showLoginForm"
+        },
+
+        initialize:function(options) {
+            this.user = options.user;
+        },
+
+        showHome:function() {
+            Keemto.log("Routing user to home.");
+            if (this.user.isAnonymous()) {
+                Keemto.showAsMainView(new Keemto.Common.WelcomeView());
+            }
+            else {
+                Keemto.navigateToHash("#timeline");
+            }
+        },
+
+        showLoginForm:function() {
+            var view = new Keemto.Common.LoginView();
+            Keemto.showAsMainView(view);
+        }
+    });
+
+    /*---------------------------------------------------------------------------------------------------------------
+     TIMELINE
+     ---------------------------------------------------------------------------------------------------------------*/
+
+    Keemto.Timeline.Routers = Backbone.Router.extend({
+
+        routes:{
+            "timeline":"showTimeline"
         },
 
         initialize:function(options) {
@@ -212,34 +242,13 @@
             //Events collections is held by router because it must be maintain even if view is destroy.
             this.events = new Keemto.Timeline.Events({name:"Timeline"});
             this.registerFetchingTask(10000);
-            this.user = options.user;
-        },
-
-        showHome:function() {
-            Keemto.log("Routing user to home.");
-            if (Keemto.isUserAuthenticated()) {
-                Keemto.navigateToHash("#events");
-            }
-            else {
-                Keemto.showAsMainView(new Keemto.Common.WelcomeView());
-            }
         },
 
         showTimeline:function() {
-            var timeline = new Keemto.Timeline.View({collection:this.events});
+            var randomAccounts = new Keemto.Timeline.RandomAccounts();
+            randomAccounts.fetch();
+            var timeline = new Keemto.Timeline.View({collection:this.events, randomAccounts:randomAccounts});
             Keemto.showAsMainView(timeline);
-        },
-
-        showAccounts:function() {
-            Keemto.log("Routing user to accounts hash");
-            var userAccounts = new Keemto.Manage.UserAccounts({user:this.user});
-            var view = new Keemto.Manage.View({collection:userAccounts});
-            Keemto.showAsMainView(view);
-        },
-
-        showLoginForm:function() {
-            var view = new Keemto.Common.LoginView();
-            Keemto.showAsMainView(view);
         },
 
         registerFetchingTask:function(delay) {
@@ -263,9 +272,6 @@
         }
     });
 
-    /*---------------------------------------------------------------------------------------------------------------
-     TIMELINE
-     ---------------------------------------------------------------------------------------------------------------*/
 
     Keemto.Timeline.Events = Backbone.Collection.extend({
 
@@ -297,8 +303,8 @@
             "click #show-fetched-button":"addFetchedEvents"
         },
 
-        initialize:function() {
-            _.bindAll(this, 'render', 'addEvent', 'addAccounts', 'showFetchedButton');
+        initialize:function(options) {
+            _.bindAll(this, 'render', 'addEvent', 'addAccount', 'showFetchedButton');
             this.collection.bind('add', this.showFetchedButton);
             this.collection.bind('reset', this.render);
             this.collection.fetch({
@@ -306,6 +312,9 @@
                     Keemto.message({level:"error", message:"Error loading events."});
                 }
             });
+
+            this.randomAccounts = this.options.randomAccounts;
+            this.randomAccounts.bind('reset', this.render);
         },
 
         showFetchedButton:function(model) {
@@ -326,13 +335,19 @@
             this.$("#events").prepend($(eventElement).fadeIn(1000));
         },
 
-        addAccounts:function(event) {
+        addAccount:function(account) {
+            var contentEl = Keemto.renderTemplate("random-account-template", account.toJSON());
+            this.$("#random-accounts .media-grid").append(contentEl);
         },
 
         render:function() {
             $(this.el).html(Keemto.renderTemplate("timeline-section-template", {"name":this.collection.name}));
             _(this.collection.models).each(function(event) {
                 this.addEvent(event);
+            }, this);
+
+            _(this.randomAccounts.models).each(function(account) {
+                this.addAccount(account);
             }, this);
 
             return this;
@@ -370,6 +385,25 @@
     /*---------------------------------------------------------------------------------------------------------------
      MANAGE
      ---------------------------------------------------------------------------------------------------------------*/
+
+    Keemto.Manage.Routers = Backbone.Router.extend({
+
+        routes:{
+            "accounts":"showAccounts"
+        },
+
+        initialize:function(options) {
+            this.user = options.user;
+        },
+
+        showAccounts:function() {
+            Keemto.log("Routing user to accounts hash");
+            var userAccounts = new Keemto.Manage.UserAccounts({user:this.user});
+            var view = new Keemto.Manage.View({collection:userAccounts});
+            Keemto.showAsMainView(view);
+        }
+
+    });
 
     Keemto.Manage.UserAccounts = Backbone.Collection.extend({
 
