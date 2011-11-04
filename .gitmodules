@@ -1,0 +1,6 @@
+[submodule "lib/spring-yammer-social"]
+	path = lib/spring-yammer-social
+	url = git://github.com/magott/spring-social-yammer.git
+[submodule "lib/ews-java"]
+	path = lib/ews-java
+	url = git://github.com/buckett/ews-java.git
