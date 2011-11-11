@@ -23,14 +23,14 @@ public class ExchangeServiceWrapper {
         this.exchangeService = exchangeService;
     }
 
-    public List<Item> getItems(long newerThan) {
+    public List<EmailMessage> getItems(long newerThan) {
         Date since = new Date(newerThan);
         ItemView pagedView = new ItemView(PAGE_SIZE);
         return retrieveItemsByPaging(since, pagedView);
     }
 
-    private List<Item> retrieveItemsByPaging(Date since, ItemView pagedView) {
-        List<Item> items = new ArrayList<Item>();
+    private List<EmailMessage> retrieveItemsByPaging(Date since, ItemView pagedView) {
+        List<EmailMessage> items = new ArrayList<EmailMessage>();
         try {
             PartialItemList partialItemList = null;
             do {
@@ -42,17 +42,18 @@ public class ExchangeServiceWrapper {
         } catch (Exception e) {
             throw new ExchangeServiceException("An error has occurred when trying to retrieve items from exchange WS service " + exchangeService.getUrl(), e);
         }
-        log.debug("{} items has been fetched.", items.size());
+        log.debug("{} items has been retrieved.", items.size());
         return items;
     }
 
     private PartialItemList fetchItemIds(Date newerThan, ItemView itemView) throws Exception {
-        log.debug("Fetching items ids newer than {} with view {}", newerThan, itemView);
+        log.debug("Retrieving items ids newer than {} with view {}", newerThan, itemView);
         SearchFilter.IsGreaterThan newerThanFilter = new SearchFilter.IsGreaterThan(ItemSchema.DateTimeCreated, newerThan);
         FindItemsResults<Item> itemsResults = exchangeService.findItems(WellKnownFolderName.Inbox, newerThanFilter, itemView);
         int leftItems = itemsResults.getTotalCount() - itemView.getOffset();
-        log.debug("{} items ids has been fetched, {} items left on remote server.", itemsResults.getItems().size(), leftItems);
-        return new PartialItemList(extractItemIds(itemsResults), itemsResults.isMoreAvailable(), exchangeService);
+        log.debug("{} items ids has been retrieved, {} items left on remote server.", itemsResults.getItems().size(), leftItems);
+        List<ItemId> ids = extractItemIds(itemsResults);
+        return new PartialItemList(ids, itemsResults.isMoreAvailable(), exchangeService);
     }
 
     private List<ItemId> extractItemIds(FindItemsResults<Item> itemsResults) {
@@ -80,7 +81,7 @@ public class ExchangeServiceWrapper {
             this.exchangeService = exchangeService;
         }
 
-        public List<Item> getFullBindedItems() throws Exception {
+        public List<EmailMessage> getFullBindedItems() throws Exception {
             ServiceResponseCollection<GetItemResponse> response = exchangeService.bindToItems(ids, getPropertiesToLoadInItem());
             log.debug("items data has been bounded remotely for {} items", ids.size());
             return toItemList(response);
@@ -88,17 +89,19 @@ public class ExchangeServiceWrapper {
 
         private PropertySet getPropertiesToLoadInItem() throws Exception {
             PropertySet ps = new PropertySet();
-            ps.add(ItemSchema.Id);
-            ps.add(ItemSchema.DateTimeCreated);
-            ps.add(ItemSchema.Subject);
-            ps.add(ItemSchema.Body);
+            ps.add(EmailMessageSchema.Id);
+            ps.add(EmailMessageSchema.DateTimeCreated);
+            ps.add(EmailMessageSchema.Subject);
+            ps.add(EmailMessageSchema.Body);
+            ps.add(EmailMessageSchema.Sender);
+            ps.add(EmailMessageSchema.ToRecipients);
             return ps;
         }
 
-        private List<Item> toItemList(ServiceResponseCollection<GetItemResponse> bindedItems) {
-            List<Item> items = new ArrayList<Item>();
+        private List<EmailMessage> toItemList(ServiceResponseCollection<GetItemResponse> bindedItems) {
+            List<EmailMessage> items = new ArrayList<EmailMessage>();
             for (GetItemResponse bindedItem : bindedItems) {
-                items.add(bindedItem.getItem());
+                items.add((EmailMessage) bindedItem.getItem());
             }
             return items;
         }

@@ -28,6 +28,7 @@
     <tx:annotation-driven mode="aspectj" transaction-manager="transactionManager"/>
 
     <context:component-scan base-package="fr.keemto.core"/>
+    <context:component-scan base-package="fr.keemto.provider"/>
 
     <jdbc:embedded-database id="dataSource" type="H2">
         <!-- H2 url jdbc:h2:mem:dataSource;DB_CLOSE_DELAY=-1 -->
