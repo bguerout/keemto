@@ -15,7 +15,7 @@ public class ExchangeServiceWrapper {
 
     private static final Logger log = LoggerFactory.getLogger(ExchangeServiceWrapper.class);
 
-    private static final int PAGE_SIZE = 100;
+    private static final int PAGE_OFFSET = 100;
 
     private final ExchangeService exchangeService;
 
@@ -23,40 +23,40 @@ public class ExchangeServiceWrapper {
         this.exchangeService = exchangeService;
     }
 
-    public List<EmailMessage> getItems(long newerThan) {
-        Date since = new Date(newerThan);
-        ItemView pagedView = new ItemView(PAGE_SIZE);
-        return retrieveItemsByPaging(since, pagedView);
-    }
-
-    private List<EmailMessage> retrieveItemsByPaging(Date since, ItemView pagedView) {
-        List<EmailMessage> items = new ArrayList<EmailMessage>();
+    public List<EmailMessage> getEmailMessages(long newerThan) {
+        
+        ItemView offsetView = new ItemView(PAGE_OFFSET);
+        List<EmailMessage> messages = new ArrayList<EmailMessage>();
+        
         try {
-            PartialItemList partialItemList = null;
+            PartialEmailList partialEmails = null;
             do {
-                partialItemList = fetchItemIds(since, pagedView);
-                items.addAll(partialItemList.getFullBindedItems());
-                pagedView.setOffset(pagedView.getOffset() + PAGE_SIZE);
-            } while (partialItemList.hasMoreItems);
+                partialEmails = findEmailMessages(new Date(newerThan), offsetView);
+                messages.addAll(partialEmails.getFullBindedMessages());
+                offsetView.setOffset(offsetView.getOffset() + PAGE_OFFSET);
+            } while (partialEmails.hasMoreItems);
 
         } catch (Exception e) {
-            throw new ExchangeServiceException("An error has occurred when trying to retrieve items from exchange WS service " + exchangeService.getUrl(), e);
+            throw new ExchangeServiceException("An error has occurred when trying to retrieve messages from exchange WS service " + exchangeService.getUrl(), e);
         }
-        log.debug("{} items has been retrieved.", items.size());
-        return items;
+        log.debug("{} messages has been retrieved.", messages.size());
+        return messages;
     }
 
-    private PartialItemList fetchItemIds(Date newerThan, ItemView itemView) throws Exception {
-        log.debug("Retrieving items ids newer than {} with view {}", newerThan, itemView);
-        SearchFilter.IsGreaterThan newerThanFilter = new SearchFilter.IsGreaterThan(ItemSchema.DateTimeCreated, newerThan);
-        FindItemsResults<Item> itemsResults = exchangeService.findItems(WellKnownFolderName.Inbox, newerThanFilter, itemView);
+    private PartialEmailList findEmailMessages(Date newerThan, ItemView itemView) throws Exception {
+        log.debug("Retrieving email ids newer than {} with view {}", newerThan, itemView);
+        SearchFilter.IsGreaterThan filter = new SearchFilter.IsGreaterThan(EmailMessageSchema.DateTimeCreated, newerThan);
+
+        FindItemsResults<Item> itemsResults = exchangeService.findItems(WellKnownFolderName.Inbox, filter, itemView);
+
         int leftItems = itemsResults.getTotalCount() - itemView.getOffset();
         log.debug("{} items ids has been retrieved, {} items left on remote server.", itemsResults.getItems().size(), leftItems);
-        List<ItemId> ids = extractItemIds(itemsResults);
-        return new PartialItemList(ids, itemsResults.isMoreAvailable(), exchangeService);
+
+        List<ItemId> ids = extractItemIdsFrom(itemsResults);
+        return new PartialEmailList(ids, itemsResults.isMoreAvailable(), exchangeService);
     }
 
-    private List<ItemId> extractItemIds(FindItemsResults<Item> itemsResults) {
+    private List<ItemId> extractItemIdsFrom(FindItemsResults<Item> itemsResults) {
         return Lists.transform(itemsResults.getItems(), new Function<Item, ItemId>() {
             @Override
             public ItemId apply(Item item) {
@@ -69,25 +69,25 @@ public class ExchangeServiceWrapper {
         });
     }
 
-    private static class PartialItemList {
+    private static class PartialEmailList {
         private final boolean hasMoreItems;
         private final List<ItemId> ids;
         private final ExchangeService exchangeService;
 
 
-        private PartialItemList(List<ItemId> ids, boolean hasMoreItems, ExchangeService exchangeService) {
+        private PartialEmailList(List<ItemId> ids, boolean hasMoreItems, ExchangeService exchangeService) {
             this.ids = ids;
             this.hasMoreItems = hasMoreItems;
             this.exchangeService = exchangeService;
         }
 
-        public List<EmailMessage> getFullBindedItems() throws Exception {
-            ServiceResponseCollection<GetItemResponse> response = exchangeService.bindToItems(ids, getPropertiesToLoadInItem());
-            log.debug("items data has been bounded remotely for {} items", ids.size());
-            return toItemList(response);
+        public List<EmailMessage> getFullBindedMessages() throws Exception {
+            ServiceResponseCollection<GetItemResponse> response = exchangeService.bindToItems(ids, getPropertiesToLoadForEmailMessage());
+            log.debug("email message data has been bounded remotely for {} items", ids.size());
+            return convertResponseToEmailList(response);
         }
 
-        private PropertySet getPropertiesToLoadInItem() throws Exception {
+        private PropertySet getPropertiesToLoadForEmailMessage() throws Exception {
             PropertySet ps = new PropertySet();
             ps.add(EmailMessageSchema.Id);
             ps.add(EmailMessageSchema.DateTimeCreated);
@@ -98,12 +98,12 @@ public class ExchangeServiceWrapper {
             return ps;
         }
 
-        private List<EmailMessage> toItemList(ServiceResponseCollection<GetItemResponse> bindedItems) {
-            List<EmailMessage> items = new ArrayList<EmailMessage>();
+        private List<EmailMessage> convertResponseToEmailList(ServiceResponseCollection<GetItemResponse> bindedItems) {
+            List<EmailMessage> messages = new ArrayList<EmailMessage>();
             for (GetItemResponse bindedItem : bindedItems) {
-                items.add((EmailMessage) bindedItem.getItem());
+                messages.add((EmailMessage) bindedItem.getItem());
             }
-            return items;
+            return messages;
         }
 
     }

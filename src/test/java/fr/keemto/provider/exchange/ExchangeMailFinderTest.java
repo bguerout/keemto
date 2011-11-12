@@ -23,7 +23,7 @@ public class ExchangeMailFinderTest {
 
         List<Mail> mails = finder.fetch(20L);
 
-        verify(wrapper).getItems(20L);
+        verify(wrapper).getEmailMessages(20L);
     }
 
     @Test
@@ -33,7 +33,7 @@ public class ExchangeMailFinderTest {
         ExchangeMailFinder finder = new ExchangeMailFinder(wrapper);
         Date createdAt = new Date();
         EmailMessage message = new TestingEmailMessage("id", "subject", "body", createdAt, "sender@xebia.fr");
-        when(wrapper.getItems(20L)).thenReturn(Lists.newArrayList(message));
+        when(wrapper.getEmailMessages(20L)).thenReturn(Lists.newArrayList(message));
 
         List<Mail> mails = finder.fetch(20L);
 
@@ -53,7 +53,7 @@ public class ExchangeMailFinderTest {
         ExchangeMailFinder finder = new ExchangeMailFinder(wrapper);
         Date createdAt = new Date();
         EmailMessage message = new TestingEmailMessage("id", "subject", "body", createdAt, "sender@xebia.fr");
-        when(wrapper.getItems(20L)).thenReturn(Lists.newArrayList(message, message));
+        when(wrapper.getEmailMessages(20L)).thenReturn(Lists.newArrayList(message, message));
 
         List<Mail> mails = finder.fetch(20L);
 

@@ -15,7 +15,7 @@ public class ExchangeMailFinder {
     }
 
     public List<Mail> fetch(long newerThan) {
-        List<EmailMessage> items = exchangeServiceWrapper.getItems(newerThan);
+        List<EmailMessage> items = exchangeServiceWrapper.getEmailMessages(newerThan);
         return transform(items);
     }
 
