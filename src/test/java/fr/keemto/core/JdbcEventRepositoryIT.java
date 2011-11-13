@@ -64,7 +64,7 @@ public class JdbcEventRepositoryIT {
 
         List<Event> events = repository.getEvents(newerThan);
 
-        assertThat(events.size(), equalTo(4));
+        assertThat(events.size(), greaterThan(3));
     }
 
     @Test
@@ -111,7 +111,7 @@ public class JdbcEventRepositoryIT {
     }
 
     @Test
-    public void shouldPersitEvents() throws Exception {
+    public void shouldPersistEvents() throws Exception {
 
         Event fooEvent = new Event(System.currentTimeMillis(), "foo", mailAccount);
         Event barEvent = new Event(System.currentTimeMillis() + 100, "bar", mailAccount);
