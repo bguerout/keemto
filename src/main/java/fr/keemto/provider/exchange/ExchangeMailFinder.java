@@ -3,20 +3,33 @@ package fr.keemto.provider.exchange;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import microsoft.exchange.webservices.data.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class ExchangeMailFinder {
-    private ExchangeServiceWrapper exchangeServiceWrapper;
 
-    public ExchangeMailFinder(ExchangeServiceWrapper exchangeServiceWrapper) {
-        this.exchangeServiceWrapper = exchangeServiceWrapper;
+    private static final Logger log = LoggerFactory.getLogger(ExchangeMailFinder.class);
+
+    private ExchangeServiceFactory exchangeServiceFactory;
+
+    public ExchangeMailFinder(ExchangeServiceFactory exchangeServiceFactory) {
+        this.exchangeServiceFactory = exchangeServiceFactory;
     }
 
-    public List<Mail> fetch(long newerThan) {
-        List<EmailMessage> items = exchangeServiceWrapper.getEmailMessages(newerThan);
-        return transform(items);
+    public List<Mail> findEmails(long newerThan) {
+        EmailExchangeService emailExchange = exchangeServiceFactory.createEmailExchange(newerThan);
+        List<EmailMessage> messages = new ArrayList<EmailMessage>();
+        do {
+            List<EmailMessage> items = emailExchange.nextElement();
+            messages.addAll(items);
+        } while (emailExchange.hasMoreElements());
+
+        log.debug("{} messages has been retrieved.", messages.size());
+        return transform(messages);
     }
 
     private List<Mail> transform(List<EmailMessage> items) {

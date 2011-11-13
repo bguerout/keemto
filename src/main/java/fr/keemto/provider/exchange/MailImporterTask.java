@@ -12,7 +12,7 @@ public class MailImporterTask implements Runnable {
     }
 
     public void importMailsNewerThan(long timestamp) {
-        List<Mail> mails = exchangeMailFinder.fetch(timestamp);
+        List<Mail> mails = exchangeMailFinder.findEmails(timestamp);
         mailRepository.persist(mails);
     }
 

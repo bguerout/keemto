@@ -26,14 +26,14 @@ public class MailImporterTaskTest {
 
         task.importMailsNewerThan(20L);
 
-        verify(finder).fetch(20L);
+        verify(finder).findEmails(20L);
     }
 
     @Test
     public void shouldPersistFetchedMails() throws Exception {
 
         Mail mail = new Mail("id", "stnevex@gmail.com", "subject", "body", System.currentTimeMillis());
-        when(finder.fetch(20L)).thenReturn(Lists.newArrayList(mail));
+        when(finder.findEmails(20L)).thenReturn(Lists.newArrayList(mail));
 
         task.importMailsNewerThan(20L);
 
@@ -44,12 +44,12 @@ public class MailImporterTaskTest {
     public void onRunShouldFetchAndPersistMostRecentMails() throws Exception {
 
         Mail newMail = new Mail("id2", "stnevex@gmail.com", "new subject", "body", System.currentTimeMillis());
-        when(finder.fetch(999)).thenReturn(Lists.newArrayList(newMail));
+        when(finder.findEmails(999)).thenReturn(Lists.newArrayList(newMail));
         when(mailRepository.getMostRecentMailTime()).thenReturn(999L);
 
         task.run();
 
-        verify(finder).fetch(999);
+        verify(finder).findEmails(999);
         verify(mailRepository).persist(Lists.newArrayList(newMail));
     }
 }

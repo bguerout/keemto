@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -15,8 +16,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assume.assumeThat;
 
-public class ExchangeServiceWrapperIT {
-    private ExchangeMailFinder finder;
+public class EmailExchangeServiceIT {
+    private EmailExchangeService service;
 
     @Before
     public void setUp() throws Exception {
@@ -30,23 +31,24 @@ public class ExchangeServiceWrapperIT {
         ExchangeCredentials credentials = new WebCredentials(login, pwd);
         exchangeService.setCredentials(credentials);
 
-        ExchangeServiceWrapper wrapper = new ExchangeServiceWrapper(exchangeService);
-        finder = new ExchangeMailFinder(wrapper);
+        ExchangeServiceFactory factory = new ExchangeServiceFactory(exchangeService);
+        service = factory.createEmailExchange(0L);
     }
 
     @Test
     public void shouldReturnMailsSinceEpoch() throws Exception {
-        List<Mail> mails = finder.fetch(0L);
+        List<EmailMessage> messages = service.nextElement();
 
-        assertThat(mails.isEmpty(), is(false));
-        assertThat(mails.size(), greaterThan(100));
-        System.out.println(mails.size());
-        Mail mail = mails.get(0);
-        assertThat(mail.getBody(), notNullValue());
-        assertThat(mail.getId(), notNullValue());
-        assertThat(mail.getSender(), notNullValue());
-        assertThat(mail.getSubject(), notNullValue());
-        assertThat(mail.getTimestamp(), not(equalTo(0L)));
+        assertThat(messages.isEmpty(), is(false));
+        assertThat(messages.size(), equalTo(100));
+        EmailMessage emailMessage = messages.get(0);
+        assertThat(emailMessage.getBody(), notNullValue());
+        assertThat(emailMessage.getId(), notNullValue());
+        assertThat(emailMessage.getSender(), notNullValue());
+        assertThat(emailMessage.getSubject(), notNullValue());
+        assertThat(emailMessage.getDateTimeCreated(), not(equalTo(new Date())));
+
+        assertThat(service.hasMoreElements(), is(true));
     }
 
 }
