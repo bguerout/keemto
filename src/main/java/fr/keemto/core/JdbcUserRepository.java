@@ -22,12 +22,10 @@ import org.springframework.stereotype.Repository;
 import javax.inject.Inject;
 import java.util.List;
 
-@Repository
 public class JdbcUserRepository implements UserRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    @Inject
     public JdbcUserRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }

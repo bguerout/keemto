@@ -29,7 +29,12 @@
 
   <tx:annotation-driven mode="aspectj" transaction-manager="transactionManager"/>
 
-  <context:component-scan base-package="fr.keemto.core"/>
+  <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="dataSource"/>
+  </bean>
+
+  <bean id="textEncryptor" class="org.springframework.security.crypto.encrypt.Encryptors" factory-method="noOpText"/>
+
   <context:component-scan base-package="fr.keemto.provider"/>
 
   <jdbc:embedded-database id="dataSource" type="H2"/>
@@ -45,11 +50,14 @@
     <constructor-arg ref="dataSource"/>
   </bean>
 
-  <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-    <property name="dataSource" ref="dataSource"/>
+  <bean id="eventRepository" class="fr.keemto.core.JdbcEventRepository">
+    <constructor-arg ref="jdbcTemplate"/>
+    <constructor-arg ref="accountFactory"/>
   </bean>
 
-  <bean id="textEncryptor" class="org.springframework.security.crypto.encrypt.Encryptors" factory-method="noOpText"/>
+  <bean id="userRepository" class="fr.keemto.core.JdbcUserRepository">
+    <constructor-arg ref="jdbcTemplate"/>
+  </bean>
 
   <bean id="usersConnectionRepository" class="org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository">
     <constructor-arg ref="dataSource"/>
@@ -92,6 +100,11 @@
         <bean class="fr.keemto.provider.MailAccountFactory"/>
       </list>
     </constructor-arg>
+  </bean>
+
+  <bean id="fetchingTaskFactory" class="fr.keemto.core.fetching.FetchingTaskFactory">
+    <constructor-arg ref="accountFactory"/>
+    <constructor-arg ref="eventRepository"/>
   </bean>
 
 

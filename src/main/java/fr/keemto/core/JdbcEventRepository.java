@@ -29,7 +29,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-@Repository
 public class JdbcEventRepository implements EventRepository {
 
     private static final Logger log = LoggerFactory.getLogger(JdbcEventRepository.class);
@@ -51,7 +50,6 @@ public class JdbcEventRepository implements EventRepository {
     private final JdbcTemplate jdbcTemplate;
     private final AccountFactory accountFactory;
 
-    @Inject
     public JdbcEventRepository(JdbcTemplate jdbcTemplate, AccountFactory accountFactory) {
         this.jdbcTemplate = jdbcTemplate;
         this.accountFactory = accountFactory;
