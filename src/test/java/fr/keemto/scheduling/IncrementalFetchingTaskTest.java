@@ -20,7 +20,6 @@ import fr.keemto.core.Account;
 import fr.keemto.core.Event;
 import fr.keemto.core.EventRepository;
 import fr.keemto.core.fetching.FetchingException;
-import fr.keemto.scheduling.FetchingTask;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.dao.DataRetrievalFailureException;
@@ -32,7 +31,7 @@ import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.*;
 
-public class FetchingTaskTest {
+public class IncrementalFetchingTaskTest {
 
     private FetchingTask task;
     private EventRepository eventRepository;
@@ -44,7 +43,7 @@ public class FetchingTaskTest {
         eventRepository = mock(EventRepository.class);
         account = mock(Account.class);
         mostRecentEvent = new Event(9999, "message", null);
-        task = new FetchingTask(account, eventRepository);
+        task = new IncrementalFetchingTask(account, eventRepository);
     }
 
     @Test

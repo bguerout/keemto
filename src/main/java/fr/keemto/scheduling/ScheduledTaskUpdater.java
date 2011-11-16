@@ -18,7 +18,7 @@ public class ScheduledTaskUpdater implements AccountInterceptor {
 
     @Override
     public void accountCreated(AccountKey key) {
-        FetchingTask task = taskFactory.createTask(key);
+        IncrementalFetchingTask task = taskFactory.createIncrementalTask(key);
         registrar.registerTask(task);
     }
 

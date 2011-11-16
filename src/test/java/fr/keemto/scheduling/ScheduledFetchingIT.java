@@ -51,7 +51,7 @@ public class ScheduledFetchingIT {
         assertThat(latch.getCount(), equalTo((long) 0));
     }
 
-    public class CountDownTask extends FetchingTask {
+    public class CountDownTask extends IncrementalFetchingTask {
 
         private final CountDownLatch latch;
 

@@ -17,8 +17,6 @@
 package fr.keemto.scheduling;
 
 import fr.keemto.core.*;
-import fr.keemto.scheduling.FetchingTask;
-import fr.keemto.scheduling.FetchingTaskFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -85,7 +83,7 @@ public class FetchingTaskFactoryTest {
         when(accountFactory.getAccount(key)).thenReturn(account);
         when(account.getKey()).thenReturn(key);
 
-        FetchingTask task = fetchingTaskFactory.createTask(key);
+        IncrementalFetchingTask task = fetchingTaskFactory.createIncrementalTask(key);
 
         assertThat(task, notNullValue());
         assertThat(task.getFetchedAccountKey(), equalTo(key));

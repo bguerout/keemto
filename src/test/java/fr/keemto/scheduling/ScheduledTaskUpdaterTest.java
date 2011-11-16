@@ -28,15 +28,15 @@ public class ScheduledTaskUpdaterTest {
 
         updater.accountCreated(key);
 
-        verify(taskFactory).createTask(key);
+        verify(taskFactory).createIncrementalTask(key);
     }
 
     @Test
     public void whenAccountIsCreatedShouldAddTaskToRegistrar() throws Exception {
 
         AccountKey key = mock(AccountKey.class);
-        FetchingTask task = mock(FetchingTask.class);
-        when(taskFactory.createTask(key)).thenReturn(task);
+        IncrementalFetchingTask task = mock(IncrementalFetchingTask.class);
+        when(taskFactory.createIncrementalTask(key)).thenReturn(task);
 
         updater.accountCreated(key);
 

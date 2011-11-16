@@ -45,14 +45,14 @@ public class FetchingTaskFactory {
 
         List<FetchingTask> tasks = new ArrayList<FetchingTask>();
         for (Account account : accountFactory.getAccounts(user)) {
-            FetchingTask task = new FetchingTask(account, eventRepository);
+            FetchingTask task = new IncrementalFetchingTask(account, eventRepository);
             tasks.add(task);
         }
         return tasks;
     }
 
-    public FetchingTask createTask(AccountKey key) {
+    public IncrementalFetchingTask createIncrementalTask(AccountKey key) {
         Account account = accountFactory.getAccount(key);
-        return new FetchingTask(account, eventRepository);
+        return new IncrementalFetchingTask(account, eventRepository);
     }
 }

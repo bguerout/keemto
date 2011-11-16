@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -47,7 +48,7 @@ public class AutomaticTaskRegisterTest {
     public void shouldRegisterTask() throws Exception {
         User user = new User("bguerout");
 
-        ArrayList<FetchingTask> tasks = Lists.newArrayList(mock(FetchingTask.class));
+        List<FetchingTask> tasks = Lists.newArrayList(mock(FetchingTask.class));
         when(fetchingTaskFactory.createTasks(user)).thenReturn(tasks);
         when(userRepository.getAllUsers()).thenReturn(Lists.newArrayList(user));
 
@@ -61,8 +62,8 @@ public class AutomaticTaskRegisterTest {
     public void shouldRegisterTaskForAllUsers() throws Exception {
         User bguerout = new User("bguerout");
         User stnevex = new User("stnevex");
-        ArrayList<FetchingTask> bgueroutTasks = Lists.newArrayList(mock(FetchingTask.class));
-        ArrayList<FetchingTask> stnevexTasks = Lists.newArrayList(mock(FetchingTask.class));
+        List<FetchingTask> bgueroutTasks = Lists.newArrayList(mock(FetchingTask.class));
+        List<FetchingTask> stnevexTasks = Lists.newArrayList(mock(FetchingTask.class));
         when(userRepository.getAllUsers()).thenReturn(Lists.newArrayList(bguerout, stnevex));
         when(fetchingTaskFactory.createTasks(bguerout)).thenReturn(bgueroutTasks);
         when(fetchingTaskFactory.createTasks(stnevex)).thenReturn(stnevexTasks);
