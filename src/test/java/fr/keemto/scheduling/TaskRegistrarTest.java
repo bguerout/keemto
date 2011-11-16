@@ -19,6 +19,7 @@ package fr.keemto.scheduling;
 import com.google.common.collect.Lists;
 import fr.keemto.core.AccountKey;
 import fr.keemto.core.User;
+import fr.keemto.core.fetching.FetchingTask;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.scheduling.TaskScheduler;

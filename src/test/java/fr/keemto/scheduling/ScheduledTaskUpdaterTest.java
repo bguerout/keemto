@@ -2,6 +2,8 @@ package fr.keemto.scheduling;
 
 import fr.keemto.core.AccountInterceptor;
 import fr.keemto.core.AccountKey;
+import fr.keemto.core.fetching.FetchingTaskFactory;
+import fr.keemto.core.fetching.IncrementalFetchingTask;
 import org.junit.Before;
 import org.junit.Test;
 

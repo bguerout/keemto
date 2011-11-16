@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package fr.keemto.scheduling;
+package fr.keemto.core.fetching;
 
 import fr.keemto.core.*;
+import fr.keemto.core.fetching.FetchingTask;
+import fr.keemto.core.fetching.FetchingTaskFactory;
+import fr.keemto.core.fetching.IncrementalFetchingTask;
 import org.junit.Before;
 import org.junit.Test;
 

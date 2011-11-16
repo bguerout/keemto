@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-package fr.keemto.scheduling;
+package fr.keemto.core.fetching;
 
 import fr.keemto.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
 public class FetchingTaskFactory {
-
-    private static final Logger log = LoggerFactory.getLogger(FetchingTaskFactory.class);
 
     private final AccountFactory accountFactory;
     private final EventRepository eventRepository;
 
 
-    @Autowired
     public FetchingTaskFactory(AccountFactory accountFactory, EventRepository eventRepository) {
         this.accountFactory = accountFactory;
         this.eventRepository = eventRepository;

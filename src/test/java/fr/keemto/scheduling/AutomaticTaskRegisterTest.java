@@ -19,10 +19,11 @@ package fr.keemto.scheduling;
 import com.google.common.collect.Lists;
 import fr.keemto.core.User;
 import fr.keemto.core.UserRepository;
+import fr.keemto.core.fetching.FetchingTask;
+import fr.keemto.core.fetching.FetchingTaskFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;

@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package fr.keemto.scheduling;
+package fr.keemto.core.fetching;
 
 import fr.keemto.core.Account;
 import fr.keemto.core.AccountKey;
 import fr.keemto.core.Event;
 import fr.keemto.core.EventRepository;
-import fr.keemto.core.fetching.FetchingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

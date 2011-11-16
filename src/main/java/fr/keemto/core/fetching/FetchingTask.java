@@ -1,4 +1,4 @@
-package fr.keemto.scheduling;
+package fr.keemto.core.fetching;
 
 import fr.keemto.core.AccountKey;
 import fr.keemto.core.fetching.FetchingException;

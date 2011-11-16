@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package fr.keemto.scheduling;
+package fr.keemto.core.fetching;
 
 import fr.keemto.core.Account;
 import fr.keemto.core.Event;
 import fr.keemto.core.EventRepository;
 import fr.keemto.core.fetching.FetchingException;
+import fr.keemto.core.fetching.FetchingTask;
+import fr.keemto.core.fetching.IncrementalFetchingTask;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.dao.DataRetrievalFailureException;

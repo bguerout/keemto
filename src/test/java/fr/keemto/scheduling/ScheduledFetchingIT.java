@@ -19,6 +19,8 @@ package fr.keemto.scheduling;
 import fr.keemto.core.Account;
 import fr.keemto.core.EventRepository;
 import fr.keemto.core.User;
+import fr.keemto.core.fetching.FetchingTask;
+import fr.keemto.core.fetching.IncrementalFetchingTask;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

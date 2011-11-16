@@ -18,6 +18,8 @@ package fr.keemto.scheduling;
 
 import fr.keemto.core.User;
 import fr.keemto.core.UserRepository;
+import fr.keemto.core.fetching.FetchingTask;
+import fr.keemto.core.fetching.FetchingTaskFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

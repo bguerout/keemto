@@ -17,6 +17,7 @@
 package fr.keemto.scheduling;
 
 import fr.keemto.core.AccountKey;
+import fr.keemto.core.fetching.FetchingTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
