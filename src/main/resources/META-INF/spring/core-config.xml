@@ -32,11 +32,14 @@
   <context:component-scan base-package="fr.keemto.core"/>
   <context:component-scan base-package="fr.keemto.provider"/>
 
-  <jdbc:embedded-database id="dataSource" type="H2">
+  <jdbc:embedded-database id="dataSource" type="H2"/>
+
+  <jdbc:initialize-database data-source="dataSource" ignore-failures="DROPS">
     <!-- H2 url jdbc:h2:mem:dataSource;DB_CLOSE_DELAY=-1 -->
+    <jdbc:script location="classpath:/META-INF/db/ddl.sql"/>
     <jdbc:script location="classpath:/org/springframework/social/connect/jdbc/JdbcUsersConnectionRepository.sql"/>
-    <jdbc:script location="classpath:/META-INF/db/ddl-and-datas.sql"/>
-  </jdbc:embedded-database>
+    <jdbc:script location="classpath:/META-INF/db/data.sql"/>
+  </jdbc:initialize-database>
 
   <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
     <constructor-arg ref="dataSource"/>

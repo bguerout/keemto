@@ -30,7 +30,7 @@
 
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>classpath*:META-INF/spring/*.xml, WEB-INF/spring/security-config.xml</param-value>
+    <param-value>classpath*:META-INF/spring/*-config.xml, WEB-INF/spring/security-config.xml</param-value>
   </context-param>
 
   <listener>

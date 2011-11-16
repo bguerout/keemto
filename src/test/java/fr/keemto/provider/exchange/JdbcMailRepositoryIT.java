@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:/META-INF/spring/applicationContext.xml"})
+@ContextConfiguration(locations = {"classpath*:/META-INF/spring/core-config.xml"})
 public class JdbcMailRepositoryIT {
 
     @Autowired

@@ -19,8 +19,6 @@ package fr.keemto.scheduling;
 import fr.keemto.core.Account;
 import fr.keemto.core.EventRepository;
 import fr.keemto.core.User;
-import fr.keemto.scheduling.FetchingTask;
-import fr.keemto.scheduling.TaskRegistrar;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +33,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:/META-INF/spring/*.xml"})
+@ContextConfiguration(locations = {"classpath*:/META-INF/spring/*-config.xml"})
 public class ScheduledFetchingIT {
 
     @Autowired

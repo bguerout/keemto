@@ -28,7 +28,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:/META-INF/spring/applicationContext.xml"})
+@ContextConfiguration(locations = {"classpath*:/META-INF/spring/core-config.xml"})
 public class JdbcUserRepositoryIT {
 
     @Inject
