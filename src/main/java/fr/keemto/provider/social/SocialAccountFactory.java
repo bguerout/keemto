@@ -2,8 +2,8 @@ package fr.keemto.provider.social;
 
 
 import fr.keemto.core.*;
-import fr.keemto.core.fetcher.Fetcher;
-import fr.keemto.core.fetcher.FetcherLocator;
+import fr.keemto.core.fetching.Fetcher;
+import fr.keemto.core.fetching.FetcherLocator;
 import org.springframework.social.connect.*;
 import org.springframework.util.MultiValueMap;
 

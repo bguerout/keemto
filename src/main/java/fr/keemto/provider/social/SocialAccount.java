@@ -3,7 +3,7 @@ package fr.keemto.provider.social;
 import fr.keemto.core.Account;
 import fr.keemto.core.AccountKey;
 import fr.keemto.core.Event;
-import fr.keemto.core.fetcher.Fetcher;
+import fr.keemto.core.fetching.Fetcher;
 import org.springframework.social.connect.Connection;
 
 import java.util.ArrayList;

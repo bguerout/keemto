@@ -2,7 +2,7 @@ package fr.keemto.provider.exchange;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import fr.keemto.core.fetcher.FetchingException;
+import fr.keemto.core.fetching.FetchingException;
 import microsoft.exchange.webservices.data.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

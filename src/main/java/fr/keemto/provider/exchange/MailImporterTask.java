@@ -3,6 +3,7 @@ package fr.keemto.provider.exchange;
 import java.util.List;
 
 public class MailImporterTask implements Runnable {
+
     private final ExchangeMailFinder exchangeMailFinder;
     private final JdbcMailRepository mailRepository;
 

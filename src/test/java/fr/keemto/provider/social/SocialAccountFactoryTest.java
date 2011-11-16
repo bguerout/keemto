@@ -4,7 +4,7 @@ import fr.keemto.TestConnection;
 import fr.keemto.core.Account;
 import fr.keemto.core.AccountKey;
 import fr.keemto.core.User;
-import fr.keemto.core.fetcher.FetcherLocator;
+import fr.keemto.core.fetching.FetcherLocator;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.social.connect.*;
