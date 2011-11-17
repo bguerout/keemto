@@ -1,4 +1,4 @@
-package fr.keemto.provider.exchange;
+package fr.keemto.provider.exchange.importer;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;

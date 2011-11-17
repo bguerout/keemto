@@ -1,6 +1,10 @@
-package fr.keemto.provider.exchange;
+package fr.keemto.provider.exchange.importer;
 
 import com.google.common.collect.Lists;
+import fr.keemto.provider.exchange.JdbcMailRepository;
+import fr.keemto.provider.exchange.Mail;
+import fr.keemto.provider.exchange.importer.ExchangeMailFinder;
+import fr.keemto.provider.exchange.importer.MailImporterTask;
 import org.junit.Before;
 import org.junit.Test;
 

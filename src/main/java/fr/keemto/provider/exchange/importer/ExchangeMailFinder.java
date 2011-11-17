@@ -1,7 +1,8 @@
-package fr.keemto.provider.exchange;
+package fr.keemto.provider.exchange.importer;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import fr.keemto.provider.exchange.Mail;
 import microsoft.exchange.webservices.data.EmailMessage;
 import microsoft.exchange.webservices.data.MessageBody;
 import microsoft.exchange.webservices.data.ServiceLocalException;
@@ -23,7 +24,7 @@ public class ExchangeMailFinder {
     }
 
     public List<Mail> findEmails(long newerThan) {
-        EmailExchangeService emailExchange = exchangeServiceFactory.createEmailExchange(newerThan);
+        EmailExchangeService emailExchange = exchangeServiceFactory.createServiceWithTimeSelector(newerThan);
         List<EmailMessage> messages = new ArrayList<EmailMessage>();
         do {
             List<EmailMessage> items = emailExchange.nextElement();

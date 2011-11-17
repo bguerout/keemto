@@ -1,4 +1,4 @@
-package fr.keemto.provider.exchange;
+package fr.keemto.provider.exchange.importer;
 
 import microsoft.exchange.webservices.data.ExchangeService;
 
@@ -10,7 +10,7 @@ public class ExchangeServiceFactory {
         this.exchangeService = emailExchangeService;
     }
 
-    public EmailExchangeService createEmailExchange(long newerThanSelector) {
+    public EmailExchangeService createServiceWithTimeSelector(long newerThanSelector) {
         return new EmailExchangeService(newerThanSelector, exchangeService);
 
     }

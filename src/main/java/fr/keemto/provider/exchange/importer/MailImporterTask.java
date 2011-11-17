@@ -1,4 +1,7 @@
-package fr.keemto.provider.exchange;
+package fr.keemto.provider.exchange.importer;
+
+import fr.keemto.provider.exchange.JdbcMailRepository;
+import fr.keemto.provider.exchange.Mail;
 
 import java.util.List;
 

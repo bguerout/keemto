@@ -1,4 +1,4 @@
-package fr.keemto.provider.exchange;
+package fr.keemto.provider.exchange.importer;
 
 import microsoft.exchange.webservices.data.*;
 import org.junit.Before;
@@ -29,7 +29,7 @@ public class EmailExchangeServiceIT {
         exchangeService.setCredentials(credentials);
 
         ExchangeServiceFactory factory = new ExchangeServiceFactory(exchangeService);
-        service = factory.createEmailExchange(0L);
+        service = factory.createServiceWithTimeSelector(0L);
     }
 
     @Test

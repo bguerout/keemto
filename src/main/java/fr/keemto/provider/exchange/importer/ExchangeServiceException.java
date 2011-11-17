@@ -1,4 +1,4 @@
-package fr.keemto.provider.exchange;
+package fr.keemto.provider.exchange.importer;
 
 public class ExchangeServiceException extends RuntimeException {
     public ExchangeServiceException(String message, Throwable cause) {
