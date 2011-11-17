@@ -1,6 +1,5 @@
 package fr.keemto.provider.exchange;
 
-import java.util.Date;
 import java.util.List;
 
 public interface MailRepository {

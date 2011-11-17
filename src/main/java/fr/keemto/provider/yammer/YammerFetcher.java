@@ -2,8 +2,8 @@ package fr.keemto.provider.yammer;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import fr.keemto.provider.social.EventData;
 import fr.keemto.provider.social.ConnectionFetcher;
+import fr.keemto.provider.social.EventData;
 import org.springframework.social.yammer.api.MessageInfo;
 import org.springframework.social.yammer.api.Yammer;
 import org.springframework.social.yammer.api.YammerMessage;

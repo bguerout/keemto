@@ -18,7 +18,6 @@ package fr.keemto.provider.twitter;
 
 import com.google.common.collect.Lists;
 import fr.keemto.provider.social.EventData;
-import fr.keemto.provider.twitter.TwitterFetcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.social.connect.Connection;

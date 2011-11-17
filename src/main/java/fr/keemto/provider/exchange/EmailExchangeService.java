@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
-public class EmailExchangeService implements Enumeration<List<EmailMessage>>{
+public class EmailExchangeService implements Enumeration<List<EmailMessage>> {
 
     private static final Logger log = LoggerFactory.getLogger(EmailExchangeService.class);
 

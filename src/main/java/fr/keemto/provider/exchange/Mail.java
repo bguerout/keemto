@@ -1,7 +1,5 @@
 package fr.keemto.provider.exchange;
 
-import java.util.Date;
-
 public class Mail {
 
     private final String id;

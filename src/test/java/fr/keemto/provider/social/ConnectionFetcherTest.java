@@ -17,8 +17,6 @@
 package fr.keemto.provider.social;
 
 import com.google.common.collect.Lists;
-import fr.keemto.provider.social.ConnectionFetcher;
-import fr.keemto.provider.social.EventData;
 import fr.keemto.core.User;
 import org.junit.Before;
 import org.junit.Test;

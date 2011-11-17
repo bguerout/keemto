@@ -3,7 +3,6 @@ package fr.keemto.provider.yammer;
 
 import com.google.common.collect.Lists;
 import fr.keemto.provider.social.EventData;
-import fr.keemto.provider.yammer.YammerFetcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.social.connect.Connection;
@@ -92,7 +91,7 @@ public class YammerFetcherTest {
 
 
     private YammerMessage createYammerMessage(String message, String messageParsed, Date messageCreationDate) {
-        YammerMessage.Body body = new YammerMessage.Body(message, messageParsed, "rich",new ArrayList<String>());
+        YammerMessage.Body body = new YammerMessage.Body(message, messageParsed, "rich", new ArrayList<String>());
         return new YammerMessage(100, body, null, 0, null, 0, null, null, 0L, 0L, null, null, false, null, messageCreationDate, false, null, null, 0);
     }
 }

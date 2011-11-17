@@ -16,9 +16,8 @@
 
 package fr.keemto.provider.twitter;
 
-import fr.keemto.provider.social.EventData;
 import fr.keemto.core.User;
-import fr.keemto.provider.twitter.TwitterFetcher;
+import fr.keemto.provider.social.EventData;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
