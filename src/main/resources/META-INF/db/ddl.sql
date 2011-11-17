@@ -27,4 +27,5 @@ create table mail (id varchar unique,
     subject varchar,
     body varchar,
     ts BIGINT,
+    recipients varchar,
     primary key (id));

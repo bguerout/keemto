@@ -37,10 +37,10 @@ public class JdbcMailRepository implements MailRepository {
     }
 
     private void persist(Mail mail) {
-        String insertEvent = "insert into mail (id,sender,subject,body,ts) values(?,?,?,?,?)";
+        String insertEvent = "insert into mail (id,sender,subject,body,ts,recipients) values(?,?,?,?,?,?)";
         try {
             jdbcTemplate.update(insertEvent,
-                    new Object[]{mail.getId(), mail.getSender(), mail.getSubject(), mail.getBody(), mail.getTimestamp()});
+                    new Object[]{mail.getId(), mail.getFrom(), mail.getSubject(), mail.getBody(), mail.getTimestamp(), mail.getRecipientsAsString()});
 
         } catch (DuplicateKeyException e) {
             throw new DuplicateMailException("Unable to persist mail " + mail +
@@ -71,8 +71,9 @@ public class JdbcMailRepository implements MailRepository {
             String subject = rs.getString("subject");
             String body = rs.getString("body");
             String sender = rs.getString("sender");
+            String recipients = rs.getString("recipients");
             long timestamp = rs.getLong("ts");
-            return new Mail(id, sender, subject, body, timestamp);
+            return new Mail(id, sender, subject, body, timestamp, recipients);
         }
 
     }

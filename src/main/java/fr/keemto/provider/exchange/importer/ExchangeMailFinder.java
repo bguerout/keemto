@@ -3,6 +3,7 @@ package fr.keemto.provider.exchange.importer;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import fr.keemto.provider.exchange.Mail;
+import microsoft.exchange.webservices.data.EmailAddress;
 import microsoft.exchange.webservices.data.EmailMessage;
 import microsoft.exchange.webservices.data.MessageBody;
 import microsoft.exchange.webservices.data.ServiceLocalException;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 public class ExchangeMailFinder {
@@ -44,13 +46,23 @@ public class ExchangeMailFinder {
         });
     }
 
+    private List<String> asRecipientsList(Iterator<EmailAddress> emailAddresses) {
+        List<String> recipients = new ArrayList<String>();
+        while(emailAddresses.hasNext()) {
+            EmailAddress address =  emailAddresses.next();
+            recipients.add(address.getAddress());
+        }
+        return recipients;
+    }
+
     private Mail toMail(EmailMessage message) {
         try {
             String uniqueId = message.getId().getUniqueId();
             MessageBody body = message.getBody();
             String sender = message.getSender().getAddress();
             Date dateTimeCreated = message.getDateTimeCreated();
-            return new Mail(uniqueId, sender, message.getSubject(), body.toString(), dateTimeCreated.getTime());
+            List<String> recipients = asRecipientsList(message.getToRecipients().iterator());
+            return new Mail(uniqueId, sender, message.getSubject(), body.toString(), dateTimeCreated.getTime(),recipients);
         } catch (ServiceLocalException e) {
             throw new ExchangeServiceException("Unable to create mail from item:" + message, e);
         }

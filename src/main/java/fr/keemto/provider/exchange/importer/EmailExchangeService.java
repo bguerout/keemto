@@ -91,17 +91,18 @@ public class EmailExchangeService implements Enumeration<List<EmailMessage>> {
             PropertySet ps = new PropertySet();
             ps.add(EmailMessageSchema.Id);
             ps.add(EmailMessageSchema.DateTimeCreated);
-            ps.add(EmailMessageSchema.Subject);
-            ps.add(EmailMessageSchema.Body);
             ps.add(EmailMessageSchema.Sender);
             ps.add(EmailMessageSchema.ToRecipients);
+            ps.add(EmailMessageSchema.Subject);
+            ps.add(EmailMessageSchema.Body);
             return ps;
         }
 
         private List<EmailMessage> convertResponseToEmailList(ServiceResponseCollection<GetItemResponse> bindedItems) {
             List<EmailMessage> messages = new ArrayList<EmailMessage>();
             for (GetItemResponse bindedItem : bindedItems) {
-                messages.add((EmailMessage) bindedItem.getItem());
+                EmailMessage message = (EmailMessage) bindedItem.getItem();
+                messages.add(message);
             }
             return messages;
         }

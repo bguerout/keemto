@@ -9,8 +9,7 @@ import org.junit.Test;
 import java.util.Date;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -33,11 +32,13 @@ public class ExchangeMailFinderTest {
     public void shouldConvertItemToMail() throws Exception {
 
         Date createdAt = new Date();
-        EmailMessage message = new TestingEmailMessage("id", "subject", "body", createdAt, "sender@xebia.fr");
+        TestingEmailMessage message = new TestingEmailMessage("id", "subject", "body", createdAt, "sender@xebia.fr");
+        message.addRecipients("to@xebia.fr");
+        message.addRecipients("to2@xebia.fr");
         ExchangeServiceFactory factory = mock(ExchangeServiceFactory.class);
         EmailExchangeService emailService = mock(EmailExchangeService.class);
         when(factory.createServiceWithTimeSelector(20L)).thenReturn(emailService);
-        when(emailService.nextElement()).thenReturn(Lists.newArrayList(message));
+        when(emailService.nextElement()).thenReturn(Lists.newArrayList((EmailMessage)message));
 
         ExchangeMailFinder finder = new ExchangeMailFinder(factory);
 
@@ -46,9 +47,10 @@ public class ExchangeMailFinderTest {
         assertThat(mails.size(), is(1));
         Mail mail = mails.get(0);
         assertThat(mail.getId(), equalTo("id"));
-        assertThat(mail.getSender(), equalTo("sender@xebia.fr"));
+        assertThat(mail.getFrom(), equalTo("sender@xebia.fr"));
         assertThat(mail.getSubject(), equalTo("subject"));
         assertThat(mail.getBody(), equalTo("body"));
+        assertThat(mail.getRecipients(), hasItems("to@xebia.fr", "to2@xebia.fr"));
         assertThat(mail.getTimestamp(), equalTo(createdAt.getTime()));
     }
 
