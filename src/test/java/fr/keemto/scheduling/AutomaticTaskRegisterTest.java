@@ -17,6 +17,7 @@
 package fr.keemto.scheduling;
 
 import com.google.common.collect.Lists;
+import fr.keemto.core.Task;
 import fr.keemto.core.User;
 import fr.keemto.core.UserRepository;
 import fr.keemto.core.fetching.FetchingTask;
@@ -42,11 +43,25 @@ public class AutomaticTaskRegisterTest {
         userRepository = mock(UserRepository.class);
         fetchingTaskFactory = mock(FetchingTaskFactory.class);
         registrar = mock(TaskRegistrar.class);
-        initializer = new AutomaticTaskRegister(userRepository, fetchingTaskFactory, registrar);
+
+        initializer = new AutomaticTaskRegister();
+        initializer.setUserRepository(userRepository);
+        initializer.setFetchingTaskFactory(fetchingTaskFactory);
+        initializer.setRegistrar(registrar);
     }
 
     @Test
     public void shouldRegisterTask() throws Exception {
+        Task task = mock(Task.class);
+        initializer.setTasks(Lists.newArrayList(task));
+
+        initializer.afterPropertiesSet();
+
+        verify(registrar).registerTask(task);
+    }
+
+    @Test
+    public void shouldRegisterFetchingTaskUsingFactory() throws Exception {
         User user = new User("bguerout");
 
         FetchingTask task = mock(FetchingTask.class);
@@ -61,7 +76,7 @@ public class AutomaticTaskRegisterTest {
     }
 
     @Test
-    public void shouldRegisterTaskForAllUsers() throws Exception {
+    public void shouldRegisterFetchingTaskForAllUsers() throws Exception {
 
         User bguerout = new User("bguerout");
         User stnevex = new User("stnevex");
@@ -76,7 +91,6 @@ public class AutomaticTaskRegisterTest {
         verify(userRepository).getAllUsers();
         verify(registrar).registerTask(bgueroutTask);
         verify(registrar).registerTask(stnevexTask);
-
     }
 
 

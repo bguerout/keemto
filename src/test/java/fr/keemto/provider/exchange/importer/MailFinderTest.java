@@ -13,14 +13,14 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 
-public class ExchangeMailFinderTest {
+public class MailFinderTest {
 
     @Test
     public void shouldBuildEmailService() throws Exception {
 
         ExchangeServiceFactory factory = mock(ExchangeServiceFactory.class);
         EmailExchangeService emailService = mock(EmailExchangeService.class);
-        ExchangeMailFinder finder = new ExchangeMailFinder(factory);
+        MailFinder finder = new MailFinder(factory);
         when(factory.createServiceWithTimeSelector(20L)).thenReturn(emailService);
 
         List<Mail> mails = finder.findEmails(20L);
@@ -40,7 +40,7 @@ public class ExchangeMailFinderTest {
         when(factory.createServiceWithTimeSelector(20L)).thenReturn(emailService);
         when(emailService.nextElement()).thenReturn(Lists.newArrayList((EmailMessage) message));
 
-        ExchangeMailFinder finder = new ExchangeMailFinder(factory);
+        MailFinder finder = new MailFinder(factory);
 
         List<Mail> mails = finder.findEmails(20L);
 
@@ -61,7 +61,7 @@ public class ExchangeMailFinderTest {
         EmailMessage message = new TestingEmailMessage("id", "subject", "body", createdAt, "sender@xebia.fr");
         EmailExchangeService emailService = mock(EmailExchangeService.class);
         ExchangeServiceFactory factory = mock(ExchangeServiceFactory.class);
-        ExchangeMailFinder finder = new ExchangeMailFinder(factory);
+        MailFinder finder = new MailFinder(factory);
         when(factory.createServiceWithTimeSelector(20L)).thenReturn(emailService);
         when(emailService.nextElement()).thenReturn(Lists.newArrayList(message, message));
 

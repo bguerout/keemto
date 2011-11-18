@@ -8,21 +8,25 @@ import java.util.List;
 
 public class MailImporterTask implements Task {
 
-    private final ExchangeMailFinder exchangeMailFinder;
+    private final MailFinder mailFinder;
     private final MailRepository mailRepository;
 
-    public MailImporterTask(ExchangeMailFinder exchangeMailFinder, MailRepository mailRepository) {
-        this.exchangeMailFinder = exchangeMailFinder;
+    public MailImporterTask(MailFinder mailFinder, MailRepository mailRepository) {
+        this.mailFinder = mailFinder;
         this.mailRepository = mailRepository;
     }
 
     public void importMailsNewerThan(long timestamp) {
-        List<Mail> mails = exchangeMailFinder.findEmails(timestamp);
+        List<Mail> mails = mailFinder.findEmails(timestamp);
         mailRepository.persist(mails);
     }
 
     @Override
     public void run() {
+        executeNextImportIncrement();
+    }
+
+    private void executeNextImportIncrement() {
         long mostRecent = mailRepository.getMostRecentMailTime();
         importMailsNewerThan(mostRecent);
     }

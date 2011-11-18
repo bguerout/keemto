@@ -15,13 +15,13 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-public class ExchangeMailFinder {
+public class MailFinder {
 
-    private static final Logger log = LoggerFactory.getLogger(ExchangeMailFinder.class);
+    private static final Logger log = LoggerFactory.getLogger(MailFinder.class);
 
     private ExchangeServiceFactory exchangeServiceFactory;
 
-    public ExchangeMailFinder(ExchangeServiceFactory exchangeServiceFactory) {
+    public MailFinder(ExchangeServiceFactory exchangeServiceFactory) {
         this.exchangeServiceFactory = exchangeServiceFactory;
     }
 

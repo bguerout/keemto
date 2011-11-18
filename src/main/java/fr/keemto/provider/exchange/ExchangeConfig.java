@@ -15,7 +15,7 @@
  */
 package fr.keemto.provider.exchange;
 
-import fr.keemto.provider.exchange.importer.ExchangeMailFinder;
+import fr.keemto.provider.exchange.importer.MailFinder;
 import fr.keemto.provider.exchange.importer.ExchangeServiceFactory;
 import fr.keemto.provider.exchange.importer.MailImporterTask;
 import microsoft.exchange.webservices.data.ExchangeCredentials;
@@ -36,20 +36,16 @@ public class ExchangeConfig {
     @Autowired
     protected JdbcTemplate jdbcTemplate;
 
-    @Value("${keemto.ews.xebia.uri}")
-    protected URI serviceUrl;
-
-    @Value("${keemto.ews.xebia.login}")
-    protected String login;
-
-    @Value("${keemto.ews.xebia.pwd}")
-    protected String pwd;
+    @Bean
+    public MailImporterTask mailImporterTask(MailFinder mailFinder, MailRepository mailRepository) {
+        MailImporterTask task = new MailImporterTask(mailFinder, mailRepository);
+        return task;
+    }
 
     @Bean
-    public MailImporterTask mailImporterTask() {
-        ExchangeServiceFactory factory = new ExchangeServiceFactory(xebiaExchangeService());
-        ExchangeMailFinder mailFinder = new ExchangeMailFinder(factory);
-        return new MailImporterTask(mailFinder, mailRepository());
+    public MailFinder mailFinder(ExchangeService exchangeService) {
+        ExchangeServiceFactory factory = new ExchangeServiceFactory(exchangeService);
+        return new MailFinder(factory);
     }
 
     @Bean
@@ -58,12 +54,14 @@ public class ExchangeConfig {
     }
 
     @Bean
-    public ExchangeService xebiaExchangeService() {
+    public ExchangeService xebiaExchangeService(@Value("${keemto.ews.xebia.uri}") URI serviceUrl,
+                                                @Value("${keemto.ews.xebia.login}") String login,
+                                                @Value("${keemto.ews.xebia.password}") String password) {
 
         ExchangeService exchangeService = new ExchangeService(ExchangeVersion.Exchange2010_SP1);
         exchangeService.setUrl(serviceUrl);
-        ExchangeCredentials credentials = new WebCredentials(login, pwd);
+        ExchangeCredentials credentials = new WebCredentials(login, password);
         exchangeService.setCredentials(credentials);
-        return new ExchangeService();
+        return exchangeService;
     }
 }

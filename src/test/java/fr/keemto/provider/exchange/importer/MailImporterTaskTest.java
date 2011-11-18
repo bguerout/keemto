@@ -11,12 +11,12 @@ import static org.mockito.Mockito.*;
 public class MailImporterTaskTest {
 
     private MailImporterTask task;
-    private ExchangeMailFinder finder;
+    private MailFinder finder;
     private JdbcMailRepository mailRepository;
 
     @Before
     public void prepare() throws Exception {
-        finder = mock(ExchangeMailFinder.class);
+        finder = mock(MailFinder.class);
         mailRepository = mock(JdbcMailRepository.class);
         task = new MailImporterTask(finder, mailRepository);
     }

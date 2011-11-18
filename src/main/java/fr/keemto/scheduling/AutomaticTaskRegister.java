@@ -16,6 +16,7 @@
 
 package fr.keemto.scheduling;
 
+import fr.keemto.core.Task;
 import fr.keemto.core.User;
 import fr.keemto.core.UserRepository;
 import fr.keemto.core.fetching.FetchingTask;
@@ -29,34 +30,47 @@ import java.util.List;
 @Component
 public class AutomaticTaskRegister implements InitializingBean {
 
-    private final UserRepository userRepository;
-    private final FetchingTaskFactory fetchingTaskFactory;
-    private final TaskRegistrar registrar;
-
-    @Autowired
-    public AutomaticTaskRegister(UserRepository userRepository, FetchingTaskFactory fetchingTaskFactory, TaskRegistrar registrar) {
-        this.userRepository = userRepository;
-        this.fetchingTaskFactory = fetchingTaskFactory;
-        this.registrar = registrar;
-    }
+    private UserRepository userRepository;
+    private FetchingTaskFactory fetchingTaskFactory;
+    private TaskRegistrar registrar;
+    private List<Task> tasks;
 
     @Override
     public void afterPropertiesSet() throws Exception {
         registerFetchingTasksForAllUsers();
+        registerTasks(tasks);
     }
 
     public void registerFetchingTasksForAllUsers() {
         for (User user : userRepository.getAllUsers()) {
-            registerTasksForUser(user);
+            List<FetchingTask> tasks = fetchingTaskFactory.createTasks(user);
+            registerTasks(tasks);
         }
     }
 
-    private void registerTasksForUser(User user) {
-        List<FetchingTask> tasks = fetchingTaskFactory.createTasks(user);
-        for (FetchingTask task : tasks) {
+    private void registerTasks(List<? extends Task> tasks) {
+        for (Task task : tasks) {
             registrar.registerTask(task);
         }
     }
 
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
+    @Autowired
+    public void setFetchingTaskFactory(FetchingTaskFactory fetchingTaskFactory) {
+        this.fetchingTaskFactory = fetchingTaskFactory;
+    }
+
+    @Autowired
+    public void setRegistrar(TaskRegistrar registrar) {
+        this.registrar = registrar;
+    }
+
+    @Autowired
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
 }

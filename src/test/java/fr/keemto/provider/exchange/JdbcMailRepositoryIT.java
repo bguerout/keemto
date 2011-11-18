@@ -1,12 +1,13 @@
 package fr.keemto.provider.exchange;
 
 import com.google.common.collect.Lists;
-import org.junit.Before;
+import fr.keemto.config.KeemtoWithSchedulingConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.util.List;
 
@@ -16,15 +17,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:/META-INF/spring/core-config.xml"}, classes = ExchangeConfig.class)
+@ContextConfiguration(classes = {KeemtoWithSchedulingConfig.class, ExchangeConfig.class}, loader = AnnotationConfigContextLoader.class)
 public class JdbcMailRepositoryIT {
 
     @Autowired
     private MailRepository mailRepository;
-
-    @Before
-    public void prepare() throws Exception {
-    }
 
     @Test
     public void shouldFindMailsBySenderAddress() throws Exception {
