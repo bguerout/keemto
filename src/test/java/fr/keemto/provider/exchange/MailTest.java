@@ -13,9 +13,9 @@ public class MailTest {
 
     @Test
     public void shouldExposeRecipientsAsACommaSeparatedString() throws Exception {
-        List<String> recipients = Lists.newArrayList("1@domain.fr","2@domain.fr");
+        List<String> recipients = Lists.newArrayList("1@domain.fr", "2@domain.fr");
         Mail mail = new Mail("id", "user@gmail.com", "subject", "body", System.currentTimeMillis(), recipients);
-        
+
         String recipientsAsString = mail.getRecipientsAsString();
 
         assertThat(recipientsAsString, equalTo("1@domain.fr,2@domain.fr"));

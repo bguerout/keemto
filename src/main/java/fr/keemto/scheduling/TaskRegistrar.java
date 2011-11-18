@@ -16,8 +16,7 @@
 
 package fr.keemto.scheduling;
 
-import fr.keemto.core.AccountKey;
-import fr.keemto.core.fetching.FetchingTask;
+import fr.keemto.core.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,43 +41,37 @@ public class TaskRegistrar {
         this.scheduler = scheduler;
     }
 
-    public void registerTasks(List<FetchingTask> tasks) {
-        for (FetchingTask task : tasks) {
-            registerTask(task);
-        }
-    }
-
-    public void registerTask(FetchingTask task) {
+    public void registerTask(Task task) {
         ScheduledFuture<?> future = scheduler.scheduleWithFixedDelay(task, task.getDelay());
-        ScheduledTask scheduledTask = new ScheduledTask(future, task.getFetchedAccountKey());
+        ScheduledTask scheduledTask = new ScheduledTask(task.getTaskId(), future);
         scheduledTasks.add(scheduledTask);
         log.info("A new fetching task has been registered: {}. This task is going to run every {}ms", task, task.getDelay());
     }
 
-    public void findAndCancelTask(AccountKey key) {
-        ScheduledTask task = findTask(key);
+    public void cancelTask(Object taskId) {
+        ScheduledTask task = findTask(taskId);
         task.cancel();
         scheduledTasks.remove(task);
-        log.info("Task for account {} has been cancelled and removed from registry", key);
+        log.info("Task {} has been cancelled and removed from registry", taskId);
     }
 
-    private ScheduledTask findTask(AccountKey key) {
+    private ScheduledTask findTask(Object taskId) {
         for (ScheduledTask scheduledTask : scheduledTasks) {
-            if (scheduledTask.key.equals(key)) {
+            if (scheduledTask.id.equals(taskId)) {
                 return scheduledTask;
             }
         }
-        throw new IllegalArgumentException("No task seems to be registered for account:" + key);
+        throw new IllegalArgumentException("No task seems to be registered with id:" + taskId);
     }
 
     private static class ScheduledTask {
         private static final boolean INTERRUPT_IF_RUNNING = true;
+        private final Object id;
         private final ScheduledFuture<?> future;
-        private final AccountKey key;
 
-        private ScheduledTask(ScheduledFuture<?> future, AccountKey key) {
+        private ScheduledTask(Object id, ScheduledFuture<?> future) {
+            this.id = id;
             this.future = future;
-            this.key = key;
         }
 
         public void cancel() {

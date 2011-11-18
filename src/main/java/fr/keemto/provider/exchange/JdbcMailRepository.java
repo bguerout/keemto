@@ -6,14 +6,11 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Repository;
 
-import javax.inject.Inject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-@Repository
 public class JdbcMailRepository implements MailRepository {
 
     private static final Logger log = LoggerFactory.getLogger(JdbcMailRepository.class);
@@ -24,7 +21,6 @@ public class JdbcMailRepository implements MailRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    @Inject
     public JdbcMailRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -38,6 +34,7 @@ public class JdbcMailRepository implements MailRepository {
 
     private void persist(Mail mail) {
         String insertEvent = "insert into mail (id,sender,subject,body,ts,recipients) values(?,?,?,?,?,?)";
+        log.debug("Persisting mail {} into database", mail);
         try {
             jdbcTemplate.update(insertEvent,
                     new Object[]{mail.getId(), mail.getFrom(), mail.getSubject(), mail.getBody(), mail.getTimestamp(), mail.getRecipientsAsString()});

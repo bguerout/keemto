@@ -49,31 +49,33 @@ public class AutomaticTaskRegisterTest {
     public void shouldRegisterTask() throws Exception {
         User user = new User("bguerout");
 
-        List<FetchingTask> tasks = Lists.newArrayList(mock(FetchingTask.class));
+        FetchingTask task = mock(FetchingTask.class);
+        List<FetchingTask> tasks = Lists.newArrayList(task);
         when(fetchingTaskFactory.createTasks(user)).thenReturn(tasks);
         when(userRepository.getAllUsers()).thenReturn(Lists.newArrayList(user));
 
-        initializer.registerAllTasks();
+        initializer.registerFetchingTasksForAllUsers();
 
-        verify(registrar).registerTasks(tasks);
+        verify(registrar, times(1)).registerTask(task);
 
     }
 
     @Test
     public void shouldRegisterTaskForAllUsers() throws Exception {
+
         User bguerout = new User("bguerout");
         User stnevex = new User("stnevex");
-        List<FetchingTask> bgueroutTasks = Lists.newArrayList(mock(FetchingTask.class));
-        List<FetchingTask> stnevexTasks = Lists.newArrayList(mock(FetchingTask.class));
+        FetchingTask bgueroutTask = mock(FetchingTask.class);
+        FetchingTask stnevexTask = mock(FetchingTask.class);
         when(userRepository.getAllUsers()).thenReturn(Lists.newArrayList(bguerout, stnevex));
-        when(fetchingTaskFactory.createTasks(bguerout)).thenReturn(bgueroutTasks);
-        when(fetchingTaskFactory.createTasks(stnevex)).thenReturn(stnevexTasks);
+        when(fetchingTaskFactory.createTasks(bguerout)).thenReturn(Lists.newArrayList(bgueroutTask));
+        when(fetchingTaskFactory.createTasks(stnevex)).thenReturn(Lists.newArrayList(stnevexTask));
 
-        initializer.registerAllTasks();
+        initializer.registerFetchingTasksForAllUsers();
 
         verify(userRepository).getAllUsers();
-        verify(registrar).registerTasks(bgueroutTasks);
-        verify(registrar).registerTasks(stnevexTasks);
+        verify(registrar).registerTask(bgueroutTask);
+        verify(registrar).registerTask(stnevexTask);
 
     }
 

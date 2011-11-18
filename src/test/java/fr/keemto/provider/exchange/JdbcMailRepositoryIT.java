@@ -16,7 +16,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:/META-INF/spring/core-config.xml"})
+@ContextConfiguration(locations = {"classpath*:/META-INF/spring/core-config.xml"}, classes = ExchangeConfig.class)
 public class JdbcMailRepositoryIT {
 
     @Autowired

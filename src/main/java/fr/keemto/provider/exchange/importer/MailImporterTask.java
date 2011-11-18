@@ -1,16 +1,17 @@
 package fr.keemto.provider.exchange.importer;
 
-import fr.keemto.provider.exchange.JdbcMailRepository;
+import fr.keemto.core.Task;
 import fr.keemto.provider.exchange.Mail;
+import fr.keemto.provider.exchange.MailRepository;
 
 import java.util.List;
 
-public class MailImporterTask implements Runnable {
+public class MailImporterTask implements Task {
 
     private final ExchangeMailFinder exchangeMailFinder;
-    private final JdbcMailRepository mailRepository;
+    private final MailRepository mailRepository;
 
-    public MailImporterTask(ExchangeMailFinder exchangeMailFinder, JdbcMailRepository mailRepository) {
+    public MailImporterTask(ExchangeMailFinder exchangeMailFinder, MailRepository mailRepository) {
         this.exchangeMailFinder = exchangeMailFinder;
         this.mailRepository = mailRepository;
     }
@@ -25,4 +26,16 @@ public class MailImporterTask implements Runnable {
         long mostRecent = mailRepository.getMostRecentMailTime();
         importMailsNewerThan(mostRecent);
     }
+
+    @Override
+    public long getDelay() {
+        return 60;
+    }
+
+    @Override
+    public Object getTaskId() {
+        return "exchange";
+    }
+
+
 }

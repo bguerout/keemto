@@ -1,12 +1,8 @@
 package fr.keemto.core.fetching;
 
-import fr.keemto.core.AccountKey;
+import fr.keemto.core.Task;
 
-public interface FetchingTask extends Runnable {
+public interface FetchingTask extends Task {
 
-    void run() throws FetchingException;
 
-    long getDelay();
-
-    AccountKey getFetchedAccountKey();
 }

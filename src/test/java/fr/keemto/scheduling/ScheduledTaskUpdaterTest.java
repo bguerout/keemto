@@ -20,7 +20,7 @@ public class ScheduledTaskUpdaterTest {
     public void setUp() throws Exception {
         registrar = mock(TaskRegistrar.class);
         taskFactory = mock(FetchingTaskFactory.class);
-        updater = new ScheduledTaskUpdater(registrar, taskFactory);
+        updater = new FetchingTaskUpdater(registrar, taskFactory);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class ScheduledTaskUpdaterTest {
 
         updater.accountDeleted(key);
 
-        verify(registrar).findAndCancelTask(key);
+        verify(registrar).cancelTask(key);
 
     }
 }

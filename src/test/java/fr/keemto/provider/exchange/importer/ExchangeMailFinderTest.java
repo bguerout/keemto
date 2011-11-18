@@ -38,7 +38,7 @@ public class ExchangeMailFinderTest {
         ExchangeServiceFactory factory = mock(ExchangeServiceFactory.class);
         EmailExchangeService emailService = mock(EmailExchangeService.class);
         when(factory.createServiceWithTimeSelector(20L)).thenReturn(emailService);
-        when(emailService.nextElement()).thenReturn(Lists.newArrayList((EmailMessage)message));
+        when(emailService.nextElement()).thenReturn(Lists.newArrayList((EmailMessage) message));
 
         ExchangeMailFinder finder = new ExchangeMailFinder(factory);
 

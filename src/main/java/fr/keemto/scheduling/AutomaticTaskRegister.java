@@ -42,14 +42,21 @@ public class AutomaticTaskRegister implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        registerAllTasks();
+        registerFetchingTasksForAllUsers();
     }
 
-    protected void registerAllTasks() {
+    public void registerFetchingTasksForAllUsers() {
         for (User user : userRepository.getAllUsers()) {
-            List<FetchingTask> tasks = fetchingTaskFactory.createTasks(user);
-            registrar.registerTasks(tasks);
+            registerTasksForUser(user);
         }
     }
+
+    private void registerTasksForUser(User user) {
+        List<FetchingTask> tasks = fetchingTaskFactory.createTasks(user);
+        for (FetchingTask task : tasks) {
+            registrar.registerTask(task);
+        }
+    }
+
 
 }

@@ -81,7 +81,7 @@ public class IncrementalFetchingTask implements FetchingTask {
     }
 
     @Override
-    public AccountKey getFetchedAccountKey() {
+    public AccountKey getTaskId() {
         return account.getKey();
     }
 

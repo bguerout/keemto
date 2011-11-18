@@ -16,7 +16,6 @@
 
 package fr.keemto.scheduling;
 
-import com.google.common.collect.Lists;
 import fr.keemto.core.AccountKey;
 import fr.keemto.core.User;
 import fr.keemto.core.fetching.FetchingTask;
@@ -49,20 +48,10 @@ public class TaskRegistrarTest {
         verify(scheduler).scheduleWithFixedDelay(task, task.getDelay());
     }
 
-    @Test
-    public void shouldRegisterAllTasks() throws Exception {
-        FetchingTask task = mock(FetchingTask.class);
-        FetchingTask anotherTask = mock(FetchingTask.class);
-
-        registrar.registerTasks(Lists.newArrayList(task, anotherTask));
-
-        verify(scheduler, timeout(2)).scheduleWithFixedDelay(task, task.getDelay());
-    }
-
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailWhenAccountKeyCannotBeCancelled() throws Exception {
 
-        registrar.findAndCancelTask(new AccountKey("provider", "userId", new User("bguerout")));
+        registrar.cancelTask(new AccountKey("provider", "userId", new User("bguerout")));
     }
 
     @Test
@@ -70,11 +59,11 @@ public class TaskRegistrarTest {
         AccountKey key = new AccountKey("provider", "userId", new User("bguerout"));
         FetchingTask task = mock(FetchingTask.class);
         ScheduledFuture future = mock(ScheduledFuture.class);
-        when(task.getFetchedAccountKey()).thenReturn(key);
+        when(task.getTaskId()).thenReturn(key);
         when(scheduler.scheduleWithFixedDelay(task, task.getDelay())).thenReturn(future);
         registrar.registerTask(task);
 
-        registrar.findAndCancelTask(key);
+        registrar.cancelTask(key);
 
         verify(future).cancel(true);
     }

@@ -48,8 +48,8 @@ public class ExchangeMailFinder {
 
     private List<String> asRecipientsList(Iterator<EmailAddress> emailAddresses) {
         List<String> recipients = new ArrayList<String>();
-        while(emailAddresses.hasNext()) {
-            EmailAddress address =  emailAddresses.next();
+        while (emailAddresses.hasNext()) {
+            EmailAddress address = emailAddresses.next();
             recipients.add(address.getAddress());
         }
         return recipients;
@@ -62,7 +62,7 @@ public class ExchangeMailFinder {
             String sender = message.getSender().getAddress();
             Date dateTimeCreated = message.getDateTimeCreated();
             List<String> recipients = asRecipientsList(message.getToRecipients().iterator());
-            return new Mail(uniqueId, sender, message.getSubject(), body.toString(), dateTimeCreated.getTime(),recipients);
+            return new Mail(uniqueId, sender, message.getSubject(), body.toString(), dateTimeCreated.getTime(), recipients);
         } catch (ServiceLocalException e) {
             throw new ExchangeServiceException("Unable to create mail from item:" + message, e);
         }
