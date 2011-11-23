@@ -50,9 +50,9 @@ public class ExchangeConfig {
     }
 
     @Bean
-    public MailFinder mailFinder(@Value("${keemto.ews.xebia.uri}") URI serviceUrl,
-                                 @Value("#{systemProperties['keemto.ews.xebia.login']?:null}") String login,
-                                 @Value("#{systemProperties['keemto.ews.xebia.password']?:null}") String password) {
+    public MailFinder mailFinder(@Value("${provider.ews.xebia.uri}") URI serviceUrl,
+                                 @Value("#{systemProperties['provider.ews.xebia.login']?:null}") String login,
+                                 @Value("#{systemProperties['provider.ews.xebia.password']?:null}") String password) {
 
         ExchangeServiceWrapper serviceWrapper = null;
         if (StringUtils.isEmpty(login)) {
@@ -79,7 +79,7 @@ public class ExchangeConfig {
 
     @Bean
     public ExchangeAccountFactory mailAccountFactory(MailRepository mailRepository, UnifiedAccountFactory unifiedAccountFactory,
-                                                     @Value("provider.ews.allowed.recipients") String allowedRecipients) {
+                                                     @Value("provider.ews.xebia.allowed.recipients") String allowedRecipients) {
 
         log.info("Registering mail account factory into unified account factory with allowed recipients {}", allowedRecipients);
         String[] recipients = StringUtils.split(allowedRecipients, ",");

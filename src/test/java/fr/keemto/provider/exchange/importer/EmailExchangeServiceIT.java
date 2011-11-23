@@ -20,9 +20,9 @@ public class EmailExchangeServiceIT {
     @Before
     public void setUp() throws Exception {
 
-        String login = System.getProperty("keemto.xebia.mail.login");
-        String pwd = System.getProperty("keemto.xebia.mail.pwd");
+        String login = System.getProperty("provider.ews.xebia.login");
         assumeThat(login, notNullValue());
+        String pwd = System.getProperty("provider.ews.xebia.password");
 
         ExchangeService exchangeService = new ExchangeService(ExchangeVersion.Exchange2010_SP1);
         exchangeService.setUrl(new URI("https://owa.exchange-login.net/EWS/Exchange.asmx"));
