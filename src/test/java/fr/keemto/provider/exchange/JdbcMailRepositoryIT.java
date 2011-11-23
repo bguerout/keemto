@@ -47,6 +47,7 @@ public class JdbcMailRepositoryIT {
         assertThat(email.getTimestamp(), equalTo(1L));
     }
 
+
     @Test
     public void shouldFindMailsNewerThanATime() throws Exception {
 

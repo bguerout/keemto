@@ -34,6 +34,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.net.URI;
+import java.util.Arrays;
 
 @Configuration
 public class ExchangeConfig {
@@ -45,8 +46,7 @@ public class ExchangeConfig {
 
     @Bean
     public MailImporterTask mailImporterTask(MailFinder mailFinder, MailRepository mailRepository) {
-        MailImporterTask task = new MailImporterTask(mailFinder, mailRepository);
-        return task;
+        return new MailImporterTask(mailFinder, mailRepository);
     }
 
     @Bean
@@ -78,9 +78,13 @@ public class ExchangeConfig {
     }
 
     @Bean
-    public ExchangeAccountFactory mailAccountFactory(MailRepository mailRepository, UnifiedAccountFactory unifiedAccountFactory) {
-        ExchangeAccountFactory exchangeAccountFactory = new ExchangeAccountFactory(mailRepository);
-        log.info("Registering mail account factory into unified account factory.");
+    public ExchangeAccountFactory mailAccountFactory(MailRepository mailRepository, UnifiedAccountFactory unifiedAccountFactory,
+                                                     @Value("provider.ews.allowed.recipients") String allowedRecipients) {
+
+        log.info("Registering mail account factory into unified account factory with allowed recipients {}", allowedRecipients);
+        String[] recipients = StringUtils.split(allowedRecipients, ",");
+        ExchangeAccountFactory exchangeAccountFactory = new ExchangeAccountFactory(mailRepository, Arrays.asList(recipients));
+        log.warn("Should add factory after application context has been created.");//TODO
         unifiedAccountFactory.addFactory(exchangeAccountFactory);
         return exchangeAccountFactory;
 

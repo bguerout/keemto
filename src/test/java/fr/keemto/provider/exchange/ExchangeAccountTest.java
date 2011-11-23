@@ -19,12 +19,13 @@ public class ExchangeAccountTest {
 
     private MailRepository mailRepository;
     private ExchangeAccount account;
+    private AccountKey key;
 
     @Before
     public void setUp() throws Exception {
 
         User user = new User("stnevex", "Ben", "G", "stnevex@gmail.com");
-        AccountKey key = new AccountKey("exchange", user.getEmail(), user);
+        key = new AccountKey("exchange", user.getEmail(), user);
         mailRepository = mock(MailRepository.class);
         account = new ExchangeAccount(key, mailRepository);
     }
@@ -52,8 +53,23 @@ public class ExchangeAccountTest {
         Event event = events.get(0);
         assertThat(event.getTimestamp(), equalTo(createdAt));
         assertThat(event.getMessage(), equalTo("body"));
-        assertThat(event.getAccount(), equalTo((Account)account));
+        assertThat(event.getAccount(), equalTo((Account) account));
 
+    }
+
+    @Test
+    public void shouldIgnoredNonAllowedRecipients() throws Exception {
+
+        long createdAt = System.currentTimeMillis();
+        Email email = new Email("id", "user@gmail.com", "subject", "body", createdAt, Lists.newArrayList("allowed"));
+        Email rejectedEmail = new Email("id", "user@gmail.com", "subject", "body", createdAt, Lists.newArrayList("denied"));
+        when(mailRepository.getMails("stnevex@gmail.com", 22L)).thenReturn(Lists.newArrayList(email, rejectedEmail));
+
+        ExchangeAccount accountWithRecipients = new ExchangeAccount(key, Lists.newArrayList("allowed"), mailRepository);
+
+        List<Event> events = accountWithRecipients.fetch(22L);
+
+        assertThat(events.size(), equalTo(1));
     }
 
 

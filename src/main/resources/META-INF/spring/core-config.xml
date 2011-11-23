@@ -25,84 +25,84 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
 
-  <context:property-placeholder location="classpath*:META-INF/spring/*.properties"/>
+    <context:property-placeholder location="classpath*:META-INF/spring/*.properties"/>
 
-  <tx:annotation-driven mode="aspectj" transaction-manager="transactionManager"/>
+    <tx:annotation-driven mode="aspectj" transaction-manager="transactionManager"/>
 
-  <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-    <property name="dataSource" ref="dataSource"/>
-  </bean>
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
 
-  <bean id="textEncryptor" class="org.springframework.security.crypto.encrypt.Encryptors" factory-method="noOpText"/>
+    <bean id="textEncryptor" class="org.springframework.security.crypto.encrypt.Encryptors" factory-method="noOpText"/>
 
-  <jdbc:embedded-database id="dataSource" type="H2"/>
+    <jdbc:embedded-database id="dataSource" type="H2"/>
 
-  <jdbc:initialize-database data-source="dataSource" ignore-failures="DROPS">
-    <!-- H2 url jdbc:h2:mem:dataSource;DB_CLOSE_DELAY=-1 -->
-    <jdbc:script location="classpath:/META-INF/db/ddl.sql"/>
-    <jdbc:script location="classpath:/org/springframework/social/connect/jdbc/JdbcUsersConnectionRepository.sql"/>
-    <jdbc:script location="classpath:/META-INF/db/data.sql"/>
-  </jdbc:initialize-database>
+    <jdbc:initialize-database data-source="dataSource" ignore-failures="DROPS">
+        <!-- H2 url jdbc:h2:mem:dataSource;DB_CLOSE_DELAY=-1 -->
+        <jdbc:script location="classpath:/META-INF/db/ddl.sql"/>
+        <jdbc:script location="classpath:/org/springframework/social/connect/jdbc/JdbcUsersConnectionRepository.sql"/>
+        <jdbc:script location="classpath:/META-INF/db/data.sql"/>
+    </jdbc:initialize-database>
 
-  <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-    <constructor-arg ref="dataSource"/>
-  </bean>
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <constructor-arg ref="dataSource"/>
+    </bean>
 
-  <bean id="eventRepository" class="fr.keemto.core.JdbcEventRepository">
-    <constructor-arg ref="jdbcTemplate"/>
-    <constructor-arg ref="accountFactory"/>
-  </bean>
+    <bean id="eventRepository" class="fr.keemto.core.JdbcEventRepository">
+        <constructor-arg ref="jdbcTemplate"/>
+        <constructor-arg ref="accountFactory"/>
+    </bean>
 
-  <bean id="userRepository" class="fr.keemto.core.JdbcUserRepository">
-    <constructor-arg ref="jdbcTemplate"/>
-  </bean>
+    <bean id="userRepository" class="fr.keemto.core.JdbcUserRepository">
+        <constructor-arg ref="jdbcTemplate"/>
+    </bean>
 
-  <bean id="usersConnectionRepository" class="org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository">
-    <constructor-arg ref="dataSource"/>
-    <constructor-arg ref="connectionFactoryLocator"/>
-    <constructor-arg ref="textEncryptor"/>
-  </bean>
+    <bean id="usersConnectionRepository" class="org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository">
+        <constructor-arg ref="dataSource"/>
+        <constructor-arg ref="connectionFactoryLocator"/>
+        <constructor-arg ref="textEncryptor"/>
+    </bean>
 
-  <bean id="connectionFactoryLocator" class="org.springframework.social.connect.support.ConnectionFactoryRegistry">
-    <property name="connectionFactories">
-      <list>
-        <bean class="org.springframework.social.twitter.connect.TwitterConnectionFactory">
-          <constructor-arg value="${twitter.consumerKey}"/>
-          <constructor-arg value="${twitter.consumerSecret}"/>
-        </bean>
+    <bean id="connectionFactoryLocator" class="org.springframework.social.connect.support.ConnectionFactoryRegistry">
+        <property name="connectionFactories">
+            <list>
+                <bean class="org.springframework.social.twitter.connect.TwitterConnectionFactory">
+                    <constructor-arg value="${twitter.consumerKey}"/>
+                    <constructor-arg value="${twitter.consumerSecret}"/>
+                </bean>
 
-        <bean class="org.springframework.social.yammer.api.connect.YammerConnectionFactory">
-          <constructor-arg value="${yammer.consumerKey}"/>
-          <constructor-arg value="${yammer.consumerSecret}"/>
-        </bean>
-      </list>
-    </property>
-  </bean>
+                <bean class="org.springframework.social.yammer.api.connect.YammerConnectionFactory">
+                    <constructor-arg value="${yammer.consumerKey}"/>
+                    <constructor-arg value="${yammer.consumerSecret}"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
 
-  <bean id="fetcherLocator" class="fr.keemto.core.fetching.DefaultFetcherLocator">
-    <constructor-arg>
-      <list>
-        <bean class="fr.keemto.provider.twitter.TwitterFetcher"/>
-        <bean class="fr.keemto.provider.yammer.YammerFetcher"/>
-      </list>
-    </constructor-arg>
-  </bean>
+    <bean id="fetcherLocator" class="fr.keemto.core.fetching.DefaultFetcherLocator">
+        <constructor-arg>
+            <list>
+                <bean class="fr.keemto.provider.twitter.TwitterFetcher"/>
+                <bean class="fr.keemto.provider.yammer.YammerFetcher"/>
+            </list>
+        </constructor-arg>
+    </bean>
 
-  <bean id="accountFactory" class="fr.keemto.core.UnifiedAccountFactory">
-    <constructor-arg>
-      <list>
-        <bean class="fr.keemto.provider.social.SocialAccountFactory">
-          <constructor-arg ref="usersConnectionRepository"/>
-          <constructor-arg ref="fetcherLocator"/>
-        </bean>
-      </list>
-    </constructor-arg>
-  </bean>
+    <bean id="accountFactory" class="fr.keemto.core.UnifiedAccountFactory">
+        <constructor-arg>
+            <list>
+                <bean class="fr.keemto.provider.social.SocialAccountFactory">
+                    <constructor-arg ref="usersConnectionRepository"/>
+                    <constructor-arg ref="fetcherLocator"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
 
-  <bean id="fetchingTaskFactory" class="fr.keemto.core.fetching.FetchingTaskFactory">
-    <constructor-arg ref="accountFactory"/>
-    <constructor-arg ref="eventRepository"/>
-  </bean>
+    <bean id="fetchingTaskFactory" class="fr.keemto.core.fetching.FetchingTaskFactory">
+        <constructor-arg ref="accountFactory"/>
+        <constructor-arg ref="eventRepository"/>
+    </bean>
 
 
 </beans>

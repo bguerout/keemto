@@ -13,16 +13,18 @@ public class ExchangeAccountFactory implements AccountFactory {
     private static final String PROVIDER_ID = "exchange";
 
     private final MailRepository mailRepository;
+    private final List<String> allowedRecipients;
 
-    public ExchangeAccountFactory(MailRepository mailRepository) {
+    public ExchangeAccountFactory(MailRepository mailRepository, List<String> allowedRecipients) {
         this.mailRepository = mailRepository;
+        this.allowedRecipients = allowedRecipients;
     }
 
     @Override
     public List<Account> getAccounts(User user) {
         String email = user.getEmail();
         AccountKey key = new AccountKey(PROVIDER_ID, email, user);
-        Account account = new ExchangeAccount(key, mailRepository);
+        Account account = new ExchangeAccount(key, allowedRecipients, mailRepository);
         return Lists.newArrayList(account);
     }
 
@@ -33,7 +35,7 @@ public class ExchangeAccountFactory implements AccountFactory {
 
     @Override
     public boolean supports(String providerId) {
-        if(providerId != null){
+        if (providerId != null) {
             return providerId.startsWith(PROVIDER_ID);
         }
         return false;

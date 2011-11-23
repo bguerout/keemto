@@ -22,6 +22,7 @@ public class JdbcMailRepository implements MailRepository {
     private final JdbcTemplate jdbcTemplate;
 
     public JdbcMailRepository(JdbcTemplate jdbcTemplate) {
+
         this.jdbcTemplate = jdbcTemplate;
     }
 

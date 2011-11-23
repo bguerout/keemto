@@ -15,11 +15,14 @@ import static org.mockito.Mockito.mock;
 public class ExchangeAccountFactoryTest {
 
     private ExchangeAccountFactory factory;
+    private List recipients;
 
     @Before
     public void setUp() throws Exception {
         MailRepository mailRepository = mock(MailRepository.class);
-        factory = new ExchangeAccountFactory(mailRepository);
+
+        recipients = mock(List.class);
+        factory = new ExchangeAccountFactory(mailRepository, recipients);
     }
 
     @Test
@@ -35,6 +38,7 @@ public class ExchangeAccountFactoryTest {
         assertThat(key.getProviderUserId(), equalTo("stnevex@gmail.com"));
         assertThat(key.getUser(), equalTo(user));
     }
+
 
     @Test
     public void shouldCreateAccountFromAccountKey() throws Exception {

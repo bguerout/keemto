@@ -3,6 +3,7 @@ package fr.keemto.provider.exchange;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Email {
@@ -48,7 +49,7 @@ public class Email {
     }
 
     public List<String> getRecipients() {
-        return recipients;
+        return Collections.unmodifiableList(recipients);
     }
 
     public String getRecipientsAsString() {
