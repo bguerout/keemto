@@ -31,7 +31,7 @@ import static org.junit.Assert.assertThat;
 public class LoginWebIT {
 
     //TODO externalize me
-    public static final String URL = "http://127.0.0.1:8080/keemto/api/login.json";
+    public static final String URL = "http://127.0.0.1:8080/keemto/api/login";
     public static final String USERNAME_PARAM = "j_username";
     public static final String PASSWORD_PARAM = "j_password";
     public static final String VALID_USERNAME = "stnevex";

@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -14,7 +15,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assume.assumeThat;
 
 public class EmailExchangeServiceIT {
-    private EmailExchangeService service;
+    private Enumeration<List<EmailMessage>> emails;
 
     @Before
     public void setUp() throws Exception {
@@ -28,13 +29,13 @@ public class EmailExchangeServiceIT {
         ExchangeCredentials credentials = new WebCredentials(login, pwd);
         exchangeService.setCredentials(credentials);
 
-        ExchangeServiceFactory factory = new ExchangeServiceFactory(exchangeService);
-        service = factory.createServiceWithTimeSelector(0L);
+        ExchangeServiceWrapper serviceWrapper = new ExchangeServiceWrapper(exchangeService);
+        emails = serviceWrapper.getEmailsNewerThan(0L);
     }
 
     @Test
     public void shouldReturnMailsSinceEpoch() throws Exception {
-        List<EmailMessage> messages = service.nextElement();
+        List<EmailMessage> messages = emails.nextElement();
 
         assertThat(messages.isEmpty(), is(false));
         assertThat(messages.size(), equalTo(100));
@@ -45,7 +46,7 @@ public class EmailExchangeServiceIT {
         assertThat(emailMessage.getSubject(), notNullValue());
         assertThat(emailMessage.getDateTimeCreated(), not(equalTo(new Date())));
 
-        assertThat(service.hasMoreElements(), is(true));
+        assertThat(emails.hasMoreElements(), is(true));
     }
 
 }

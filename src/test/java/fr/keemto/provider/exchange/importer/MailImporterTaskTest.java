@@ -2,7 +2,7 @@ package fr.keemto.provider.exchange.importer;
 
 import com.google.common.collect.Lists;
 import fr.keemto.provider.exchange.JdbcMailRepository;
-import fr.keemto.provider.exchange.Mail;
+import fr.keemto.provider.exchange.Email;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,24 +32,24 @@ public class MailImporterTaskTest {
     @Test
     public void shouldPersistFetchedMails() throws Exception {
 
-        Mail mail = mock(Mail.class);
-        when(finder.findEmails(20L)).thenReturn(Lists.newArrayList(mail));
+        Email email = mock(Email.class);
+        when(finder.findEmails(20L)).thenReturn(Lists.newArrayList(email));
 
         task.importMailsNewerThan(20L);
 
-        verify(mailRepository).persist(Lists.newArrayList(mail));
+        verify(mailRepository).persist(Lists.newArrayList(email));
     }
 
     @Test
     public void onRunShouldFetchAndPersistMostRecentMails() throws Exception {
 
-        Mail mail = mock(Mail.class);
-        when(finder.findEmails(999)).thenReturn(Lists.newArrayList(mail));
-        when(mailRepository.getMostRecentMailTime()).thenReturn(999L);
+        Email email = mock(Email.class);
+        when(finder.findEmails(999)).thenReturn(Lists.newArrayList(email));
+        when(mailRepository.getMostRecentMailCreationTime()).thenReturn(999L);
 
         task.run();
 
         verify(finder).findEmails(999);
-        verify(mailRepository).persist(Lists.newArrayList(mail));
+        verify(mailRepository).persist(Lists.newArrayList(email));
     }
 }

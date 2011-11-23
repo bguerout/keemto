@@ -2,7 +2,7 @@ package fr.keemto.provider.exchange.importer;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import fr.keemto.provider.exchange.Mail;
+import fr.keemto.provider.exchange.Email;
 import microsoft.exchange.webservices.data.EmailAddress;
 import microsoft.exchange.webservices.data.EmailMessage;
 import microsoft.exchange.webservices.data.MessageBody;
@@ -10,37 +10,34 @@ import microsoft.exchange.webservices.data.ServiceLocalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class MailFinder {
 
     private static final Logger log = LoggerFactory.getLogger(MailFinder.class);
 
-    private ExchangeServiceFactory exchangeServiceFactory;
+    private ExchangeServiceWrapper exchangeServiceWrapper;
 
-    public MailFinder(ExchangeServiceFactory exchangeServiceFactory) {
-        this.exchangeServiceFactory = exchangeServiceFactory;
+    public MailFinder(ExchangeServiceWrapper exchangeServiceWrapper) {
+        this.exchangeServiceWrapper = exchangeServiceWrapper;
     }
 
-    public List<Mail> findEmails(long newerThan) {
-        EmailExchangeService emailExchange = exchangeServiceFactory.createServiceWithTimeSelector(newerThan);
+    public List<Email> findEmails(long newerThan) {
+        Enumeration<List<EmailMessage>> emails = exchangeServiceWrapper.getEmailsNewerThan(newerThan);
         List<EmailMessage> messages = new ArrayList<EmailMessage>();
-        do {
-            List<EmailMessage> items = emailExchange.nextElement();
+        while (emails.hasMoreElements()) {
+            List<EmailMessage> items = emails.nextElement();
             messages.addAll(items);
-        } while (emailExchange.hasMoreElements());
+        }
 
         log.debug("{} messages has been retrieved.", messages.size());
         return transform(messages);
     }
 
-    private List<Mail> transform(List<EmailMessage> items) {
-        return Lists.transform(items, new Function<EmailMessage, Mail>() {
+    private List<Email> transform(List<EmailMessage> items) {
+        return Lists.transform(items, new Function<EmailMessage, Email>() {
             @Override
-            public Mail apply(EmailMessage message) {
+            public Email apply(EmailMessage message) {
                 return toMail(message);
             }
         });
@@ -55,14 +52,14 @@ public class MailFinder {
         return recipients;
     }
 
-    private Mail toMail(EmailMessage message) {
+    private Email toMail(EmailMessage message) {
         try {
             String uniqueId = message.getId().getUniqueId();
             MessageBody body = message.getBody();
             String sender = message.getSender().getAddress();
             Date dateTimeCreated = message.getDateTimeCreated();
             List<String> recipients = asRecipientsList(message.getToRecipients().iterator());
-            return new Mail(uniqueId, sender, message.getSubject(), body.toString(), dateTimeCreated.getTime(), recipients);
+            return new Email(uniqueId, sender, message.getSubject(), body.toString(), dateTimeCreated.getTime(), recipients);
         } catch (ServiceLocalException e) {
             throw new ExchangeServiceException("Unable to create mail from item:" + message, e);
         }

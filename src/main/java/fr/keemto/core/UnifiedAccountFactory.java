@@ -52,4 +52,8 @@ public class UnifiedAccountFactory implements AccountFactory {
         throw new IllegalArgumentException("Unable to find an account factory for " + providerId
                 + ". Please check if provider " + providerId + " is a valid provider.");
     }
+
+    public void addFactory(AccountFactory factory) {
+        factories.add(factory);
+    }
 }

@@ -31,6 +31,7 @@ public class EmailExchangeService implements Enumeration<List<EmailMessage>> {
 
     @Override
     public boolean hasMoreElements() {
+        if (currentPartialEmailList == null) return true;
         return currentPartialEmailList.hasMoreItems;
     }
 

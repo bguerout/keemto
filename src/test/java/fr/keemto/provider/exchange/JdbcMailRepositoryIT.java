@@ -1,10 +1,12 @@
 package fr.keemto.provider.exchange;
 
 import com.google.common.collect.Lists;
-import fr.keemto.config.KeemtoWithSchedulingConfig;
+import fr.keemto.config.CoreConfig;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -17,50 +19,65 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {KeemtoWithSchedulingConfig.class, ExchangeConfig.class}, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = {CoreConfig.class}, loader = AnnotationConfigContextLoader.class)
 public class JdbcMailRepositoryIT {
 
     @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     private MailRepository mailRepository;
+
+    @Before
+    public void setUp() throws Exception {
+        mailRepository = new JdbcMailRepository(jdbcTemplate);
+    }
 
     @Test
     public void shouldFindMailsBySenderAddress() throws Exception {
 
-        List<Mail> mails = mailRepository.getMailsFrom("stnevex@gmail.com");
+        List<Email> emails = mailRepository.getMails("stnevex@gmail.com", 0);
 
-        assertThat(mails.size(), equalTo(1));
-        Mail mail = mails.get(0);
-        assertThat(mail.getId(), equalTo("1"));
-        assertThat(mail.getFrom(), equalTo("stnevex@gmail.com"));
-        assertThat(mail.getSubject(), equalTo("subject"));
-        assertThat(mail.getBody(), equalTo("body"));
-        assertThat(mail.getRecipientsAsString(), equalTo("to@xebia.fr,stnevex@xebia.fr"));
-        assertThat(mail.getTimestamp(), equalTo(1L));
+        assertThat(emails.size(), equalTo(2));
+        Email email = emails.get(0);
+        assertThat(email.getId(), equalTo("1"));
+        assertThat(email.getFrom(), equalTo("stnevex@gmail.com"));
+        assertThat(email.getSubject(), equalTo("subject"));
+        assertThat(email.getBody(), equalTo("body"));
+        assertThat(email.getRecipientsAsString(), equalTo("to@xebia.fr,stnevex@xebia.fr"));
+        assertThat(email.getTimestamp(), equalTo(1L));
+    }
+
+    @Test
+    public void shouldFindMailsNewerThanATime() throws Exception {
+
+        List<Email> emails = mailRepository.getMails("stnevex@gmail.com", 100L);
+
+        assertThat(emails.size(), equalTo(1));
     }
 
     @Test
     public void shouldPersistMails() throws Exception {
 
         List<String> recipients = Lists.newArrayList("to@xebia.fr");
-        Mail mail = new Mail("id", "user@gmail.com", "subject", "body", System.currentTimeMillis(), recipients);
+        Email email = new Email("id", "user@gmail.com", "subject", "body", System.currentTimeMillis(), recipients);
 
-        mailRepository.persist(Lists.newArrayList(mail));
+        mailRepository.persist(Lists.newArrayList(email));
 
-        List<Mail> mails = mailRepository.getMailsFrom("user@gmail.com");
-        assertThat(mails.size(), equalTo(1));
-        assertThat(mails, hasItem(mail));
+        List<Email> emails = mailRepository.getMails("user@gmail.com", 0);
+        assertThat(emails.size(), equalTo(1));
+        assertThat(emails, hasItem(email));
     }
 
     @Test
     public void shouldReturnMostRecentMails() throws Exception {
 
         List<String> recipients = Lists.newArrayList("to@xebia.fr");
-        Mail oldMail = new Mail("id21", "stnevex@gmail.com", "subject", "body", 20, recipients);
+        Email oldEmail = new Email("id21", "stnevex@gmail.com", "subject", "body", 20, recipients);
         long expectedMostRecentTime = System.currentTimeMillis();
-        Mail recentMail = new Mail("id22", "stnevex@gmail.com", "subject", "body", expectedMostRecentTime, recipients);
-        mailRepository.persist(Lists.newArrayList(oldMail, recentMail));
+        Email recentEmail = new Email("id22", "stnevex@gmail.com", "subject", "body", expectedMostRecentTime, recipients);
+        mailRepository.persist(Lists.newArrayList(oldEmail, recentEmail));
 
-        long mostRecentMailTime = mailRepository.getMostRecentMailTime();
+        long mostRecentMailTime = mailRepository.getMostRecentMailCreationTime();
 
         assertThat(mostRecentMailTime, equalTo(expectedMostRecentTime));
 

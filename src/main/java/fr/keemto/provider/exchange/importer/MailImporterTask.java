@@ -1,12 +1,16 @@
 package fr.keemto.provider.exchange.importer;
 
 import fr.keemto.core.Task;
-import fr.keemto.provider.exchange.Mail;
+import fr.keemto.provider.exchange.Email;
 import fr.keemto.provider.exchange.MailRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class MailImporterTask implements Task {
+
+    private static final Logger log = LoggerFactory.getLogger(MailImporterTask.class);
 
     private final MailFinder mailFinder;
     private final MailRepository mailRepository;
@@ -17,8 +21,8 @@ public class MailImporterTask implements Task {
     }
 
     public void importMailsNewerThan(long timestamp) {
-        List<Mail> mails = mailFinder.findEmails(timestamp);
-        mailRepository.persist(mails);
+        List<Email> emails = mailFinder.findEmails(timestamp);
+        mailRepository.persist(emails);
     }
 
     @Override
@@ -27,13 +31,14 @@ public class MailImporterTask implements Task {
     }
 
     private void executeNextImportIncrement() {
-        long mostRecent = mailRepository.getMostRecentMailTime();
+        long mostRecent = mailRepository.getMostRecentMailCreationTime();
+        log.debug("Running incremental mail import for mail newer than {}", mostRecent);
         importMailsNewerThan(mostRecent);
     }
 
     @Override
     public long getDelay() {
-        return 60;
+        return 60000;
     }
 
     @Override

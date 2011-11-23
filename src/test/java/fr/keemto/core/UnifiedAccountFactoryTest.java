@@ -16,18 +16,18 @@ public class UnifiedAccountFactoryTest {
 
     private UnifiedAccountFactory unifiedFactory;
 
+    private User user = new User("test");
+
     @Before
     public void setUp() throws Exception {
 
         AccountFactory factory = mock(AccountFactory.class);
         unifiedFactory = new UnifiedAccountFactory(Lists.newArrayList(factory));
-
     }
 
     @Test
     public void shouldObtainAccountFromAllFactories() throws Exception {
 
-        User user = new User("test");
         AccountFactory factory1 = mock(AccountFactory.class);
         AccountFactory factory2 = mock(AccountFactory.class);
         UnifiedAccountFactory unifiedFactory = new UnifiedAccountFactory(Lists.newArrayList(factory1, factory2));
@@ -40,9 +40,18 @@ public class UnifiedAccountFactoryTest {
     }
 
     @Test
-    public void shouldObtainAnEmtpyListWhenUserHasNoAccount() throws Exception {
+    public void canAddFactory() throws Exception {
 
-        User user = new User("test");
+        AccountFactory factory3 = mock(AccountFactory.class);
+
+        unifiedFactory.addFactory(factory3);
+
+        unifiedFactory.getAccounts(user);
+        verify(factory3).getAccounts(user);
+    }
+
+    @Test
+    public void shouldObtainAnEmtpyListWhenUserHasNoAccount() throws Exception {
 
         UnifiedAccountFactory unifiedFactory = new UnifiedAccountFactory(new ArrayList<AccountFactory>());
 
@@ -55,7 +64,7 @@ public class UnifiedAccountFactoryTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailWhenKeyIsInvalid() throws Exception {
 
-        AccountKey invalidKey = new AccountKey("provider", "userId", new User("test"));
+        AccountKey invalidKey = new AccountKey("provider", "userId", user);
 
         new UnifiedAccountFactory(new ArrayList<AccountFactory>()).getAccount(invalidKey);
 
@@ -66,7 +75,7 @@ public class UnifiedAccountFactoryTest {
     public void shouldObtainAccountForKey() throws Exception {
 
         Account account = mock(Account.class);
-        AccountKey key = new AccountKey("provider", "userId", new User("test"));
+        AccountKey key = new AccountKey("provider", "userId", user);
         AccountFactory factory1 = mock(AccountFactory.class);
         UnifiedAccountFactory unifiedFactory = new UnifiedAccountFactory(Lists.newArrayList(factory1));
         when(factory1.supports("provider")).thenReturn(true);
@@ -79,10 +88,11 @@ public class UnifiedAccountFactoryTest {
         verify(factory1).getAccount(key);
     }
 
+
     @Test
     public void shouldRevokeAccountForKey() throws Exception {
 
-        AccountKey key = new AccountKey("provider", "userId", new User("test"));
+        AccountKey key = new AccountKey("provider", "userId", user);
         AccountFactory factory1 = mock(AccountFactory.class);
         UnifiedAccountFactory unifiedFactory = new UnifiedAccountFactory(Lists.newArrayList(factory1));
         when(factory1.supports("provider")).thenReturn(true);

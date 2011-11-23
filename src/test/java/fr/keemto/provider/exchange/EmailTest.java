@@ -9,23 +9,23 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class MailTest {
+public class EmailTest {
 
     @Test
     public void shouldExposeRecipientsAsACommaSeparatedString() throws Exception {
         List<String> recipients = Lists.newArrayList("1@domain.fr", "2@domain.fr");
-        Mail mail = new Mail("id", "user@gmail.com", "subject", "body", System.currentTimeMillis(), recipients);
+        Email email = new Email("id", "user@gmail.com", "subject", "body", System.currentTimeMillis(), recipients);
 
-        String recipientsAsString = mail.getRecipientsAsString();
+        String recipientsAsString = email.getRecipientsAsString();
 
         assertThat(recipientsAsString, equalTo("1@domain.fr,2@domain.fr"));
     }
 
     @Test
     public void shouldBuildMailWithACommaSeparatedRecipients() throws Exception {
-        Mail mail = new Mail("id", "user@gmail.com", "subject", "body", System.currentTimeMillis(), "1@domain.fr,2@domain.fr");
+        Email email = new Email("id", "user@gmail.com", "subject", "body", System.currentTimeMillis(), "1@domain.fr,2@domain.fr");
 
-        List<String> recipients = mail.getRecipients();
+        List<String> recipients = email.getRecipients();
 
         assertThat(recipients, hasItems("1@domain.fr", "2@domain.fr"));
     }

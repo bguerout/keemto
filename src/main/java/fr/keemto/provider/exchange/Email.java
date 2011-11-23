@@ -5,7 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import java.util.Arrays;
 import java.util.List;
 
-public class Mail {
+public class Email {
 
     private final String id;
     private final String subject;
@@ -14,7 +14,7 @@ public class Mail {
     private final long timestamp;
     private final List<String> recipients;
 
-    public Mail(String id, String from, String subject, String body, long createdAt, List<String> recipients) {
+    public Email(String id, String from, String subject, String body, long createdAt, List<String> recipients) {
         this.id = id;
         this.from = from;
         this.subject = subject;
@@ -23,7 +23,7 @@ public class Mail {
         this.recipients = recipients;
     }
 
-    public Mail(String id, String from, String subject, String body, long createdAt, String recipients) {
+    public Email(String id, String from, String subject, String body, long createdAt, String recipients) {
         this(id, from, subject, body, createdAt, Arrays.asList(StringUtils.split(recipients, ",")));
     }
 
@@ -58,16 +58,16 @@ public class Mail {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Mail)) return false;
+        if (!(o instanceof Email)) return false;
 
-        Mail mail = (Mail) o;
+        Email email = (Email) o;
 
-        if (timestamp != mail.timestamp) return false;
-        if (body != null ? !body.equals(mail.body) : mail.body != null) return false;
-        if (from != null ? !from.equals(mail.from) : mail.from != null) return false;
-        if (id != null ? !id.equals(mail.id) : mail.id != null) return false;
-        if (recipients != null ? !recipients.equals(mail.recipients) : mail.recipients != null) return false;
-        if (subject != null ? !subject.equals(mail.subject) : mail.subject != null) return false;
+        if (timestamp != email.timestamp) return false;
+        if (body != null ? !body.equals(email.body) : email.body != null) return false;
+        if (from != null ? !from.equals(email.from) : email.from != null) return false;
+        if (id != null ? !id.equals(email.id) : email.id != null) return false;
+        if (recipients != null ? !recipients.equals(email.recipients) : email.recipients != null) return false;
+        if (subject != null ? !subject.equals(email.subject) : email.subject != null) return false;
 
         return true;
     }

@@ -4,9 +4,9 @@ import java.util.List;
 
 public interface MailRepository {
 
-    void persist(List<Mail> mails);
+    void persist(List<Email> emails);
 
-    long getMostRecentMailTime();
+    long getMostRecentMailCreationTime();
 
-    List<Mail> getMailsFrom(String email);
+    List<Email> getMails(String email,long newerThan);
 }

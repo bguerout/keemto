@@ -15,13 +15,18 @@
  */
 package fr.keemto.provider.exchange;
 
+import fr.keemto.core.UnifiedAccountFactory;
+import fr.keemto.provider.exchange.importer.ExchangeServiceWrapper;
 import fr.keemto.provider.exchange.importer.MailFinder;
-import fr.keemto.provider.exchange.importer.ExchangeServiceFactory;
 import fr.keemto.provider.exchange.importer.MailImporterTask;
+import fr.keemto.provider.exchange.importer.NoDataServiceWrapper;
 import microsoft.exchange.webservices.data.ExchangeCredentials;
 import microsoft.exchange.webservices.data.ExchangeService;
 import microsoft.exchange.webservices.data.ExchangeVersion;
 import microsoft.exchange.webservices.data.WebCredentials;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +38,8 @@ import java.net.URI;
 @Configuration
 public class ExchangeConfig {
 
+    private static final Logger log = LoggerFactory.getLogger(JdbcMailRepository.class);
+
     @Autowired
     protected JdbcTemplate jdbcTemplate;
 
@@ -43,9 +50,26 @@ public class ExchangeConfig {
     }
 
     @Bean
-    public MailFinder mailFinder(ExchangeService exchangeService) {
-        ExchangeServiceFactory factory = new ExchangeServiceFactory(exchangeService);
-        return new MailFinder(factory);
+    public MailFinder mailFinder(@Value("${keemto.ews.xebia.uri}") URI serviceUrl,
+                                 @Value("#{systemProperties['keemto.ews.xebia.login']?:null}") String login,
+                                 @Value("#{systemProperties['keemto.ews.xebia.password']?:null}") String password) {
+
+        ExchangeServiceWrapper serviceWrapper = null;
+        if (StringUtils.isEmpty(login)) {
+            log.warn("No login provided for exchange provider {}, switching to a mocked provider. No mails will be imported.", serviceUrl);
+            serviceWrapper = new NoDataServiceWrapper();
+        } else {
+            serviceWrapper = createRealWrapper(serviceUrl, login, password);
+        }
+        return new MailFinder(serviceWrapper);
+    }
+
+    private ExchangeServiceWrapper createRealWrapper(URI serviceUrl, String login, String password) {
+        ExchangeService exchangeService = new ExchangeService(ExchangeVersion.Exchange2010_SP1);
+        exchangeService.setUrl(serviceUrl);
+        ExchangeCredentials credentials = new WebCredentials(login, password);
+        exchangeService.setCredentials(credentials);
+        return new ExchangeServiceWrapper(exchangeService);
     }
 
     @Bean
@@ -54,14 +78,11 @@ public class ExchangeConfig {
     }
 
     @Bean
-    public ExchangeService xebiaExchangeService(@Value("${keemto.ews.xebia.uri}") URI serviceUrl,
-                                                @Value("${keemto.ews.xebia.login}") String login,
-                                                @Value("${keemto.ews.xebia.password}") String password) {
+    public ExchangeAccountFactory mailAccountFactory(MailRepository mailRepository, UnifiedAccountFactory unifiedAccountFactory) {
+        ExchangeAccountFactory exchangeAccountFactory = new ExchangeAccountFactory(mailRepository);
+        log.info("Registering mail account factory into unified account factory.");
+        unifiedAccountFactory.addFactory(exchangeAccountFactory);
+        return exchangeAccountFactory;
 
-        ExchangeService exchangeService = new ExchangeService(ExchangeVersion.Exchange2010_SP1);
-        exchangeService.setUrl(serviceUrl);
-        ExchangeCredentials credentials = new WebCredentials(login, password);
-        exchangeService.setCredentials(credentials);
-        return exchangeService;
     }
 }

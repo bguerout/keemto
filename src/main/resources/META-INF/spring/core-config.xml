@@ -95,7 +95,6 @@
           <constructor-arg ref="usersConnectionRepository"/>
           <constructor-arg ref="fetcherLocator"/>
         </bean>
-        <bean class="fr.keemto.provider.MailAccountFactory"/>
       </list>
     </constructor-arg>
   </bean>

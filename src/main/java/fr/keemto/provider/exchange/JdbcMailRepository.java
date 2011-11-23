@@ -17,7 +17,7 @@ public class JdbcMailRepository implements MailRepository {
 
     public static final String SQL_MAILS_MOST_RECENT = "SELECT TOP 1 ts FROM mail ORDER BY ts DESC";
 
-    public static final String SQL_MAILS_BY_SENDER = "SELECT * FROM mail WHERE sender = ?";
+    public static final String SQL_MAILS_BY_SENDER = "SELECT * FROM mail WHERE sender = ? AND ts > ?";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -26,27 +26,27 @@ public class JdbcMailRepository implements MailRepository {
     }
 
     @Override
-    public void persist(List<Mail> mails) {
-        for (Mail mail : mails) {
-            persist(mail);
+    public void persist(List<Email> emails) {
+        for (Email email : emails) {
+            persist(email);
         }
     }
 
-    private void persist(Mail mail) {
+    private void persist(Email email) {
         String insertEvent = "insert into mail (id,sender,subject,body,ts,recipients) values(?,?,?,?,?,?)";
-        log.debug("Persisting mail {} into database", mail);
+        log.debug("Persisting mail {} into database", email);
         try {
             jdbcTemplate.update(insertEvent,
-                    new Object[]{mail.getId(), mail.getFrom(), mail.getSubject(), mail.getBody(), mail.getTimestamp(), mail.getRecipientsAsString()});
+                    new Object[]{email.getId(), email.getFrom(), email.getSubject(), email.getBody(), email.getTimestamp(), email.getRecipientsAsString()});
 
         } catch (DuplicateKeyException e) {
-            throw new DuplicateMailException("Unable to persist mail " + mail +
-                    " because another event exists with same id: " + mail.getId(), e);
+            throw new DuplicateMailException("Unable to persist mail " + email +
+                    " because another event exists with same id: " + email.getId(), e);
         }
     }
 
     @Override
-    public long getMostRecentMailTime() {
+    public long getMostRecentMailCreationTime() {
         try {
             return jdbcTemplate.queryForLong(SQL_MAILS_MOST_RECENT);
         } catch (EmptyResultDataAccessException e) {
@@ -56,13 +56,13 @@ public class JdbcMailRepository implements MailRepository {
     }
 
     @Override
-    public List<Mail> getMailsFrom(String email) {
-        return jdbcTemplate.query(SQL_MAILS_BY_SENDER, new String[]{email}, new MailRowMapper());
+    public List<Email> getMails(String from, long newerThan) {
+        return jdbcTemplate.query(SQL_MAILS_BY_SENDER, new Object[]{from, newerThan}, new MailRowMapper());
     }
 
-    private final class MailRowMapper implements RowMapper<Mail> {
+    private final class MailRowMapper implements RowMapper<Email> {
         @Override
-        public Mail mapRow(ResultSet rs, int rowNum) throws SQLException {
+        public Email mapRow(ResultSet rs, int rowNum) throws SQLException {
 
             String id = rs.getString("id");
             String subject = rs.getString("subject");
@@ -70,7 +70,7 @@ public class JdbcMailRepository implements MailRepository {
             String sender = rs.getString("sender");
             String recipients = rs.getString("recipients");
             long timestamp = rs.getLong("ts");
-            return new Mail(id, sender, subject, body, timestamp, recipients);
+            return new Email(id, sender, subject, body, timestamp, recipients);
         }
 
     }

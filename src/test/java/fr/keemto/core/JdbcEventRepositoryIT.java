@@ -18,11 +18,13 @@ package fr.keemto.core;
 
 import com.google.common.collect.Lists;
 import fr.keemto.TestAccount;
-import fr.keemto.provider.MailAccount;
+import fr.keemto.core.fetching.Fetcher;
+import fr.keemto.provider.social.SocialAccount;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.social.connect.Connection;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -30,6 +32,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.mock;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:/META-INF/spring/core-config.xml"})
@@ -37,15 +40,16 @@ public class JdbcEventRepositoryIT {
 
     @Autowired
     private EventRepository repository;
-    private Account mailAccount;
+    private Account twitterAccount;
     private User testUser;
     private AccountKey key;
 
     @Before
     public void prepare() throws Exception {
         testUser = new User("stnevex", "John", "Doe", "stnevex@gmail.com");
-        key = new AccountKey("mail", "stnevex@gmail.com", testUser);
-        mailAccount = new MailAccount(key);
+        key = new AccountKey("twitter", "293724331", testUser);
+        //TODO we should use a custom account
+        twitterAccount = new SocialAccount(key, mock(Fetcher.class),mock(Connection.class));
     }
 
     @Test
@@ -54,30 +58,30 @@ public class JdbcEventRepositoryIT {
         List<Event> events = repository.getAllEvents();
 
         assertThat(events.size(), greaterThan(1));
-        Event expectedEvent = new Event(1, "hello this is a test", mailAccount);
+        Event expectedEvent = new Event(1, "hello this is a test", twitterAccount);
         assertThat(events, hasItem(expectedEvent));
     }
 
     @Test
     public void shouldReturnOnlyEventsNewerThan() throws Exception {
-        Long newerThan = new Long(1301464284372L);
+        Long newerThan = new Long(1301464284370L);
 
         List<Event> events = repository.getEvents(newerThan);
 
-        assertThat(events.size(), greaterThan(3));
+        assertThat(events.size(), equalTo(1));
     }
 
     @Test
     public void shouldReturnMostRecentEvent() {
 
 
-        Event mostRecentEvent = repository.getMostRecentEvent(mailAccount);
+        Event mostRecentEvent = repository.getMostRecentEvent(twitterAccount);
 
         assertThat(mostRecentEvent, notNullValue());
         assertThat(mostRecentEvent.getTimestamp(), notNullValue());
         assertThat(mostRecentEvent.getMessage(), notNullValue());
-        assertThat(mostRecentEvent.getAccount(), equalTo(mailAccount));
-        Long lastFetchedTime = new Long(1301464284376L);
+        assertThat(mostRecentEvent.getAccount().getKey(), equalTo(twitterAccount.getKey()));
+        Long lastFetchedTime = new Long(1301464284371L);
         long eventTime = mostRecentEvent.getTimestamp();
         assertThat(eventTime, equalTo(lastFetchedTime));
     }
@@ -113,8 +117,8 @@ public class JdbcEventRepositoryIT {
     @Test
     public void shouldPersistEvents() throws Exception {
 
-        Event fooEvent = new Event(System.currentTimeMillis(), "foo", mailAccount);
-        Event barEvent = new Event(System.currentTimeMillis() + 100, "bar", mailAccount);
+        Event fooEvent = new Event(System.currentTimeMillis(), "foo", twitterAccount);
+        Event barEvent = new Event(System.currentTimeMillis() + 100, "bar", twitterAccount);
 
         repository.persist(Lists.newArrayList(fooEvent, barEvent));
 
@@ -126,8 +130,8 @@ public class JdbcEventRepositoryIT {
     @Test(expected = DuplicateEventException.class)
     public void shouldThrowExWhenTryingToPersist2EventsWithSameTime() throws Exception {
         long eventTime = System.currentTimeMillis();
-        Event event = new Event(eventTime, "foo", mailAccount);
-        Event differentEventWithSameTime = new Event(eventTime, "bar", mailAccount);
+        Event event = new Event(eventTime, "foo", twitterAccount);
+        Event differentEventWithSameTime = new Event(eventTime, "bar", twitterAccount);
 
         repository.persist(Lists.newArrayList(event, differentEventWithSameTime));
     }
