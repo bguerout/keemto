@@ -26,13 +26,14 @@
     <security:access-denied-handler error-page="/403"/>
     <security:logout logout-url="/logout" delete-cookies="JSESSIONID"/>
 
+    <security:intercept-url pattern="/admin/**" access="isAuthenticated()" />
     <!-- API -->
     <security:intercept-url pattern="/api/login*" access="permitAll"/>
     <security:intercept-url pattern="/api/events*" access="permitAll" method="GET"/>
     <security:intercept-url pattern="/api/accounts/random" access="permitAll" method="GET"/>
-	  <security:intercept-url pattern="/api/**" access="isAuthenticated()"/>
+	<security:intercept-url pattern="/api/**" access="isAuthenticated()"/>
     <security:intercept-url pattern="/connect/**" access="isAuthenticated()"/>
-	
+
     <!-- Resources -->
     <security:intercept-url pattern="/" access="permitAll"/>
     <security:intercept-url pattern="/resources/**" access="permitAll"/>
