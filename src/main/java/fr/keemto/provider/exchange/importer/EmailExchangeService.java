@@ -17,6 +17,8 @@ public class EmailExchangeService implements Enumeration<List<EmailMessage>> {
     private static final Logger log = LoggerFactory.getLogger(EmailExchangeService.class);
 
     private static final int PAGE_OFFSET = 100;
+    
+    private static final long MINIMAL_MILLIS_BETWEEN_TO_MAIL= 1000L; 
 
     private final ExchangeService exchangeService;
     private final ItemView offsetView;
@@ -24,7 +26,8 @@ public class EmailExchangeService implements Enumeration<List<EmailMessage>> {
     private PartialEmailList currentPartialEmailList;
 
     public EmailExchangeService(long emailNewerThan, ExchangeService exchangeService) {
-        filter = new SearchFilter.IsGreaterThan(EmailMessageSchema.DateTimeCreated, new Date(emailNewerThan));
+        Date greaterThan = new Date(emailNewerThan + MINIMAL_MILLIS_BETWEEN_TO_MAIL);
+        filter = new SearchFilter.IsGreaterThan(EmailMessageSchema.DateTimeCreated, greaterThan);
         offsetView = new ItemView(PAGE_OFFSET);
         this.exchangeService = exchangeService;
     }

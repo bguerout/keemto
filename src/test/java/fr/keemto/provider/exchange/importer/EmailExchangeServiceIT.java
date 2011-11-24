@@ -15,7 +15,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assume.assumeThat;
 
 public class EmailExchangeServiceIT {
-    private Enumeration<List<EmailMessage>> emails;
+
+    private ExchangeServiceWrapper serviceWrapper;
 
     @Before
     public void setUp() throws Exception {
@@ -29,12 +30,12 @@ public class EmailExchangeServiceIT {
         ExchangeCredentials credentials = new WebCredentials(login, pwd);
         exchangeService.setCredentials(credentials);
 
-        ExchangeServiceWrapper serviceWrapper = new ExchangeServiceWrapper(exchangeService);
-        emails = serviceWrapper.getEmailsNewerThan(0L);
+        serviceWrapper = new ExchangeServiceWrapper(exchangeService);
     }
 
     @Test
     public void shouldReturnMailsSinceEpoch() throws Exception {
+        Enumeration<List<EmailMessage>> emails = serviceWrapper.getEmailsNewerThan(0L);
         List<EmailMessage> messages = emails.nextElement();
 
         assertThat(messages.isEmpty(), is(false));
@@ -47,6 +48,19 @@ public class EmailExchangeServiceIT {
         assertThat(emailMessage.getDateTimeCreated(), not(equalTo(new Date())));
 
         assertThat(emails.hasMoreElements(), is(true));
+    }
+
+    @Test
+    public void lastMailShouldNotBeReturned() throws Exception {
+        Enumeration<List<EmailMessage>> emails = serviceWrapper.getEmailsNewerThan(0L);
+        List<EmailMessage> messages = emails.nextElement();
+        EmailMessage lastEmail = messages.get(messages.size() - 1);
+
+        emails = serviceWrapper.getEmailsNewerThan(lastEmail.getDateTimeCreated().getTime());
+        messages = emails.nextElement();
+        for (EmailMessage message : messages) {
+          assertThat(message.getId(),not(equalTo(lastEmail.getId())));
+        }
     }
 
 }
