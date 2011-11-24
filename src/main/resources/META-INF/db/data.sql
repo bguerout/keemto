@@ -12,7 +12,7 @@ insert into events (ts,message,username,providerId,providerUserId)
  values ('1301464284371','Second tweet','stnevex','twitter','293724331');
 
 insert into mail (id,sender,subject,body,ts,recipients)
- values('1','stnevex@gmail.com','subject','body',1,'to@xebia.fr,stnevex@xebia.fr');
+ values('1','stnevex@gmail.com','subject','body',1322076312000,'to@xebia.fr,stnevex@xebia.fr');
 
 insert into mail (id,sender,subject,body,ts,recipients)
  values('2','stnevex@gmail.com','subject2','body2',200,'to@xebia.fr,stnevex@xebia.fr');
