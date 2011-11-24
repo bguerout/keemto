@@ -30,7 +30,7 @@ public class MailFinder {
             messages.addAll(items);
         }
 
-        log.debug("{} messages has been retrieved.", messages.size());
+        log.debug("{} email newer than {} have been found", messages.size(), newerThan);
         return transform(messages);
     }
 

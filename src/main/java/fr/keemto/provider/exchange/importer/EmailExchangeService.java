@@ -41,7 +41,7 @@ public class EmailExchangeService implements Enumeration<List<EmailMessage>> {
     @Override
     public List<EmailMessage> nextElement() {
 
-        log.debug("Retrieving email ids with view {}", offsetView);
+        log.debug("Retrieving email ids with offset {}", offsetView.getOffset());
         try {
             FindItemsResults<Item> itemsResults = exchangeService.findItems(WellKnownFolderName.Inbox, filter, offsetView);
             int leftItems = itemsResults.getTotalCount() - offsetView.getOffset();

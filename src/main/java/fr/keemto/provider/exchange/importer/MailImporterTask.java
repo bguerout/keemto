@@ -23,6 +23,7 @@ public class MailImporterTask implements Task {
     public void importMailsNewerThan(long timestamp) {
         List<Email> emails = mailFinder.findEmails(timestamp);
         mailRepository.persist(emails);
+        log.debug("{} emails has been imported", emails.size());
     }
 
     @Override
@@ -32,7 +33,7 @@ public class MailImporterTask implements Task {
 
     private void executeNextImportIncrement() {
         long mostRecent = mailRepository.getMostRecentMailCreationTime();
-        log.debug("Running incremental mail import for mail newer than {}", mostRecent);
+        log.debug("Running incremental mail import task for mail newer than {}", mostRecent);
         importMailsNewerThan(mostRecent);
     }
 

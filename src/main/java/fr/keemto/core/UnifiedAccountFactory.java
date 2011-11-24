@@ -34,6 +34,7 @@ public class UnifiedAccountFactory implements AccountFactory {
 
     @Override
     public void revoke(AccountKey key) {
+        log.info("Looking for a factory able to revoke account {},",key);
         String providerId = key.getProviderId();
         findFactory(providerId).revoke(key);
     }
