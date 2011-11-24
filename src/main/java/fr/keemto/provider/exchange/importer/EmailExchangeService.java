@@ -17,8 +17,8 @@ public class EmailExchangeService implements Enumeration<List<EmailMessage>> {
     private static final Logger log = LoggerFactory.getLogger(EmailExchangeService.class);
 
     private static final int PAGE_OFFSET = 100;
-    
-    private static final long MINIMAL_MILLIS_BETWEEN_TO_MAIL= 1000L; 
+
+    private static final long MINIMAL_MILLIS_BETWEEN_TO_MAIL = 1000L;
 
     private final ExchangeService exchangeService;
     private final ItemView offsetView;
@@ -86,6 +86,9 @@ public class EmailExchangeService implements Enumeration<List<EmailMessage>> {
         }
 
         public List<EmailMessage> getFullBindedMessages() throws Exception {
+
+            if (ids.isEmpty()) return new ArrayList<EmailMessage>();//bindToItems does not handle empty ids list
+
             ServiceResponseCollection<GetItemResponse> response = exchangeService.bindToItems(ids, getPropertiesToLoadForEmailMessage());
             log.debug("email message data has been bounded remotely for {} items", ids.size());
             return convertResponseToEmailList(response);
