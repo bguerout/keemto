@@ -81,7 +81,7 @@ public class ExchangeConfig {
     public ExchangeAccountFactory mailAccountFactory(MailRepository mailRepository, AccountRepository accountRepository,
                                                      @Value("${provider.ews.xebia.allowed.recipients}") String allowedRecipients) {
 
-        log.info("Registering mail account factory into unified account factory with allowed recipients {}", allowedRecipients);
+        log.info("Registering mail account factory into account repository with allowed recipients {}", allowedRecipients);
         String[] recipients = StringUtils.split(allowedRecipients, ",");
         ExchangeAccountFactory exchangeAccountFactory = new ExchangeAccountFactory(mailRepository, Arrays.asList(recipients));
         log.warn("Should add factory after application context has been created.");//TODO

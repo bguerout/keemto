@@ -47,7 +47,7 @@ public class AutomaticTaskRegisterTest {
         initializer = new AutomaticTaskRegister();
         initializer.setUserRepository(userRepository);
         initializer.setFetchingTaskFactory(fetchingTaskFactory);
-        initializer.setRegistrar(registrar);
+        initializer.setTaskRegistrar(registrar);
     }
 
     @Test

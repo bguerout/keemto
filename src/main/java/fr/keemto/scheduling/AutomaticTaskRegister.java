@@ -38,7 +38,7 @@ public class AutomaticTaskRegister implements ApplicationContextAware {
 
     private UserRepository userRepository;
     private FetchingTaskFactory fetchingTaskFactory;
-    private TaskRegistrar registrar;
+    private TaskRegistrar taskRegistrar;
     private List<Task> tasks;
 
 
@@ -57,7 +57,7 @@ public class AutomaticTaskRegister implements ApplicationContextAware {
 
     private void registerTasks(List<? extends Task> tasks) {
         for (Task task : tasks) {
-            registrar.registerTask(task);
+            taskRegistrar.registerTask(task);
         }
     }
 
@@ -72,8 +72,8 @@ public class AutomaticTaskRegister implements ApplicationContextAware {
     }
 
     @Autowired
-    public void setRegistrar(TaskRegistrar registrar) {
-        this.registrar = registrar;
+    public void setTaskRegistrar(TaskRegistrar registrar) {
+        this.taskRegistrar = registrar;
     }
 
     @Autowired
