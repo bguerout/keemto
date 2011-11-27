@@ -19,15 +19,12 @@ package fr.keemto.scheduling;
 import fr.keemto.core.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 
-@Component
 public class TaskRegistrar {
 
     private static final Logger log = LoggerFactory.getLogger(TaskRegistrar.class);
@@ -36,7 +33,6 @@ public class TaskRegistrar {
 
     private final List<ScheduledTask> scheduledTasks = new ArrayList<ScheduledTask>();
 
-    @Autowired
     public TaskRegistrar(TaskScheduler scheduler) {
         this.scheduler = scheduler;
     }
