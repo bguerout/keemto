@@ -25,7 +25,7 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
 
-    <context:property-placeholder location="classpath*:META-INF/spring/*.properties"/>
+    <context:property-placeholder location="classpath*:META-INF/spring/*.properties" system-properties-mode="FALLBACK"/>
 
     <tx:annotation-driven mode="aspectj" transaction-manager="transactionManager"/>
 
@@ -88,7 +88,7 @@
         </constructor-arg>
     </bean>
 
-    <bean id="accountFactory" class="fr.keemto.core.UnifiedAccountFactory">
+    <bean id="accountFactory" class="fr.keemto.core.AccountRepository">
         <constructor-arg>
             <list>
                 <bean class="fr.keemto.provider.social.SocialAccountFactory">

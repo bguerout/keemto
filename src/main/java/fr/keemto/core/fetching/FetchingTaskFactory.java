@@ -17,18 +17,22 @@
 package fr.keemto.core.fetching;
 
 import fr.keemto.core.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FetchingTaskFactory {
 
-    private final AccountFactory accountFactory;
+    private static final Logger log = LoggerFactory.getLogger(FetchingTaskFactory.class);
+
+    private final AccountRepository accountRepository;
     private final EventRepository eventRepository;
 
 
-    public FetchingTaskFactory(AccountFactory accountFactory, EventRepository eventRepository) {
-        this.accountFactory = accountFactory;
+    public FetchingTaskFactory(AccountRepository accountRepository, EventRepository eventRepository) {
+        this.accountRepository = accountRepository;
         this.eventRepository = eventRepository;
     }
 
@@ -36,15 +40,16 @@ public class FetchingTaskFactory {
     public List<FetchingTask> createTasks(User user) {
 
         List<FetchingTask> tasks = new ArrayList<FetchingTask>();
-        for (Account account : accountFactory.getAccounts(user)) {
+        for (Account account : accountRepository.findAccounts(user)) {
             FetchingTask task = new IncrementalFetchingTask(account, eventRepository);
+            log.debug("A new task has been created {} for user {}", task, user);
             tasks.add(task);
         }
         return tasks;
     }
 
     public IncrementalFetchingTask createIncrementalTask(AccountKey key) {
-        Account account = accountFactory.getAccount(key);
+        Account account = accountRepository.findAccount(key);
         return new IncrementalFetchingTask(account, eventRepository);
     }
 }

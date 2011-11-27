@@ -45,7 +45,7 @@ public class TaskRegistrar {
         ScheduledFuture<?> future = scheduler.scheduleWithFixedDelay(task, task.getDelay());
         ScheduledTask scheduledTask = new ScheduledTask(task.getTaskId(), future);
         scheduledTasks.add(scheduledTask);
-        log.info("A new fetching task has been registered: {}. This task is going to run every {}ms", task, task.getDelay());
+        log.info("A new task has been registered: {}. This task is going to run every {}ms", task, task.getDelay());
     }
 
     public void cancelTask(Object taskId) {

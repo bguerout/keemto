@@ -15,7 +15,7 @@
  */
 package fr.keemto.provider.exchange;
 
-import fr.keemto.core.UnifiedAccountFactory;
+import fr.keemto.core.AccountRepository;
 import fr.keemto.provider.exchange.importer.ExchangeServiceWrapper;
 import fr.keemto.provider.exchange.importer.MailFinder;
 import fr.keemto.provider.exchange.importer.MailImporterTask;
@@ -39,7 +39,7 @@ import java.util.Arrays;
 @Configuration
 public class ExchangeConfig {
 
-    private static final Logger log = LoggerFactory.getLogger(JdbcMailRepository.class);
+    private static final Logger log = LoggerFactory.getLogger(ExchangeConfig.class);
 
     @Autowired
     protected JdbcTemplate jdbcTemplate;
@@ -78,14 +78,14 @@ public class ExchangeConfig {
     }
 
     @Bean
-    public ExchangeAccountFactory mailAccountFactory(MailRepository mailRepository, UnifiedAccountFactory unifiedAccountFactory,
-                                                     @Value("provider.ews.xebia.allowed.recipients") String allowedRecipients) {
+    public ExchangeAccountFactory mailAccountFactory(MailRepository mailRepository, AccountRepository accountRepository,
+                                                     @Value("${provider.ews.xebia.allowed.recipients}") String allowedRecipients) {
 
         log.info("Registering mail account factory into unified account factory with allowed recipients {}", allowedRecipients);
         String[] recipients = StringUtils.split(allowedRecipients, ",");
         ExchangeAccountFactory exchangeAccountFactory = new ExchangeAccountFactory(mailRepository, Arrays.asList(recipients));
         log.warn("Should add factory after application context has been created.");//TODO
-        unifiedAccountFactory.addFactory(exchangeAccountFactory);
+        accountRepository.addFactory(exchangeAccountFactory);
         return exchangeAccountFactory;
 
     }

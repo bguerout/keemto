@@ -46,11 +46,11 @@ public class JdbcEventRepository implements EventRepository {
     public static final int SINCE_THE_BEGINNING = -1;
 
     private final JdbcTemplate jdbcTemplate;
-    private final AccountFactory accountFactory;
+    private final AccountRepository accountRepository;
 
-    public JdbcEventRepository(JdbcTemplate jdbcTemplate, AccountFactory accountFactory) {
+    public JdbcEventRepository(JdbcTemplate jdbcTemplate, AccountRepository accountRepository) {
         this.jdbcTemplate = jdbcTemplate;
-        this.accountFactory = accountFactory;
+        this.accountRepository = accountRepository;
     }
 
     @Override
@@ -112,7 +112,7 @@ public class JdbcEventRepository implements EventRepository {
             String message = rs.getString("message");
             User user = new UserRowMapper().mapRow(rs, rowNum);
             AccountKey key = mapAccountKey(rs, user);
-            Account account = accountFactory.getAccount(key);
+            Account account = accountRepository.findAccount(key);
             return new Event(timestamp, message, account);
         }
 

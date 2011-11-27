@@ -7,12 +7,16 @@ import com.google.common.collect.Lists;
 import fr.keemto.core.Account;
 import fr.keemto.core.AccountKey;
 import fr.keemto.core.Event;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public class ExchangeAccount implements Account {
+
+    private static final Logger log = LoggerFactory.getLogger(ExchangeAccount.class);
 
     private final AccountKey key;
     private final List<String> allowedRecipients;
@@ -30,6 +34,7 @@ public class ExchangeAccount implements Account {
 
     @Override
     public List<Event> fetch(long newerThan) {
+        log.debug("Fetching emails newer than {} for user {}", newerThan, key.getUser());
         String email = key.getProviderUserId();
         List<Email> emails = mailRepository.getMails(email, newerThan);
         Collection<Email> filteredEmails = removeEmailWithNotAllowedRecipients(emails);

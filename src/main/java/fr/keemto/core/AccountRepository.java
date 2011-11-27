@@ -6,45 +6,38 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UnifiedAccountFactory implements AccountFactory {
+public class AccountRepository {
 
-    private static final Logger log = LoggerFactory.getLogger(UnifiedAccountFactory.class);
+    private static final Logger log = LoggerFactory.getLogger(AccountRepository.class);
 
     private final List<AccountFactory> factories;
 
-    public UnifiedAccountFactory(List<AccountFactory> factories) {
+    public AccountRepository(List<AccountFactory> factories) {
         this.factories = factories;
     }
 
-    @Override
-    public List<Account> getAccounts(User user) {
+    public List<Account> findAccounts(User user) {
         List<Account> accounts = new ArrayList<Account>();
         for (AccountFactory factory : factories) {
-            accounts.addAll(factory.getAccounts(user));
+            List<Account> userAccounts = factory.getAccounts(user);
+            accounts.addAll(userAccounts);
         }
         return accounts;
     }
 
-    @Override
-    public Account getAccount(AccountKey key) {
+    public Account findAccount(AccountKey key) {
         String providerId = key.getProviderId();
-        return findFactory(providerId).getAccount(key);
-
+        AccountFactory accountFactory = selectFactoryByProvider(providerId);
+        return accountFactory.getAccount(key);
     }
 
-    @Override
     public void revoke(AccountKey key) {
-        log.info("Looking for a factory able to revoke account {},",key);
         String providerId = key.getProviderId();
-        findFactory(providerId).revoke(key);
+        AccountFactory accountFactory = selectFactoryByProvider(providerId);
+        accountFactory.revoke(key);
     }
 
-    @Override
-    public boolean supports(String providerId) {
-        return true;
-    }
-
-    private AccountFactory findFactory(String providerId) {
+    private AccountFactory selectFactoryByProvider(String providerId) {
         for (AccountFactory factory : factories) {
             if (factory.supports(providerId)) {
                 return factory;

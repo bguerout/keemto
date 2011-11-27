@@ -21,22 +21,29 @@ import fr.keemto.core.User;
 import fr.keemto.core.UserRepository;
 import fr.keemto.core.fetching.FetchingTask;
 import fr.keemto.core.fetching.FetchingTaskFactory;
-import org.springframework.beans.factory.InitializingBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-public class AutomaticTaskRegister implements InitializingBean {
+public class AutomaticTaskRegister implements ApplicationContextAware {
+
+    private static final Logger log = LoggerFactory.getLogger(AutomaticTaskRegister.class);
 
     private UserRepository userRepository;
     private FetchingTaskFactory fetchingTaskFactory;
     private TaskRegistrar registrar;
     private List<Task> tasks;
 
+
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         registerFetchingTasksForAllUsers();
         registerTasks(tasks);
     }

@@ -1,8 +1,8 @@
 package fr.keemto.web;
 
 import fr.keemto.core.Account;
-import fr.keemto.core.AccountFactory;
 import fr.keemto.core.AccountKey;
+import fr.keemto.core.AccountRepository;
 import fr.keemto.core.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,18 +16,18 @@ import java.util.List;
 @RequestMapping(value = "/api/users")
 public class UserController {
 
-    private final AccountFactory accountFactory;
+    private final AccountRepository accountRepository;
 
     @Autowired
-    public UserController(AccountFactory accountFactory) {
-        this.accountFactory = accountFactory;
+    public UserController(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
     }
 
     @RequestMapping(value = "/{userName}/accounts", method = RequestMethod.GET)
     @ResponseBody
     public List<Account> getUserConnections(@PathVariable String userName) {
         User user = getCurrentUser(userName);
-        return accountFactory.getAccounts(user);
+        return accountRepository.findAccounts(user);
     }
 
     @RequestMapping(value = {"/{userName}/accounts/{providerId}-{providerUserId}"}, method = RequestMethod.DELETE)
@@ -35,7 +35,8 @@ public class UserController {
     @ResponseBody
     public void revokeAccount(Principal principal, @PathVariable String providerId, @PathVariable String providerUserId) {
         User user = getCurrentUser(principal.getName());
-        accountFactory.revoke(new AccountKey(providerId, providerUserId, user));
+        AccountKey key = new AccountKey(providerId, providerUserId, user);
+        accountRepository.revoke(key);
     }
 
     private User getCurrentUser(String userName) {

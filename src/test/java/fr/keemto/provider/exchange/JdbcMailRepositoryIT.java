@@ -44,7 +44,7 @@ public class JdbcMailRepositoryIT {
         assertThat(email.getSubject(), equalTo("subject"));
         assertThat(email.getBody(), equalTo("body"));
         assertThat(email.getRecipientsAsString(), equalTo("to@xebia.fr,stnevex@xebia.fr"));
-        assertThat(email.getTimestamp(), equalTo(1L));
+        assertThat(email.getTimestamp(), equalTo(1322076312000L));
     }
 
 
@@ -53,7 +53,7 @@ public class JdbcMailRepositoryIT {
 
         List<Email> emails = mailRepository.getMails("stnevex@gmail.com", 100L);
 
-        assertThat(emails.size(), equalTo(1));
+        assertThat(emails.size(), equalTo(2));
     }
 
     @Test

@@ -55,7 +55,7 @@ public class AutomaticTaskRegisterTest {
         Task task = mock(Task.class);
         initializer.setTasks(Lists.newArrayList(task));
 
-        initializer.afterPropertiesSet();
+        initializer.setApplicationContext(null);
 
         verify(registrar).registerTask(task);
     }

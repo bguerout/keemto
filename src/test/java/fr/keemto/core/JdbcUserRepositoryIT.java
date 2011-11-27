@@ -40,7 +40,7 @@ public class JdbcUserRepositoryIT {
         List<User> users = repository.getAllUsers();
 
         assertThat(users, notNullValue());
-        assertThat(users.size(), equalTo(1));
+        assertThat(users.size(), equalTo(2));
     }
 
     @Test

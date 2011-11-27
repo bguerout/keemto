@@ -12,9 +12,9 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 
-public class UnifiedAccountFactoryTest {
+public class AccountRepositoryTest {
 
-    private UnifiedAccountFactory unifiedFactory;
+    private AccountRepository accountRepository;
 
     private User user = new User("test");
 
@@ -22,7 +22,7 @@ public class UnifiedAccountFactoryTest {
     public void setUp() throws Exception {
 
         AccountFactory factory = mock(AccountFactory.class);
-        unifiedFactory = new UnifiedAccountFactory(Lists.newArrayList(factory));
+        accountRepository = new AccountRepository(Lists.newArrayList(factory));
     }
 
     @Test
@@ -30,9 +30,9 @@ public class UnifiedAccountFactoryTest {
 
         AccountFactory factory1 = mock(AccountFactory.class);
         AccountFactory factory2 = mock(AccountFactory.class);
-        UnifiedAccountFactory unifiedFactory = new UnifiedAccountFactory(Lists.newArrayList(factory1, factory2));
+        AccountRepository accountRepository = new AccountRepository(Lists.newArrayList(factory1, factory2));
 
-        List<Account> accounts = unifiedFactory.getAccounts(user);
+        accountRepository.findAccounts(user);
 
         verify(factory1).getAccounts(user);
         verify(factory2).getAccounts(user);
@@ -44,18 +44,18 @@ public class UnifiedAccountFactoryTest {
 
         AccountFactory factory3 = mock(AccountFactory.class);
 
-        unifiedFactory.addFactory(factory3);
+        accountRepository.addFactory(factory3);
 
-        unifiedFactory.getAccounts(user);
+        accountRepository.findAccounts(user);
         verify(factory3).getAccounts(user);
     }
 
     @Test
     public void shouldObtainAnEmtpyListWhenUserHasNoAccount() throws Exception {
 
-        UnifiedAccountFactory unifiedFactory = new UnifiedAccountFactory(new ArrayList<AccountFactory>());
+        AccountRepository accountRepository = new AccountRepository(new ArrayList<AccountFactory>());
 
-        List<Account> accounts = unifiedFactory.getAccounts(user);
+        List<Account> accounts = accountRepository.findAccounts(user);
 
         assertThat(accounts.isEmpty(), is(true));
 
@@ -66,7 +66,7 @@ public class UnifiedAccountFactoryTest {
 
         AccountKey invalidKey = new AccountKey("provider", "userId", user);
 
-        new UnifiedAccountFactory(new ArrayList<AccountFactory>()).getAccount(invalidKey);
+        new AccountRepository(new ArrayList<AccountFactory>()).findAccount(invalidKey);
 
 
     }
@@ -77,11 +77,11 @@ public class UnifiedAccountFactoryTest {
         Account account = mock(Account.class);
         AccountKey key = new AccountKey("provider", "userId", user);
         AccountFactory factory1 = mock(AccountFactory.class);
-        UnifiedAccountFactory unifiedFactory = new UnifiedAccountFactory(Lists.newArrayList(factory1));
+        AccountRepository accountRepository = new AccountRepository(Lists.newArrayList(factory1));
         when(factory1.supports("provider")).thenReturn(true);
         when(factory1.getAccount(key)).thenReturn(account);
 
-        Account result = unifiedFactory.getAccount(key);
+        Account result = accountRepository.findAccount(key);
 
 
         assertThat(result, equalTo(account));
@@ -94,10 +94,10 @@ public class UnifiedAccountFactoryTest {
 
         AccountKey key = new AccountKey("provider", "userId", user);
         AccountFactory factory1 = mock(AccountFactory.class);
-        UnifiedAccountFactory unifiedFactory = new UnifiedAccountFactory(Lists.newArrayList(factory1));
+        AccountRepository accountRepository = new AccountRepository(Lists.newArrayList(factory1));
         when(factory1.supports("provider")).thenReturn(true);
 
-        unifiedFactory.revoke(key);
+        accountRepository.revoke(key);
 
         verify(factory1).revoke(key);
     }

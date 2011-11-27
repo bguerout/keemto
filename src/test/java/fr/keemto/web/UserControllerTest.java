@@ -2,8 +2,8 @@ package fr.keemto.web;
 
 import fr.keemto.TestAccount;
 import fr.keemto.core.Account;
-import fr.keemto.core.AccountFactory;
 import fr.keemto.core.AccountKey;
+import fr.keemto.core.AccountRepository;
 import fr.keemto.core.User;
 import org.codehaus.jackson.JsonNode;
 import org.junit.Before;
@@ -30,7 +30,7 @@ public class UserControllerTest extends ControllerTestCase {
     private UserController controller;
 
     @Mock
-    private AccountFactory accountFactory;
+    private AccountRepository accountRepository;
     private User user;
     private TestAccount account;
     private AccountKey key;
@@ -40,7 +40,7 @@ public class UserControllerTest extends ControllerTestCase {
         initMocks(this);
 
         user = new User("stnevex");
-        controller = new UserController(accountFactory);
+        controller = new UserController(accountRepository);
 
         request.addHeader("Accept", "application/json");
         request.setUserPrincipal(new Principal() {
@@ -67,7 +67,7 @@ public class UserControllerTest extends ControllerTestCase {
         request.setRequestURI("/api/users/stnevex/accounts");
         List<Account> accounts = new ArrayList<Account>();
         accounts.add(account);
-        when(accountFactory.getAccounts(user)).thenReturn(accounts);
+        when(accountRepository.findAccounts(user)).thenReturn(accounts);
 
         handlerAdapter.handle(request, response, controller);
 
@@ -91,7 +91,7 @@ public class UserControllerTest extends ControllerTestCase {
 
         request.setMethod("GET");
         request.setRequestURI("/api/users/stnevex/accounts");
-        when(accountFactory.getAccounts(user)).thenReturn(new ArrayList<Account>());
+        when(accountRepository.findAccounts(user)).thenReturn(new ArrayList<Account>());
 
         handlerAdapter.handle(request, response, controller);
 
@@ -106,12 +106,12 @@ public class UserControllerTest extends ControllerTestCase {
 
         request.setMethod("DELETE");
         request.setRequestURI("/api/users/stnevex/accounts/twitter-1111");
-        when(accountFactory.getAccount(key)).thenReturn(account);
+        when(accountRepository.findAccount(key)).thenReturn(account);
 
         handlerAdapter.handle(request, response, controller);
 
         assertThat(response.getStatus(), equalTo(204));
-        verify(accountFactory).revoke(key);
+        verify(accountRepository).revoke(key);
     }
 
 
@@ -120,7 +120,7 @@ public class UserControllerTest extends ControllerTestCase {
 
         request.setMethod("DELETE");
         request.setRequestURI("/api/users/stnevex/accounts/linked-in-9999");
-        when(accountFactory.getAccount(new AccountKey("linked-in", "9999", user))).thenReturn(account);
+        when(accountRepository.findAccount(new AccountKey("linked-in", "9999", user))).thenReturn(account);
 
         handlerAdapter.handle(request, response, controller);
 
