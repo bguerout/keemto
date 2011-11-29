@@ -23,16 +23,15 @@ import fr.keemto.core.fetching.FetchingTask;
 import fr.keemto.core.fetching.FetchingTaskFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-public class AutomaticTaskRegister implements ApplicationContextAware {
+public class AutomaticTaskRegister implements ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger log = LoggerFactory.getLogger(AutomaticTaskRegister.class);
 
@@ -41,9 +40,8 @@ public class AutomaticTaskRegister implements ApplicationContextAware {
     private TaskRegistrar taskRegistrar;
     private List<Task> tasks;
 
-
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void onApplicationEvent(ContextRefreshedEvent event) {
         registerFetchingTasksForAllUsers();
         registerTasks(tasks);
     }
