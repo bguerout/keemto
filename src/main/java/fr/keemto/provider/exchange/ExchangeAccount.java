@@ -34,11 +34,13 @@ public class ExchangeAccount implements Account {
 
     @Override
     public List<Event> fetch(long newerThan) {
-        log.debug("Fetching emails newer than {} for user {}", newerThan, key.getUser());
         String email = key.getProviderUserId();
+        log.debug("Fetching emails newer than {} for user {}", newerThan, key);
         List<Email> emails = mailRepository.getMails(email, newerThan);
         Collection<Email> filteredEmails = removeEmailWithNotAllowedRecipients(emails);
-        return convertEmailToEvent(filteredEmails, this);
+        List<Event> events = convertEmailToEvent(filteredEmails, this);
+        log.debug("{} emails has been fetched for user {}", events.size(), key);
+        return events;
     }
 
     private List<Event> convertEmailToEvent(Collection<Email> filteredEmails, final Account account) {

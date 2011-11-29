@@ -47,11 +47,11 @@ public class IncrementalFetchingTask implements FetchingTask {
     }
 
     private void updateEvents(Event mostRecentEvent) {
+        long newerThan = mostRecentEvent.getTimestamp();
         try {
-            long newerThan = mostRecentEvent.getTimestamp();
             List<Event> events = account.fetch(newerThan);
             persist(events);
-            logFetchedEvents(events);
+            logFetchedEvents(events, mostRecentEvent);
         } catch (RuntimeException e) {
             handleExceptionDuringUpdate(e);
         }
@@ -69,9 +69,12 @@ public class IncrementalFetchingTask implements FetchingTask {
         throw new FetchingException(message.toString(), e);
     }
 
-    private void logFetchedEvents(List<Event> events) {
+    private void logFetchedEvents(List<Event> events, Event mostRecentEvent) {
+        if (events.isEmpty()) {
+            log.debug("No newer event than {} could be found", mostRecentEvent);
+        }
         for (Event event : events) {
-            log.debug("A new Event has been fetched: {}", event);
+            log.debug("A new Event has been fetched and persisted: {}", event);
         }
     }
 

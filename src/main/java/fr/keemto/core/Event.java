@@ -72,7 +72,7 @@ public class Event {
         return "Event{" +
                 "timestamp=" + timestamp +
                 ", message='" + message + '\'' +
-                ", account=" + account +
+                ", account=" + account.getKey() +
                 '}';
     }
 }
