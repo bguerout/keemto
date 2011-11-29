@@ -64,7 +64,7 @@ public class JdbcEventRepositoryIT {
 
     @Test
     public void shouldReturnOnlyEventsNewerThan() throws Exception {
-        Long newerThan = new Long(1301464284370L);
+        Long newerThan = new Long(1301461284370L);
 
         List<Event> events = repository.getEvents(newerThan);
 
@@ -81,7 +81,7 @@ public class JdbcEventRepositoryIT {
         assertThat(mostRecentEvent.getTimestamp(), notNullValue());
         assertThat(mostRecentEvent.getMessage(), notNullValue());
         assertThat(mostRecentEvent.getAccount().getKey(), equalTo(twitterAccount.getKey()));
-        Long lastFetchedTime = new Long(1301464284371L);
+        Long lastFetchedTime = new Long(1301461284371L);
         long eventTime = mostRecentEvent.getTimestamp();
         assertThat(eventTime, equalTo(lastFetchedTime));
     }
