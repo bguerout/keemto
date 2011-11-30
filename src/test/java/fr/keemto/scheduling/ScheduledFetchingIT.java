@@ -39,7 +39,7 @@ import static org.mockito.Mockito.mock;
 public class ScheduledFetchingIT {
 
     @Autowired
-    private TaskRegistrar registrar;
+    private TaskScheduler scheduler;
 
     @Test
     public void shouldExecuteFetcherAsychronouslyWithDelay() throws Exception {
@@ -47,7 +47,7 @@ public class ScheduledFetchingIT {
         User user = new User("bguerout");
         FetchingTask countDownTask = new CountDownTask(latch, user);
 
-        registrar.registerTask(countDownTask);
+        scheduler.scheduleTask(countDownTask);
         latch.await(2000, TimeUnit.MILLISECONDS);
 
         assertThat(latch.getCount(), equalTo((long) 0));

@@ -17,63 +17,49 @@
 package fr.keemto.scheduling;
 
 import fr.keemto.core.Task;
+import fr.keemto.core.User;
+import fr.keemto.core.UserRepository;
+import fr.keemto.core.fetching.FetchingTask;
+import fr.keemto.core.fetching.FetchingTaskFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.TaskScheduler;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ScheduledFuture;
+import java.util.Set;
 
 public class TaskRegistrar {
 
     private static final Logger log = LoggerFactory.getLogger(TaskRegistrar.class);
 
-    private final TaskScheduler scheduler;
+    private final FetchingTaskFactory fetchingTaskFactory;
+    private final TaskScheduler taskScheduler;
+    private final UserRepository userRepository;
 
-    private final List<ScheduledTask> scheduledTasks = new ArrayList<ScheduledTask>();
-
-    public TaskRegistrar(TaskScheduler scheduler) {
-        this.scheduler = scheduler;
+    public TaskRegistrar(FetchingTaskFactory fetchingTaskFactory, TaskScheduler taskScheduler, UserRepository userRepository) {
+        this.fetchingTaskFactory = fetchingTaskFactory;
+        this.taskScheduler = taskScheduler;
+        this.userRepository = userRepository;
     }
 
-    public void registerTask(Task task) {
-        ScheduledFuture<?> future = scheduler.scheduleWithFixedDelay(task, task.getDelay());
-        ScheduledTask scheduledTask = new ScheduledTask(task.getTaskId(), future);
-        scheduledTasks.add(scheduledTask);
-        log.info("Task has been registered: {}. This task is going to run every {}ms", task, task.getDelay());
+    public Set<ScheduledTask> getScheduledTasks() {
+        return taskScheduler.getScheduledTasks();
     }
 
-    public void cancelTask(Object taskId) {
-        ScheduledTask task = findTask(taskId);
-        task.cancel();
-        scheduledTasks.remove(task);
-        log.info("Task {} has been cancelled and removed from registry", taskId);
-    }
-
-    private ScheduledTask findTask(Object taskId) {
-        for (ScheduledTask scheduledTask : scheduledTasks) {
-            if (scheduledTask.id.equals(taskId)) {
-                return scheduledTask;
+    public void registerTasks(List<? extends Task> tasks) {
+        for (Task task : tasks) {
+            Object taskId = task.getTaskId();
+            if (taskScheduler.checkIfTaskHasAlreadyBeenScheduled(taskId)) {
+                taskScheduler.cancelTask(taskId);
             }
-        }
-        throw new IllegalArgumentException("No task seems to be registered with id:" + taskId);
-    }
-
-    private static class ScheduledTask {
-        private static final boolean INTERRUPT_IF_RUNNING = true;
-        private final Object id;
-        private final ScheduledFuture<?> future;
-
-        private ScheduledTask(Object id, ScheduledFuture<?> future) {
-            this.id = id;
-            this.future = future;
-        }
-
-        public void cancel() {
-            future.cancel(INTERRUPT_IF_RUNNING);
+            taskScheduler.scheduleTask(task);
         }
     }
 
+    public void registerFetchingTasksForAllUsers() {
+        for (User user : userRepository.getAllUsers()) {
+            List<FetchingTask> tasks = fetchingTaskFactory.createTasks(user);
+            registerTasks(tasks);
+        }
+    }
 
 }

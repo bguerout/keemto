@@ -16,56 +16,88 @@
 
 package fr.keemto.scheduling;
 
-import fr.keemto.core.AccountKey;
+import com.google.common.collect.Lists;
+import fr.keemto.core.Task;
 import fr.keemto.core.User;
+import fr.keemto.core.UserRepository;
 import fr.keemto.core.fetching.FetchingTask;
+import fr.keemto.core.fetching.FetchingTaskFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.scheduling.TaskScheduler;
 
-import java.util.concurrent.ScheduledFuture;
+import java.util.HashSet;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 
 public class TaskRegistrarTest {
 
-    private TaskRegistrar registrar;
+    private TaskRegistrar initializer;
+    private UserRepository userRepository;
+    private FetchingTaskFactory fetchingTaskFactory;
     private TaskScheduler scheduler;
 
     @Before
     public void initBeforeTest() throws Exception {
+        userRepository = mock(UserRepository.class);
+        fetchingTaskFactory = mock(FetchingTaskFactory.class);
         scheduler = mock(TaskScheduler.class);
-        registrar = new TaskRegistrar(scheduler);
-
+        initializer = new TaskRegistrar(fetchingTaskFactory, scheduler, userRepository);
     }
 
     @Test
-    public void shouldAutomaticallyRegisterTaskToScheduler() throws Exception {
-        FetchingTask task = mock(FetchingTask.class);
+    public void shouldRegisterTasks() throws Exception {
+        Task task = mock(Task.class);
+        when(scheduler.getScheduledTasks()).thenReturn(new HashSet<ScheduledTask>());
 
-        registrar.registerTask(task);
+        initializer.registerTasks(Lists.newArrayList(task));
 
-        verify(scheduler).scheduleWithFixedDelay(task, task.getDelay());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldFailWhenAccountKeyCannotBeCancelled() throws Exception {
-
-        registrar.cancelTask(new AccountKey("provider", "userId", new User("bguerout")));
+        verify(scheduler).scheduleTask(task);
     }
 
     @Test
-    public void shouldCancelTask() throws Exception {
-        AccountKey key = new AccountKey("provider", "userId", new User("bguerout"));
+    public void shouldCancelAlreadyRegisteredTask() throws Exception {
+        Task task = mock(Task.class);
+        when(task.getTaskId()).thenReturn("task-id");
+        when(scheduler.checkIfTaskHasAlreadyBeenScheduled("task-id")).thenReturn(true);
+
+        initializer.registerTasks(Lists.newArrayList(task));
+
+        verify(scheduler).cancelTask("task-id");
+        verify(scheduler).scheduleTask(task);
+    }
+
+
+    @Test
+    public void shouldRegisterFetchingTaskUsingFactory() throws Exception {
+        User user = new User("bguerout");
+
         FetchingTask task = mock(FetchingTask.class);
-        ScheduledFuture future = mock(ScheduledFuture.class);
-        when(task.getTaskId()).thenReturn(key);
-        when(scheduler.scheduleWithFixedDelay(task, task.getDelay())).thenReturn(future);
-        registrar.registerTask(task);
+        List<FetchingTask> tasks = Lists.newArrayList(task);
+        when(fetchingTaskFactory.createTasks(user)).thenReturn(tasks);
+        when(userRepository.getAllUsers()).thenReturn(Lists.newArrayList(user));
 
-        registrar.cancelTask(key);
+        initializer.registerFetchingTasksForAllUsers();
 
-        verify(future).cancel(true);
+        verify(scheduler, times(1)).scheduleTask(task);
+    }
+
+    @Test
+    public void shouldRegisterFetchingTaskForAllUsers() throws Exception {
+
+        User bguerout = new User("bguerout");
+        User stnevex = new User("stnevex");
+        FetchingTask bgueroutTask = mock(FetchingTask.class);
+        FetchingTask stnevexTask = mock(FetchingTask.class);
+        when(userRepository.getAllUsers()).thenReturn(Lists.newArrayList(bguerout, stnevex));
+        when(fetchingTaskFactory.createTasks(bguerout)).thenReturn(Lists.newArrayList(bgueroutTask));
+        when(fetchingTaskFactory.createTasks(stnevex)).thenReturn(Lists.newArrayList(stnevexTask));
+
+        initializer.registerFetchingTasksForAllUsers();
+
+        verify(userRepository).getAllUsers();
+        verify(scheduler).scheduleTask(bgueroutTask);
+        verify(scheduler).scheduleTask(stnevexTask);
     }
 
 

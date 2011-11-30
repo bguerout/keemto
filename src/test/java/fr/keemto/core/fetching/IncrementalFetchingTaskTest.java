@@ -41,7 +41,7 @@ public class IncrementalFetchingTaskTest {
     public void initBeforeTest() throws Exception {
         eventRepository = mock(EventRepository.class);
         account = mock(Account.class);
-        mostRecentEvent = new Event(9999, "message", null);
+        mostRecentEvent = new Event(9999, "message", mock(Account.class));
         task = new IncrementalFetchingTask(account, eventRepository);
     }
 

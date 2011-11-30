@@ -12,15 +12,15 @@ import static org.mockito.Mockito.*;
 public class ScheduledTaskUpdaterTest {
 
     private AccountInterceptor updater;
-    private TaskRegistrar registrar;
+    private TaskScheduler scheduler;
     private FetchingTaskFactory taskFactory;
 
 
     @Before
     public void setUp() throws Exception {
-        registrar = mock(TaskRegistrar.class);
+        scheduler = mock(TaskScheduler.class);
         taskFactory = mock(FetchingTaskFactory.class);
-        updater = new FetchingTaskUpdater(registrar, taskFactory);
+        updater = new FetchingTaskUpdater(scheduler, taskFactory);
     }
 
     @Test
@@ -42,7 +42,7 @@ public class ScheduledTaskUpdaterTest {
 
         updater.accountCreated(key);
 
-        verify(registrar).registerTask(task);
+        verify(scheduler).scheduleTask(task);
 
     }
 
@@ -53,7 +53,7 @@ public class ScheduledTaskUpdaterTest {
 
         updater.accountDeleted(key);
 
-        verify(registrar).cancelTask(key);
+        verify(scheduler).cancelTask(key);
 
     }
 }

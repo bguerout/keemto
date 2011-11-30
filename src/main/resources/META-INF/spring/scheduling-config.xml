@@ -32,13 +32,19 @@
     <task:scheduler id="scheduler" pool-size="10"/>
     <task:executor id="executor" pool-size="10"/>
 
-    <bean id="taskRegistrar" class="fr.keemto.scheduling.TaskRegistrar">
+    <bean id="taskScheduler" class="fr.keemto.scheduling.TaskScheduler">
         <constructor-arg ref="scheduler"/>
     </bean>
 
     <bean id="fetchingTaskUpdater" class="fr.keemto.scheduling.FetchingTaskUpdater">
-        <constructor-arg ref="taskRegistrar"/>
+        <constructor-arg ref="taskScheduler"/>
         <constructor-arg ref="fetchingTaskFactory"/>
+    </bean>
+
+    <bean id="taskRegistrar" class="fr.keemto.scheduling.TaskRegistrar">
+        <constructor-arg ref="fetchingTaskFactory"/>
+        <constructor-arg ref="taskScheduler"/>
+        <constructor-arg ref="userRepository"/>
     </bean>
 
 
