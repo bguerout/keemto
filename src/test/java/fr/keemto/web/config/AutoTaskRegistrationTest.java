@@ -1,26 +1,26 @@
-package fr.keemto.scheduling;
+package fr.keemto.web.config;
 
 import com.google.common.collect.Lists;
 import fr.keemto.core.Task;
+import fr.keemto.scheduling.TaskRegistrar;
+import fr.keemto.web.config.AutoTaskRegistration;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.support.StaticApplicationContext;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
 
 public class AutoTaskRegistrationTest {
 
-    private AutoTaskRegistration registration;
     private TaskRegistrar taskRegistrar;
 
     @Before
     public void setUp() throws Exception {
-        registration = new AutoTaskRegistration();
         taskRegistrar = mock(TaskRegistrar.class);
-        registration.setTaskRegistrar(taskRegistrar);
     }
 
     @Test
@@ -30,7 +30,7 @@ public class AutoTaskRegistrationTest {
         coreContext.setParent(null);
         ContextRefreshedEvent refreshedEvent = new ContextRefreshedEvent(coreContext);
         List<Task> tasks = Lists.newArrayList(mock(Task.class));
-        registration.setDiscoveredTasks(tasks);
+        AutoTaskRegistration registration = new AutoTaskRegistration(taskRegistrar, tasks);
 
         registration.onApplicationEvent(refreshedEvent);
 
@@ -45,6 +45,7 @@ public class AutoTaskRegistrationTest {
         StaticApplicationContext childrenContext = new StaticApplicationContext();
         childrenContext.setParent(new StaticApplicationContext());
         ContextRefreshedEvent refreshedEvent = new ContextRefreshedEvent(childrenContext);
+        AutoTaskRegistration registration = new AutoTaskRegistration(taskRegistrar, new ArrayList<Task>());
 
         registration.onApplicationEvent(refreshedEvent);
 

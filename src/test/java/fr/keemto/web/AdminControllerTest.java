@@ -1,8 +1,8 @@
 package fr.keemto.web;
 
 import com.google.common.collect.Sets;
-import fr.keemto.scheduling.AutoTaskRegistration;
 import fr.keemto.scheduling.ScheduledTask;
+import fr.keemto.web.config.AutoTaskRegistration;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.web.servlet.ModelAndView;

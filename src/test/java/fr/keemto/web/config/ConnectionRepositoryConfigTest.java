@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package fr.keemto.web;
+package fr.keemto.web.config;
 
 import fr.keemto.core.AccountInterceptor;
+import fr.keemto.web.ObservableConnectionRepository;
+import fr.keemto.web.config.ConnectionRepositoryConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,6 +1,8 @@
-package fr.keemto.scheduling;
+package fr.keemto.web.config;
 
 import fr.keemto.core.Task;
+import fr.keemto.scheduling.ScheduledTask;
+import fr.keemto.scheduling.TaskRegistrar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,12 @@ public class AutoTaskRegistration implements ApplicationListener<ContextRefreshe
 
     private TaskRegistrar taskRegistrar;
     private List<Task> discoveredTasks;
+
+    @Autowired
+    public AutoTaskRegistration(TaskRegistrar taskRegistrar, List<Task> discoveredTasks) {
+        this.discoveredTasks = discoveredTasks;
+        this.taskRegistrar = taskRegistrar;
+    }
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -41,15 +49,5 @@ public class AutoTaskRegistration implements ApplicationListener<ContextRefreshe
 
     private boolean isAnEventFromCoreContext(ContextRefreshedEvent event) {
         return event.getApplicationContext().getParent() == null;
-    }
-
-    @Autowired
-    public void setDiscoveredTasks(List<Task> discoveredTasks) {
-        this.discoveredTasks = discoveredTasks;
-    }
-
-    @Autowired
-    public void setTaskRegistrar(TaskRegistrar taskRegistrar) {
-        this.taskRegistrar = taskRegistrar;
     }
 }

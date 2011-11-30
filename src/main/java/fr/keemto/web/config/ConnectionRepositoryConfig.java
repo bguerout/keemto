@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.keemto.web;
+package fr.keemto.web.config;
 
 import fr.keemto.core.AccountInterceptor;
+import fr.keemto.web.ObservableConnectionRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
