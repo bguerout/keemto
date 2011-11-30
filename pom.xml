@@ -50,7 +50,7 @@
   </repositories>
 
   <properties>
-    <spring.version>3.1.0.RC1</spring.version>
+    <spring.version>3.1.0.RC2</spring.version>
     <spring.security.version>3.1.0.RC3</spring.security.version>
     <spring.social.version>1.0.0.RELEASE</spring.social.version>
     <slf4j.version>1.6.1</slf4j.version>
@@ -165,7 +165,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>r08</version>
+      <version>r09</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
