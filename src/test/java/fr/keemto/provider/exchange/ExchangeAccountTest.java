@@ -52,7 +52,7 @@ public class ExchangeAccountTest {
         assertThat(events.size(), equalTo(1));
         Event event = events.get(0);
         assertThat(event.getTimestamp(), equalTo(createdAt));
-        assertThat(event.getMessage(), equalTo("body"));
+        assertThat(event.getMessage(), equalTo("<pre>body</pre>"));
         assertThat(event.getAccount(), equalTo((Account) account));
 
     }

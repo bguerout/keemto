@@ -47,7 +47,7 @@ public class ExchangeAccount implements Account {
         return Lists.transform(new ArrayList<Email>(filteredEmails), new Function<Email, Event>() {
             @Override
             public Event apply(Email email) {
-                return new Event(email.getTimestamp(), email.getBody(), account);
+                return new Event(email.getTimestamp(), email.getBodyAsHtmlFragment(), account);
             }
         });
     }

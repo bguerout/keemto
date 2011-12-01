@@ -5,6 +5,8 @@ import org.apache.commons.lang.StringUtils;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Email {
 
@@ -14,6 +16,7 @@ public class Email {
     private final String body;
     private final long timestamp;
     private final List<String> recipients;
+    private static final Pattern HTML_PATTERN = Pattern.compile(".*?<body.*?>(.*?)</body>.*?", Pattern.DOTALL);
 
     public Email(String id, String from, String subject, String body, long createdAt, List<String> recipients) {
         this.id = id;
@@ -42,6 +45,15 @@ public class Email {
 
     public String getBody() {
         return body;
+    }
+
+    public String getBodyAsHtmlFragment() {
+        String htmlFragment = "<pre>" + getBody() + "</pre>";
+        Matcher matcher = HTML_PATTERN.matcher(getBody());
+        if (matcher.matches()) {
+            htmlFragment = matcher.group(1);
+        }
+        return htmlFragment;
     }
 
     public long getTimestamp() {

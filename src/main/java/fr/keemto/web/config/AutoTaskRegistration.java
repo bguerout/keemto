@@ -30,8 +30,8 @@ public class AutoTaskRegistration implements ApplicationListener<ContextRefreshe
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
-        if (isAnEventFromCoreContext(event)) {
-            log.info("Application context has been refreshed, automatic task registrer is going to cancel all tasks and register them again.");
+        if (isAnEventFromWebContext(event)) {
+            log.info("Web context has been refreshed, automatic task registrer is going to cancel all tasks and register them again.");
             registerAllTasks();
         } else {
             log.debug("Ignoring refresh context event because this is not core context");
@@ -47,7 +47,7 @@ public class AutoTaskRegistration implements ApplicationListener<ContextRefreshe
         return taskRegistrar.getScheduledTasks();
     }
 
-    private boolean isAnEventFromCoreContext(ContextRefreshedEvent event) {
-        return event.getApplicationContext().getParent() == null;
+    private boolean isAnEventFromWebContext(ContextRefreshedEvent event) {
+        return event.getApplicationContext().getParent() != null;
     }
 }
