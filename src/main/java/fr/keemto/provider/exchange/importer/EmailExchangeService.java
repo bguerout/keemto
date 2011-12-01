@@ -7,10 +7,7 @@ import microsoft.exchange.webservices.data.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 
 public class EmailExchangeService implements Enumeration<List<EmailMessage>> {
 
@@ -102,6 +99,7 @@ public class EmailExchangeService implements Enumeration<List<EmailMessage>> {
             ps.add(EmailMessageSchema.ToRecipients);
             ps.add(EmailMessageSchema.Subject);
             ps.add(EmailMessageSchema.Body);
+            ps.add(EmailMessageSchema.UniqueBody);
             return ps;
         }
 

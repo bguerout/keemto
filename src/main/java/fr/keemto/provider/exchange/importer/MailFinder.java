@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import fr.keemto.provider.exchange.Email;
 import microsoft.exchange.webservices.data.EmailAddress;
 import microsoft.exchange.webservices.data.EmailMessage;
-import microsoft.exchange.webservices.data.MessageBody;
 import microsoft.exchange.webservices.data.ServiceLocalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,11 +54,11 @@ public class MailFinder {
     private Email toMail(EmailMessage message) {
         try {
             String uniqueId = message.getId().getUniqueId();
-            MessageBody body = message.getBody();
+            String body = message.getUniqueBody() == null ? "" : message.getUniqueBody().toString();
             String sender = message.getSender().getAddress();
             Date dateTimeCreated = message.getDateTimeCreated();
             List<String> recipients = asRecipientsList(message.getToRecipients().iterator());
-            return new Email(uniqueId, sender, message.getSubject(), body.toString(), dateTimeCreated.getTime(), recipients);
+            return new Email(uniqueId, sender, message.getSubject(), body, dateTimeCreated.getTime(), recipients);
         } catch (ServiceLocalException e) {
             throw new ExchangeServiceException("Unable to create mail from item:" + message, e);
         }

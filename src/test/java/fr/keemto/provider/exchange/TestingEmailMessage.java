@@ -51,6 +51,11 @@ public class TestingEmailMessage extends EmailMessage {
         return new MessageBody(body);
     }
 
+    @Override
+    public UniqueBody getUniqueBody() throws ServiceLocalException {
+        return null;
+    }
+
     public void addRecipients(String emailAddress) throws ServiceLocalException {
         EmailAddress to = new EmailAddress(emailAddress);
         getToRecipients().add(to);
