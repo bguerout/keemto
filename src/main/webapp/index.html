@@ -79,19 +79,17 @@
 
 <script type="text/template" id="event-template">
     <div class="span1 profile">
-        {{#if account.imageUrl}}
         <a href="#"><img src="{{account.imageUrl}}"/></a>
-        {{else}}
-        <a href="#"><img src="resources/img/social/mail.png"/></a>
-        {{/if}}
     </div>
     <div class="span11">
-        <p class="twitter-profile">{{account.key.user.firstName}} on <a href="{{account.profileUrl}}">{{account.key.providerUserId}}</a></p>
+        <p>{{account.key.user.firstName}} {{account.key.user.lastName}}<span class="displayname"><a href="{{account.profileUrl}}">{{account.displayName}}</a></span></p>
         <blockquote>
             <p>{{{message}}}</p>
             <small>
                 <time class="timeago" datetime="2008-07-17T09:24:17Z">{{timeago timestamp}}</time>
-                <span class="label new fade in">new</span></small>
+                <span> on <img src="resources/img/social/{{account.key.providerId}}.png"/></span>
+                <span class="label new fade in">new</span>
+            </small>
         </blockquote>
     </div>
 </script>
@@ -141,7 +139,7 @@
     <td>{{displayName}}</td>
     <td>-</td>
     <td>
-        <button class="btn danger">Revoke Access</button>
+        <button class="btn danger {{#unless profileUrl}}disabled{{/unless}}">Revoke Access</button>
     </td>
 </script>
 
