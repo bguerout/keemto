@@ -240,8 +240,8 @@
         initialize:function(options) {
             _.bindAll(this, 'fetchLastEvents');
             //Events collections is held by router because it must be maintain even if view is destroy.
-            this.events = new Keemto.Timeline.Events({name:"Timeline"});
-            this.registerFetchingTask(10000);
+            this.events = new Keemto.Timeline.Events({name:"Xebia's Timeline"});
+            this.registerFetchingTask(60000);
         },
 
         showTimeline:function() {
