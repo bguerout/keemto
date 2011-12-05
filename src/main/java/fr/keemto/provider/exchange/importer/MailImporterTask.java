@@ -39,7 +39,7 @@ public class MailImporterTask implements Task {
 
     @Override
     public long getDelay() {
-        return 60000;
+        return 300000;
     }
 
     @Override
