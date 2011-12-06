@@ -1,6 +1,8 @@
 package fr.keemto.web.config;
 
 import fr.keemto.core.Task;
+import fr.keemto.core.User;
+import fr.keemto.core.UserRepository;
 import fr.keemto.scheduling.ScheduledTask;
 import fr.keemto.scheduling.TaskRegistrar;
 import org.slf4j.Logger;
@@ -23,12 +25,14 @@ public class AutoTaskRegistration implements ApplicationListener<ContextRefreshe
 
     private static final Logger log = LoggerFactory.getLogger(AutoTaskRegistration.class);
 
-    private TaskRegistrar taskRegistrar;
+    private final TaskRegistrar taskRegistrar;
+    private final UserRepository userRepository;
     private ApplicationContext applicationContext;
 
     @Autowired
-    public AutoTaskRegistration(TaskRegistrar taskRegistrar) {
+    public AutoTaskRegistration(TaskRegistrar taskRegistrar, UserRepository userRepository) {
         this.taskRegistrar = taskRegistrar;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -54,7 +58,8 @@ public class AutoTaskRegistration implements ApplicationListener<ContextRefreshe
 
     public void registerAllTasks() {
         taskRegistrar.registerTasks(getTasksFromContext());
-        taskRegistrar.registerFetchingTasksForAllUsers();
+        List<User> users = userRepository.getAllUsers();
+        taskRegistrar.registerFetchingTasksFor(users);
     }
 
     public Set<ScheduledTask> getScheduledTasks() {

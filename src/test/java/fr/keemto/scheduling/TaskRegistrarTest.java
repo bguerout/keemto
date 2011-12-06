@@ -19,7 +19,6 @@ package fr.keemto.scheduling;
 import com.google.common.collect.Lists;
 import fr.keemto.core.Task;
 import fr.keemto.core.User;
-import fr.keemto.core.UserRepository;
 import fr.keemto.core.fetching.FetchingTask;
 import fr.keemto.core.fetching.FetchingTaskFactory;
 import org.junit.Before;
@@ -32,17 +31,15 @@ import static org.mockito.Mockito.*;
 
 public class TaskRegistrarTest {
 
-    private TaskRegistrar initializer;
-    private UserRepository userRepository;
+    private TaskRegistrar registrar;
     private FetchingTaskFactory fetchingTaskFactory;
     private TaskScheduler scheduler;
 
     @Before
     public void initBeforeTest() throws Exception {
-        userRepository = mock(UserRepository.class);
         fetchingTaskFactory = mock(FetchingTaskFactory.class);
         scheduler = mock(TaskScheduler.class);
-        initializer = new TaskRegistrar(fetchingTaskFactory, scheduler, userRepository);
+        registrar = new TaskRegistrar(fetchingTaskFactory, scheduler);
     }
 
     @Test
@@ -50,7 +47,7 @@ public class TaskRegistrarTest {
         Task task = mock(Task.class);
         when(scheduler.getScheduledTasks()).thenReturn(new HashSet<ScheduledTask>());
 
-        initializer.registerTasks(Lists.newArrayList(task));
+        registrar.registerTasks(Lists.newArrayList(task));
 
         verify(scheduler).scheduleTask(task);
     }
@@ -61,7 +58,7 @@ public class TaskRegistrarTest {
         when(task.getTaskId()).thenReturn("task-id");
         when(scheduler.checkIfTaskHasAlreadyBeenScheduled("task-id")).thenReturn(true);
 
-        initializer.registerTasks(Lists.newArrayList(task));
+        registrar.registerTasks(Lists.newArrayList(task));
 
         verify(scheduler).cancelTask("task-id");
         verify(scheduler).scheduleTask(task);
@@ -75,9 +72,8 @@ public class TaskRegistrarTest {
         FetchingTask task = mock(FetchingTask.class);
         List<FetchingTask> tasks = Lists.newArrayList(task);
         when(fetchingTaskFactory.createTasks(user)).thenReturn(tasks);
-        when(userRepository.getAllUsers()).thenReturn(Lists.newArrayList(user));
 
-        initializer.registerFetchingTasksForAllUsers();
+        registrar.registerFetchingTasksFor(Lists.newArrayList(user));
 
         verify(scheduler, times(1)).scheduleTask(task);
     }
@@ -89,13 +85,11 @@ public class TaskRegistrarTest {
         User stnevex = new User("stnevex");
         FetchingTask bgueroutTask = mock(FetchingTask.class);
         FetchingTask stnevexTask = mock(FetchingTask.class);
-        when(userRepository.getAllUsers()).thenReturn(Lists.newArrayList(bguerout, stnevex));
         when(fetchingTaskFactory.createTasks(bguerout)).thenReturn(Lists.newArrayList(bgueroutTask));
         when(fetchingTaskFactory.createTasks(stnevex)).thenReturn(Lists.newArrayList(stnevexTask));
 
-        initializer.registerFetchingTasksForAllUsers();
+        registrar.registerFetchingTasksFor(Lists.newArrayList(bguerout, stnevex));
 
-        verify(userRepository).getAllUsers();
         verify(scheduler).scheduleTask(bgueroutTask);
         verify(scheduler).scheduleTask(stnevexTask);
     }

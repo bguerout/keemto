@@ -18,7 +18,6 @@ package fr.keemto.scheduling;
 
 import fr.keemto.core.Task;
 import fr.keemto.core.User;
-import fr.keemto.core.UserRepository;
 import fr.keemto.core.fetching.FetchingTask;
 import fr.keemto.core.fetching.FetchingTaskFactory;
 import org.slf4j.Logger;
@@ -33,12 +32,10 @@ public class TaskRegistrar {
 
     private final FetchingTaskFactory fetchingTaskFactory;
     private final TaskScheduler taskScheduler;
-    private final UserRepository userRepository;
 
-    public TaskRegistrar(FetchingTaskFactory fetchingTaskFactory, TaskScheduler taskScheduler, UserRepository userRepository) {
+    public TaskRegistrar(FetchingTaskFactory fetchingTaskFactory, TaskScheduler taskScheduler) {
         this.fetchingTaskFactory = fetchingTaskFactory;
         this.taskScheduler = taskScheduler;
-        this.userRepository = userRepository;
     }
 
     public Set<ScheduledTask> getScheduledTasks() {
@@ -55,8 +52,8 @@ public class TaskRegistrar {
         }
     }
 
-    public void registerFetchingTasksForAllUsers() {
-        for (User user : userRepository.getAllUsers()) {
+    public void registerFetchingTasksFor(List<User> users) {
+        for (User user : users) {
             List<FetchingTask> tasks = fetchingTaskFactory.createTasks(user);
             registerTasks(tasks);
         }

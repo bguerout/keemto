@@ -38,7 +38,6 @@
     <bean id="taskRegistrar" class="fr.keemto.scheduling.TaskRegistrar">
         <constructor-arg ref="fetchingTaskFactory"/>
         <constructor-arg ref="taskScheduler"/>
-        <constructor-arg ref="userRepository"/>
     </bean>
 
 
