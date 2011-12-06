@@ -16,10 +16,13 @@
 
 package fr.keemto.core;
 
+import fr.keemto.config.CoreConfig;
+import fr.keemto.config.ProviderConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -28,7 +31,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:/META-INF/spring/core-config.xml"})
+@ContextConfiguration(classes = {CoreConfig.class, ProviderConfig.class}, loader = AnnotationConfigContextLoader.class)
 public class JdbcUserRepositoryIT {
 
     @Inject
@@ -40,7 +43,7 @@ public class JdbcUserRepositoryIT {
         List<User> users = repository.getAllUsers();
 
         assertThat(users, notNullValue());
-        assertThat(users.size(), equalTo(2));
+        assertThat(users.size(), greaterThan(2));
     }
 
     @Test

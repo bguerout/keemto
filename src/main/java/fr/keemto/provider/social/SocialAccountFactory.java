@@ -9,12 +9,15 @@ import fr.keemto.core.fetching.Fetcher;
 import fr.keemto.core.fetching.FetcherLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.*;
+import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class SocialAccountFactory implements AccountFactory {
 
     private static final Logger log = LoggerFactory.getLogger(SocialAccountFactory.class);
@@ -22,6 +25,7 @@ public class SocialAccountFactory implements AccountFactory {
     private final UsersConnectionRepository usersConnectionRepository;
     private final FetcherLocator fetcherLocator;
 
+    @Autowired
     public SocialAccountFactory(UsersConnectionRepository usersConnectionRepository, FetcherLocator fetcherLocator) {
         this.usersConnectionRepository = usersConnectionRepository;
         this.fetcherLocator = fetcherLocator;

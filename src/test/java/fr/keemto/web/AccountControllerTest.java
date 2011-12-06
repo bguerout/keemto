@@ -3,6 +3,7 @@ package fr.keemto.web;
 import com.google.common.collect.Lists;
 import fr.keemto.TestAccount;
 import fr.keemto.core.*;
+import fr.keemto.provider.social.SocialAccountFactory;
 import org.codehaus.jackson.JsonNode;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +17,7 @@ public class AccountControllerTest extends ControllerTestCase {
 
     private AccountController controller;
     private UserRepository userRepository;
-    private AccountFactory accountFactory;
+    private SocialAccountFactory accountFactory;
     private Account account;
     private User user;
 
@@ -24,7 +25,7 @@ public class AccountControllerTest extends ControllerTestCase {
     @Before
     public void initBeforeTest() throws Exception {
 
-        accountFactory = mock(AccountFactory.class);
+        accountFactory = mock(SocialAccountFactory.class);
         userRepository = mock(UserRepository.class);
         controller = new AccountController(accountFactory, userRepository);
 

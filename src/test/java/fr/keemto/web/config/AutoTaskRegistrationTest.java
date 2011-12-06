@@ -1,16 +1,11 @@
 package fr.keemto.web.config;
 
-import com.google.common.collect.Lists;
 import fr.keemto.core.Task;
 import fr.keemto.scheduling.TaskRegistrar;
-import fr.keemto.web.config.AutoTaskRegistration;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.support.StaticApplicationContext;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.Mockito.*;
 
@@ -24,32 +19,54 @@ public class AutoTaskRegistrationTest {
     }
 
     @Test
-    public void onCoreContextRefreshShouldRegisterAllTasks() throws Exception {
+    public void onWebContextRefreshShouldRegisterAllTasks() throws Exception {
 
-        StaticApplicationContext coreContext = new StaticApplicationContext();
-        coreContext.setParent(null);
-        ContextRefreshedEvent refreshedEvent = new ContextRefreshedEvent(coreContext);
-        List<Task> tasks = Lists.newArrayList(mock(Task.class));
-        AutoTaskRegistration registration = new AutoTaskRegistration(taskRegistrar, tasks);
+        StaticApplicationContext webContext = new StaticApplicationContext();
+        webContext.setParent(new StaticApplicationContext());
+        webContext.registerSingleton("task1", BeanTask.class);
+        webContext.registerSingleton("task2", BeanTask.class);
+
+        ContextRefreshedEvent refreshedEvent = new ContextRefreshedEvent(webContext);
+        AutoTaskRegistration registration = new AutoTaskRegistration(taskRegistrar);
+        registration.setApplicationContext(webContext);
 
         registration.onApplicationEvent(refreshedEvent);
 
+
         verify(taskRegistrar).registerFetchingTasksForAllUsers();
-        verify(taskRegistrar).registerTasks(tasks);
+        verify(taskRegistrar).registerTasks(anyListOf(Task.class));
 
     }
 
     @Test
-    public void shouldIgnoreRefreshOfChildrenContext() throws Exception {
+    public void shouldIgnoreRefreshOfCoreContext() throws Exception {
 
-        StaticApplicationContext childrenContext = new StaticApplicationContext();
-        childrenContext.setParent(new StaticApplicationContext());
-        ContextRefreshedEvent refreshedEvent = new ContextRefreshedEvent(childrenContext);
-        AutoTaskRegistration registration = new AutoTaskRegistration(taskRegistrar, new ArrayList<Task>());
+        AutoTaskRegistration registration = new AutoTaskRegistration(taskRegistrar);
+        StaticApplicationContext context = new StaticApplicationContext();
+        context.setParent(null);
+        registration.setApplicationContext(context);
+        ContextRefreshedEvent refreshedEvent = new ContextRefreshedEvent(context);
+
 
         registration.onApplicationEvent(refreshedEvent);
 
         verify(taskRegistrar, never()).registerFetchingTasksForAllUsers();
 
+    }
+
+    private final static class BeanTask implements Task {
+        @Override
+        public long getDelay() {
+            return 0;
+        }
+
+        @Override
+        public Object getTaskId() {
+            return null;
+        }
+
+        @Override
+        public void run() {
+        }
     }
 }

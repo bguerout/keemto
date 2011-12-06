@@ -54,7 +54,8 @@ public class MailFinder {
     private Email toMail(EmailMessage message) {
         try {
             String uniqueId = message.getId().getUniqueId();
-            String body = message.getUniqueBody() == null ? "" : message.getUniqueBody().toString();
+            //TODO UniqueBody can not be overridden for test
+            String body = message.getUniqueBody() == null ? message.getBody().toString() : message.getUniqueBody().toString();
             String sender = message.getSender().getAddress();
             Date dateTimeCreated = message.getDateTimeCreated();
             List<String> recipients = asRecipientsList(message.getToRecipients().iterator());

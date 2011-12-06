@@ -18,8 +18,11 @@ package fr.keemto.core;
 
 import com.google.common.collect.Lists;
 import fr.keemto.TestAccount;
+import fr.keemto.config.CoreConfig;
+import fr.keemto.config.ProviderConfig;
 import fr.keemto.core.fetching.Fetcher;
 import fr.keemto.provider.social.SocialAccount;
+import fr.keemto.provider.twitter.TwitterConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.Connection;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.util.List;
 
@@ -35,7 +39,7 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.mock;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:/META-INF/spring/core-config.xml"})
+@ContextConfiguration(classes = {CoreConfig.class, ProviderConfig.class, TwitterConfig.class}, loader = AnnotationConfigContextLoader.class)
 public class JdbcEventRepositoryIT {
 
     @Autowired
@@ -48,7 +52,7 @@ public class JdbcEventRepositoryIT {
     public void prepare() throws Exception {
         testUser = new User("stnevex", "John", "Doe", "stnevex@gmail.com");
         key = new AccountKey("twitter", "293724331", testUser);
-        //TODO we should use a custom account
+        //TODO we should use a custom account and not rely on twitter provider
         twitterAccount = new SocialAccount(key, mock(Fetcher.class),mock(Connection.class));
     }
 

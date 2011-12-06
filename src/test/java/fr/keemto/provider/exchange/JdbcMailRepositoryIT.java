@@ -2,6 +2,7 @@ package fr.keemto.provider.exchange;
 
 import com.google.common.collect.Lists;
 import fr.keemto.config.CoreConfig;
+import fr.keemto.config.ProviderConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {CoreConfig.class}, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = {CoreConfig.class, ProviderConfig.class}, loader = AnnotationConfigContextLoader.class)
 public class JdbcMailRepositoryIT {
 
     @Autowired

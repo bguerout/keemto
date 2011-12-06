@@ -15,7 +15,6 @@
  */
 package fr.keemto.provider.exchange;
 
-import fr.keemto.core.AccountRepository;
 import fr.keemto.provider.exchange.importer.ExchangeServiceWrapper;
 import fr.keemto.provider.exchange.importer.MailFinder;
 import fr.keemto.provider.exchange.importer.MailImporterTask;
@@ -78,15 +77,11 @@ public class ExchangeConfig {
     }
 
     @Bean
-    public ExchangeAccountFactory mailAccountFactory(MailRepository mailRepository, AccountRepository accountRepository,
-                                                     @Value("${provider.ews.xebia.allowed.recipients}") String allowedRecipients) {
+    public ExchangeAccountFactory mailAccountFactory(MailRepository mailRepository, @Value("${provider.ews.xebia.allowed.recipients}") String allowedRecipients) {
 
         log.info("Registering mail account factory into account repository with allowed recipients {}", allowedRecipients);
         String[] recipients = StringUtils.split(allowedRecipients, ",");
-        ExchangeAccountFactory exchangeAccountFactory = new ExchangeAccountFactory(mailRepository, Arrays.asList(recipients));
-        log.warn("Should add factory after application context has been created.");//TODO
-        accountRepository.addFactory(exchangeAccountFactory);
-        return exchangeAccountFactory;
+        return new ExchangeAccountFactory(mailRepository, Arrays.asList(recipients));
 
     }
 }

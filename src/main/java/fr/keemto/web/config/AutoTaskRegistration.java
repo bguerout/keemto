@@ -5,26 +5,35 @@ import fr.keemto.scheduling.ScheduledTask;
 import fr.keemto.scheduling.TaskRegistrar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Component
-public class AutoTaskRegistration implements ApplicationListener<ContextRefreshedEvent> {
+public class AutoTaskRegistration implements ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware {
 
-    private static final Logger log = LoggerFactory.getLogger(TaskRegistrar.class);
+    private static final Logger log = LoggerFactory.getLogger(AutoTaskRegistration.class);
 
     private TaskRegistrar taskRegistrar;
-    private List<Task> discoveredTasks;
+    private ApplicationContext applicationContext;
 
     @Autowired
-    public AutoTaskRegistration(TaskRegistrar taskRegistrar, List<Task> discoveredTasks) {
-        this.discoveredTasks = discoveredTasks;
+    public AutoTaskRegistration(TaskRegistrar taskRegistrar) {
         this.taskRegistrar = taskRegistrar;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 
     @Override
@@ -34,12 +43,17 @@ public class AutoTaskRegistration implements ApplicationListener<ContextRefreshe
             log.info("Web context has been refreshed, automatic task registrer is going to cancel all tasks and register them again.");
             registerAllTasks();
         } else {
-            log.debug("Ignoring refresh context event because this is not core context");
+            log.debug("Ignoring refresh context event because this is not web context");
         }
     }
 
+    private List<Task> getTasksFromContext() {
+        Map<String, Task> factoryMap = applicationContext.getBeansOfType(Task.class);
+        return new ArrayList<Task>(factoryMap.values());
+    }
+
     public void registerAllTasks() {
-        taskRegistrar.registerTasks(discoveredTasks);
+        taskRegistrar.registerTasks(getTasksFromContext());
         taskRegistrar.registerFetchingTasksForAllUsers();
     }
 

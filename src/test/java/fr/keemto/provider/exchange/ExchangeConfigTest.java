@@ -1,6 +1,7 @@
 package fr.keemto.provider.exchange;
 
-import fr.keemto.config.KeemtoWithSchedulingConfig;
+import fr.keemto.config.CoreConfig;
+import fr.keemto.config.ProviderConfig;
 import fr.keemto.provider.exchange.importer.MailFinder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +16,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {KeemtoWithSchedulingConfig.class, ExchangeConfig.class}, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = {CoreConfig.class, ProviderConfig.class, ExchangeConfig.class}, loader = AnnotationConfigContextLoader.class)
 public class ExchangeConfigTest {
 
     @Test

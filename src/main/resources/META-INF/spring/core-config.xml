@@ -50,7 +50,7 @@
 
     <bean id="eventRepository" class="fr.keemto.core.JdbcEventRepository">
         <constructor-arg ref="jdbcTemplate"/>
-        <constructor-arg ref="accountFactory"/>
+        <constructor-arg ref="accountRepository"/>
     </bean>
 
     <bean id="userRepository" class="fr.keemto.core.JdbcUserRepository">
@@ -65,42 +65,30 @@
 
     <bean id="connectionFactoryLocator" class="org.springframework.social.connect.support.ConnectionFactoryRegistry">
         <property name="connectionFactories">
-            <list>
-                <bean class="org.springframework.social.twitter.connect.TwitterConnectionFactory">
-                    <constructor-arg value="${twitter.consumerKey}"/>
-                    <constructor-arg value="${twitter.consumerSecret}"/>
-                </bean>
-
-                <bean class="org.springframework.social.yammer.api.connect.YammerConnectionFactory">
-                    <constructor-arg value="${yammer.consumerKey}"/>
-                    <constructor-arg value="${yammer.consumerSecret}"/>
-                </bean>
-            </list>
+            <bean class="fr.keemto.core.config.TypedCollectionFactoryBean">
+                <property name="beanType" value="org.springframework.social.connect.ConnectionFactory"/>
+            </bean>
         </property>
     </bean>
 
     <bean id="fetcherLocator" class="fr.keemto.core.fetching.DefaultFetcherLocator">
         <constructor-arg>
-            <list>
-                <bean class="fr.keemto.provider.twitter.TwitterFetcher"/>
-                <bean class="fr.keemto.provider.yammer.YammerFetcher"/>
-            </list>
+            <bean class="fr.keemto.core.config.TypedCollectionFactoryBean">
+                <property name="beanType" value="fr.keemto.provider.social.ConnectionFetcher"/>
+            </bean>
         </constructor-arg>
     </bean>
 
-    <bean id="accountFactory" class="fr.keemto.core.AccountRepository">
+    <bean id="accountRepository" class="fr.keemto.core.AccountRepository">
         <constructor-arg>
-            <list>
-                <bean class="fr.keemto.provider.social.SocialAccountFactory">
-                    <constructor-arg ref="usersConnectionRepository"/>
-                    <constructor-arg ref="fetcherLocator"/>
-                </bean>
-            </list>
+            <bean class="fr.keemto.core.config.TypedCollectionFactoryBean">
+                <property name="beanType" value="fr.keemto.core.AccountFactory"/>
+            </bean>
         </constructor-arg>
     </bean>
 
     <bean id="fetchingTaskFactory" class="fr.keemto.core.fetching.FetchingTaskFactory">
-        <constructor-arg ref="accountFactory"/>
+        <constructor-arg ref="accountRepository"/>
         <constructor-arg ref="eventRepository"/>
     </bean>
 
