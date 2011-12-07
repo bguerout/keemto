@@ -1,0 +1,20 @@
+================================ Keemto ===============================
+
+Keemto is a web application exposing through a REST API a timeline of user group's social activities
+
+It is based on Spring (mainly mvc+spring-social) and use at client-side Backbone JS / Twitter Bootstrap
+to consume REST services.
+
+To get up and running quickly using the project, see the Quickstart:
+https://github.com/bguerout/keemto/wiki/Quick-Start
+
+-------------------------------------------------------------------------------
+To get the code and build from source, do the following:
+
+git clone --recursive git://github.com/bguerout/keemto.git
+cd keemto
+./keemto update build run
+
+Note: the --recursive switch above is important, as keemto uses
+git submodules, which must themselves be cloned and initialized.
+For more informations about the build process please have a look to keemto script file
