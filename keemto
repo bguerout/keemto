@@ -1,0 +1,57 @@
+#!/bin/bash
+
+update ()
+{
+    echo "-------------------------------------------------"
+    echo Updating git sources and all submodules recursively
+    echo "-------------------------------------------------"
+    git pull --rebase;
+    git submodule update --init --recursive;
+}
+
+build()
+{
+    echo "-----------------------------------------------------------------------"
+    echo Building Keemto application and all its embedded dependencies with Maven
+    echo "-----------------------------------------------------------------------"
+
+    echo Installing into Maven Repository Exchange WebService API
+    cd modules/ews-java
+    mvn clean install
+    mvn clean
+
+    echo Installing into Maven Repository Spring Social Yammer
+    cd ../spring-yammer-social
+    ./gradlew install
+    ./gradlew clean
+
+    echo Running Keemto Application
+    cd ../..
+    mvn clean install
+}
+
+run()
+{
+    echo "---------------------------------------------------"
+    echo Starting application at http://localhost:8080/keemto
+    echo "---------------------------------------------------"
+    mvn jetty:run-war
+}
+
+for arg in $@
+do
+    if [ $arg = "update" ]
+    then
+      update
+    fi
+    if [ $arg = "build" ]
+    then
+      build
+    fi
+    if [ $arg = "run" ]
+    then
+        run
+    fi
+done
+
+
