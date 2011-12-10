@@ -48,9 +48,11 @@
 
 <body>
 
-<div class="topbar">
-    <div id="topbar"></div>
+<div id="top">
+    <div id="topbar" class="topbar"></div>
+    <div id="header"></div>
 </div>
+
 
 <div class="container">
     <div id="alerts" class="container"></div>
@@ -78,11 +80,15 @@
 </script>
 
 <script type="text/template" id="event-template">
-    <div class="span1 profile">
-        <a href="#"><img src="{{account.imageUrl}}"/></a>
+    <div class="span1 event-avatar">
+        <ul class="media-grid">
+            <li><a href="{{account.profileUrl}}"><img src="{{account.imageUrl}}"/></a></li>
+        </ul>
     </div>
     <div class="span11">
-        <p>{{account.key.user.firstName}} {{account.key.user.lastName}}<span class="displayname"><a href="{{account.profileUrl}}">{{account.displayName}}</a></span></p>
+        <p class="account">{{account.key.user.firstName}} {{account.key.user.lastName}}
+            <span><a href="{{account.profileUrl}}">{{account.displayName}}</a></span>
+        </p>
         <blockquote>
             <p>{{{message}}}</p>
             <small>
@@ -95,10 +101,9 @@
 </script>
 
 <script type="text/template" id="random-account-template">
-    <li>
-        <a href="{{profileUrl}}">
-            <img class="thumbnail" src="{{imageUrl}}" alt="">
-            <span>{{displayName}}</span>
+    <li class="account-avatar">
+        <a href="{{profileUrl}}" data-placement="below" rel='twipsy' title='{{displayName}}'>
+            <img src="{{imageUrl}}"/>
         </a>
     </li>
 </script>
@@ -133,7 +138,7 @@
 
 <script type="text/template" id="revokable-account-template">
     <td>
-        <a href="#"><img class="thumbnail-small" src="{{imageUrl}}"/></a>
+        <a href="#" class="account-avatar"><img src="{{imageUrl}}"/></a>
     </td>
     <td><a href="#">{{key.providerId}}</a></td>
     <td>{{displayName}}</td>
@@ -144,42 +149,54 @@
 </script>
 
 <script type="text/template" id="welcome-template">
-    <div class="tips">
-        <h1>What is ?</h1>
+    <header class="jumbotron masthead" id="overview">
+        <div class="inner">
+            <div class="container">
+                <h1>Keemto</h1>
 
-        <p>Keemto allows users to be keep in touch Vestibulum id ligula porta felis euismod semper. Integer posuere erat
-            a ante venenatis dapibus posuere velit
-            aliquet. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec
-            elit.
-        </p>
+                <p class="lead">
+                    Keemto is a web application exposing through a REST API a timeline of user group's social
+                    activities.
 
-        <form class="form-stacked">
-            <fieldset>
-                <div class="clearfix">
-                    <label for="login">Login</label>
+                </p>
 
-                    <div class="input">
-                        <input name="login" size="30" type="text" placeholder="yourlogin@xebia.com">
-                    </div>
-                </div>
-                <div class="clearfix">
-                    <label for="password">Password</label>
-
-                    <div class="input">
-                        <input name="password" size="30" type="password">
-                    </div>
-                </div>
-            </fieldset>
-            <div>
-                {{#unless authenticated}}
-                <input type="submit" class="btn info large xlarge" value="Sign in and add your accounts now &raquo;">
-                {{/unless}}
-                <a class="btn large" href="#timeline">Just had a look!
-                    <small>No auth required!</small>&raquo;</a>
-                <a class="btn large" data-controls-modal="oauth-confirm" data-backdrop="static">PIN &raquo;</a>
+                <p>
+                    It is based on Spring (mainly mvc+spring-social) and use at client-side Backbone JS/Twitter
+                    Bootstrap to consume REST services.
+                </p>
             </div>
-        </form>
+        </div>
+    </header>
+    <div class="quickstart">
+        <div class="container">
+            <div class="row">
+                <div class="span5">
+                    <h6>Start using Keemto</h6>
+                    {{#unless authenticated}}
+                    <p>Sign in and add your social accounts (eg. Twitter, ...).</p>
 
+                    <p>
+                        <a href="#login" class="btn info">Sign in now</a>
+                    </p>
+                    {{/unless}}
+
+                </div>
+                <div class="span5">
+                    <h6>Fork on GitHub</h6>
+
+                    <p>Download, fork, pull, file issues, and more with the official Keemtp repo on Github.</p>
+
+                    <p>
+                        <a target="_blank" href="https://github.com/bguerout/keemto" class="btn primary">Keemto on
+                            GitHub »</a>
+                    </p>
+
+                    <p class="current-version">Currently <a
+                            href="https://github.com/twitter/bootstrap/wiki/Changelog">v0.1</a>
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 </script>
 
@@ -226,8 +243,7 @@
         <div class="container">
             <a class="brand" href="#">Keemto</a>
             <ul class="nav">
-                <li class="active"><a href="#events">Home</a></li>
-                <li><a href="https://github.com/bguerout/keemto">Github&raquo;</a></li>
+                <li class="active"><a href="#timeline">Home</a></li>
                 {{#unless isAnonymous}}
                 <li><a href="#accounts">Manage your accounts</a></li>
                 {{/unless}}
