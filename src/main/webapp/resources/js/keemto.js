@@ -242,10 +242,10 @@
         },
 
         initialize:function (options) {
-            _.bindAll(this, 'fetchLastEvents');
+            _.bindAll(this, '_fetchLastEvents');
             //Events collections is held by router because it must be maintain even if view is destroy.
             this.events = new Keemto.Timeline.Events({name:"Xebia's Timeline"});
-            this.registerFetchingTask(60000);
+            this._registerFetchingTask(60000);
         },
 
         showTimeline:function () {
@@ -255,11 +255,11 @@
             Keemto.renderPage({main:timeline});
         },
 
-        registerFetchingTask:function (delay) {
-            window.setInterval(this.fetchLastEvents, delay);
+        _registerFetchingTask:function (delay) {
+            window.setInterval(this._fetchLastEvents, delay);
         },
 
-        fetchLastEvents:function () {
+        _fetchLastEvents:function () {
             var lastFetchedEvent = this.events.max(
                 function (event) {
                     return event.attributes.timestamp;
@@ -286,6 +286,7 @@
             this.name = options.name;
         },
 
+        //override
         comparator:function (event) {
             return event.get("timestamp");
         }
@@ -304,11 +305,11 @@
         fetchedEvents:[],
 
         events:{
-            "click #show-fetched-button":"addFetchedEvents"
+            "click #show-fetched-button":"_addFetchedEvents"
         },
 
         initialize:function (options) {
-            _.bindAll(this, 'render', 'addEvent', 'addAccount', 'showFetchedButton');
+            _.bindAll(this, 'render', '_addEvent', '_addAccount', '_showFetchedButton');
             this.collection.bind('add', this.showFetchedButton);
             this.collection.bind('reset', this.render);
             this.collection.fetch({
@@ -321,40 +322,48 @@
             this.randomAccounts.bind('reset', this.render);
         },
 
-        showFetchedButton:function (model) {
+        render:function () {
+            $(this.el).html(Keemto.renderTemplate("timeline-section-template", {"name":this.collection.name}));
+            _(this.collection.models).each(function (event) {
+                this._addEvent(event);
+            }, this);
+
+            _(this.randomAccounts.models).each(function (account) {
+                this._addAccount(account);
+            }, this);
+            $("a[rel=twipsy]").twipsy({live:true});
+
+            this._renderTips();
+            return this;
+        },
+
+        _showFetchedButton:function (model) {
             this.fetchedEvents.push(model);
             $('title').text('(' + this.fetchedEvents.length + ')Keemto');
             this.$("#show-fetched-button").html(this.fetchedEvents.length + ' new events');
             this.$("#show-fetched-button").show();
         },
 
-        addFetchedEvents:function () {
+        _addFetchedEvents:function () {
             this.$("#show-fetched-button").hide();
             $('title').text("Keemto");
             _.each(this.fetchedEvents, this.addEvent);
         },
 
-        addEvent:function (event) {
+        _addEvent:function (event) {
             var eventElement = new Keemto.Timeline.EventView({model:event}).el;
             this.$("#events").prepend($(eventElement).fadeIn(1000));
         },
 
-        addAccount:function (account) {
+        _addAccount:function (account) {
             var contentEl = Keemto.renderTemplate("random-account-template", account.toJSON());
             this.$("#random-accounts .media-grid").append(contentEl);
         },
 
-        render:function () {
-            $(this.el).html(Keemto.renderTemplate("timeline-section-template", {"name":this.collection.name}));
-            _(this.collection.models).each(function (event) {
-                this.addEvent(event);
-            }, this);
-
-            _(this.randomAccounts.models).each(function (account) {
-                this.addAccount(account);
-            }, this);
-            $("a[rel=twipsy]").twipsy({live:true});
-            return this;
+        _renderTips:function renderTips() {
+            $("a[rel=popover]").popover({offset:10, animate:true, placement:"below"}).click(function (e) {
+                e.preventDefault();
+            });
         }
     });
 
@@ -363,11 +372,18 @@
         className:'event row',
 
         initialize:function () {
-            _.bindAll(this, 'render', 'fadeLabel');
+            _.bindAll(this, 'render', '_fadeLabel');
             this.render();
         },
 
-        fadeLabel:function () {
+        render:function () {
+            var contentEl = Keemto.renderTemplate("event-template", this.model.toJSON());
+            $(this.el).append(contentEl);
+            window.setTimeout(this.fadeLabel, 8000);
+            return this;
+        },
+
+        _fadeLabel:function () {
             var element = this.$(".label");
             if (element.hasClass('fade')) {
                 this.$(".label").removeClass('in');
@@ -375,13 +391,6 @@
                     this.$(".label").remove();
                 }
             }
-            return this;
-        },
-
-        render:function () {
-            var contentEl = Keemto.renderTemplate("event-template", this.model.toJSON());
-            $(this.el).append(contentEl);
-            window.setTimeout(this.fadeLabel, 8000);
             return this;
         }
     });
@@ -425,7 +434,7 @@
     Keemto.Manage.View = Backbone.View.extend({
 
         tagName:'div',
-        className:'content',
+        className:'content accounts',
 
         initialize:function () {
             _.bindAll(this, 'render');
@@ -445,15 +454,9 @@
             }, this);
 
             this.$('#accounts').append(new Keemto.Manage.ProviderButton({id:"twitter", className:'btn primary'}).render().el);
+            this.$('#accounts').append('<span>&nbsp;</span>');
             this.$('#accounts').append(new Keemto.Manage.ProviderButton({id:"yammer", className:'btn success'}).render().el);
-            this.configurePopover();
             return this;
-        },
-
-        configurePopover:function () {
-            this.$("a[rel=popover]").popover({offset:10, animate:true}).click(function (e) {
-                e.preventDefault();
-            });
         }
     });
 
@@ -462,17 +465,23 @@
         className:'odd',
 
         events:{
-            "click button.danger":"revoke"
+            "click button.danger":"_revoke"
         },
 
         initialize:function () {
-            _.bindAll(this, 'render', 'revoke', 'remove');
+            _.bindAll(this, 'render', '_revoke', '_remove');
             this.model.bind('change', this.render, this);
             this.model.bind('destroy', this.remove, this);
             this.render();
         },
 
-        revoke:function () {
+        render:function () {
+            var accountElement = Keemto.renderTemplate("revokable-account-template", this.model.toJSON());
+            $(this.el).append(accountElement);
+            return this;
+        },
+
+        _revoke:function () {
             this.model.destroy({
                 success:function () {
                     Keemto.message({message:"Account successfuly revoked!", level:'success'});
@@ -482,39 +491,33 @@
                 }});
         },
 
-        remove:function () {
+        _remove:function () {
             $(this.el).remove();
-        },
-
-        render:function () {
-            var accountElement = Keemto.renderTemplate("revokable-account-template", this.model.toJSON());
-            $(this.el).append(accountElement);
-            return this;
         }
     });
 
     Keemto.Manage.ProviderButton = Backbone.View.extend({
         tagName:'a',
         events:{
-            "click":"connect"
+            "click":"_connect"
         },
 
         initialize:function (options) {
             _.bindAll(this, 'render');
         },
 
-        connect:function () {
+        render:function () {
+            $(this.el).text("Add " + this.id + " account");
+            return this;
+        },
+
+        _connect:function () {
             var form = document.createElement("form");
             form.setAttribute("method", "post");
             form.setAttribute("action", "connect/" + this.id);
             $('body').append(form);
             form.submit();
             return false;
-        },
-
-        render:function () {
-            $(this.el).text("Add " + this.id + " account");
-            return this;
         }
     });
 
@@ -543,25 +546,25 @@
         className:'content',
 
         events:{
-            "submit form":"submitLoginForm"
+            "submit form":"_submitLoginForm"
         },
 
         initialize:function () {
             this.render();
         },
 
-        submitLoginForm:function () {
+        render:function () {
+            $(this.el).html(Keemto.renderTemplate("login-template"));
+            return this;
+        },
+
+        _submitLoginForm:function () {
             var login = this.$('input[name="login"]').val();
             var password = this.$('input[name="password"]').val();
             Keemto.authenticate(login, password, _.bind(function () {
                 Keemto.navigateToHash("#accounts");
             }, this));
             return false;
-        },
-
-        render:function () {
-            $(this.el).html(Keemto.renderTemplate("login-template"));
-            return this;
         }
     });
 
@@ -570,8 +573,8 @@
         tagName:'div',
 
         events:{
-            "submit form":"submitLoginForm",
-            "click li":"activate"
+            "submit form":"_submitLoginForm",
+            "click li":"_activate"
         },
 
         initialize:function () {
@@ -579,19 +582,27 @@
             Keemto.listen('user:updated', this.render);
         },
 
-        submitLoginForm:function () {
+        render:function () {
+            $(this.el).empty();
+            var topbar = Keemto.renderTemplate("topbar-template", this.model.toJSON());
+            $(this.el).append(topbar);
+            this._configureDropdown();
+            return this;
+        },
+
+        _submitLoginForm:function () {
             var login = this.$('input[name="login"]').val();
             var password = this.$('input[name="password"]').val();
             Keemto.authenticate(login, password);
             return false;
         },
 
-        activate:function (event) {
+        _activate:function (event) {
             $(this.el).addClass('activate');
             return true;
         },
 
-        configureDropdown:function () {
+        _configureDropdown:function () {
 
             $("body").bind("click", function (e) {
                 $('.dropdown-toggle').parent("li").removeClass("open");
@@ -600,14 +611,6 @@
                 var $li = $(this).parent("li").toggleClass('open');
                 return false;
             });
-        },
-
-        render:function () {
-            $(this.el).empty();
-            var topbar = Keemto.renderTemplate("topbar-template", this.model.toJSON());
-            $(this.el).append(topbar);
-            this.configureDropdown();
-            return this;
         }
     });
 
@@ -623,21 +626,7 @@
         tagName:'div',
 
         events:{
-            "submit form":"submitLoginForm"
-        },
-
-        initialize:function () {
-            this.render();
-        },
-
-        submitLoginForm:function () {
-            var login = this.$('input[name="login"]').val();
-            var password = this.$('input[name="password"]').val();
-            Keemto.authenticate(login, password, _.bind(function () {
-                $(this.el).remove();
-                Keemto.navigateToHash("#accounts");
-            }, this));
-            return false;
+            "submit form":"_submitLoginForm"
         },
 
         render:function () {
@@ -645,6 +634,20 @@
             var tip = Keemto.renderTemplate("welcome-template", {authenticated:isAuthenticated});
             $(this.el).append(tip);
             return this;
+        },
+
+        initialize:function () {
+            this.render();
+        },
+
+        _submitLoginForm:function () {
+            var login = this.$('input[name="login"]').val();
+            var password = this.$('input[name="password"]').val();
+            Keemto.authenticate(login, password, _.bind(function () {
+                $(this.el).remove();
+                Keemto.navigateToHash("#accounts");
+            }, this));
+            return false;
         }
     });
 
@@ -654,7 +657,7 @@
         className:'alert-message fade in',
 
         initialize:function () {
-            _.bindAll(this, 'render', 'close');
+            _.bindAll(this, 'render', '_close');
             this.render();
         },
 
@@ -667,7 +670,7 @@
             return this;
         },
 
-        close:function () {
+        _close:function () {
             this.$('a').click();
         }
     });
