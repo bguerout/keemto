@@ -42,7 +42,6 @@
     <script type="text/javascript" src="resources/js/lib/bootstrap-alerts.js"></script>
     <script type="text/javascript" src="resources/js/lib/bootstrap-scrollspy.js"></script>
     <script type="text/javascript" src="resources/js/keemto.js"></script>
-    <!--script type="text/javascript" src="resources/js/keemto-mock.js"></script-->
     <script type="text/javascript" src="resources/dynamic/js/keemto-boostrapper.js"></script>
 </head>
 
@@ -71,7 +70,7 @@
     </div>
     <div class="row">
         <div class="span12 events" id="events"></div>
-        <div class="span4" id="random-accounts">
+        <div class="span4 accounts" id="random-accounts">
             <h3>Improve your network</h3>
             <ul class="media-grid">
             </ul>
@@ -82,12 +81,12 @@
 <script type="text/template" id="event-template">
     <div class="span1 event-avatar">
         <ul class="media-grid">
-            <li><a href="{{account.profileUrl}}"><img src="{{account.imageUrl}}"/></a></li>
+            <li><a href="{{account.profileUrl}}" target="_blank"><img src="{{account.imageUrl}}"/></a></li>
         </ul>
     </div>
     <div class="span11">
         <p class="account">{{account.key.user.firstName}} {{account.key.user.lastName}}
-            <span><a href="{{account.profileUrl}}">{{account.displayName}}</a></span>
+            <span><a href="{{account.profileUrl}}" target="_blank">{{account.displayName}}</a></span>
         </p>
         <blockquote>
             <p>{{{message}}}</p>
@@ -102,7 +101,7 @@
 
 <script type="text/template" id="random-account-template">
     <li class="account-avatar">
-        <a href="{{profileUrl}}" data-placement="below" rel='twipsy' title='{{displayName}}'>
+        <a href="{{profileUrl}}" target="_blank" data-placement="below" rel='twipsy' title='{{displayName}}'>
             <img src="{{imageUrl}}"/>
         </a>
     </li>
@@ -130,9 +129,6 @@
             <!--Accounts will be appended here -->
             </tbody>
         </table>
-        <a class="btn primary " rel="popover"
-           data-content="And here's some amazing content. It's very engaging. right?"
-           data-original-title="A Title">popover</a>
     </div>
 </script>
 
@@ -170,17 +166,17 @@
     <div class="quickstart">
         <div class="container">
             <div class="row">
+                {{#unless authenticated}}
                 <div class="span5">
                     <h6>Start using Keemto</h6>
-                    {{#unless authenticated}}
+
                     <p>Sign in and add your social accounts (eg. Twitter, ...).</p>
 
                     <p>
                         <a href="#login" class="btn info">Sign in now</a>
                     </p>
-                    {{/unless}}
-
                 </div>
+                {{/unless}}
                 <div class="span5">
                     <h6>Fork on GitHub</h6>
 
@@ -247,6 +243,8 @@
                 {{#unless isAnonymous}}
                 <li><a href="#accounts">Manage your accounts</a></li>
                 {{/unless}}
+                <li><a rel="popover" data-content="And here's some amazing content. It's very engaging. right?"
+                       data-original-title="A Title">popover</a></li>
             </ul>
 
             {{#unless isAnonymous}}
