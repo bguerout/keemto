@@ -1,12 +1,16 @@
 package fr.keemto.web;
 
 import com.google.common.collect.Sets;
+import fr.keemto.core.Task;
+import fr.keemto.core.TaskLocator;
 import fr.keemto.scheduling.ScheduledTask;
-import fr.keemto.web.config.AutoTaskRegistration;
+import fr.keemto.scheduling.TaskRegistrar;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -16,19 +20,21 @@ import static org.mockito.Mockito.*;
 public class AdminControllerTest {
 
     private AdminController controller;
-    private AutoTaskRegistration registration;
+    private TaskLocator taskLocator;
+    private TaskRegistrar taskRegistrar;
 
     @Before
     public void setUp() throws Exception {
-        registration = mock(AutoTaskRegistration.class);
-        controller = new AdminController(registration);
+        taskLocator = mock(TaskLocator.class);
+        taskRegistrar = mock(TaskRegistrar.class);
+        controller = new AdminController(taskRegistrar, taskLocator);
     }
 
     @Test
     public void shouldReturnTaskList() throws Exception {
         ScheduledTask scheduledTask = mock(ScheduledTask.class);
         Set<ScheduledTask> tasks = Sets.newHashSet(scheduledTask);
-        when(registration.getScheduledTasks()).thenReturn(tasks);
+        when(taskRegistrar.getScheduledTasks()).thenReturn(tasks);
 
         ModelAndView scheduledTasks = controller.getScheduledTasks();
 
@@ -39,9 +45,20 @@ public class AdminControllerTest {
     @Test
     public void shouldRefreshTask() throws Exception {
 
+        List<Task> tasks = new ArrayList<Task>();
+        when(taskLocator.findTasks()).thenReturn(tasks);
+
         ModelAndView scheduledTasks = controller.refresh();
 
-        verify(registration).registerAllTasks();
+        verify(taskLocator).findTasks();
+        verify(taskRegistrar).registerTasks(tasks);
         assertThat(scheduledTasks.getViewName(), equalTo("tasks"));
+    }
+
+    @Test
+    public void canCancelATask() throws Exception {
+        String taskId = "11";
+
+        ModelAndView mav = controller.cancel(taskId);
     }
 }

@@ -17,9 +17,6 @@
 package fr.keemto.scheduling;
 
 import fr.keemto.core.Task;
-import fr.keemto.core.User;
-import fr.keemto.core.fetching.FetchingTask;
-import fr.keemto.core.fetching.FetchingTaskFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,11 +27,9 @@ public class TaskRegistrar {
 
     private static final Logger log = LoggerFactory.getLogger(TaskRegistrar.class);
 
-    private final FetchingTaskFactory fetchingTaskFactory;
     private final TaskScheduler taskScheduler;
 
-    public TaskRegistrar(FetchingTaskFactory fetchingTaskFactory, TaskScheduler taskScheduler) {
-        this.fetchingTaskFactory = fetchingTaskFactory;
+    public TaskRegistrar(TaskScheduler taskScheduler) {
         this.taskScheduler = taskScheduler;
     }
 
@@ -44,19 +39,16 @@ public class TaskRegistrar {
 
     public void registerTasks(List<? extends Task> tasks) {
         for (Task task : tasks) {
-            Object taskId = task.getTaskId();
-            if (taskScheduler.checkIfTaskHasAlreadyBeenScheduled(taskId)) {
-                taskScheduler.cancelTask(taskId);
-            }
-            taskScheduler.scheduleTask(task);
+            registerTaskForScheduling(task);
         }
     }
 
-    public void registerFetchingTasksFor(List<User> users) {
-        for (User user : users) {
-            List<FetchingTask> tasks = fetchingTaskFactory.createTasks(user);
-            registerTasks(tasks);
+    public void registerTaskForScheduling(Task task) {
+        Object taskId = task.getTaskId();
+        if (taskScheduler.checkIfTaskHasAlreadyBeenScheduled(taskId)) {
+            taskScheduler.cancelTask(taskId);
         }
+        taskScheduler.scheduleTask(task);
     }
 
 }

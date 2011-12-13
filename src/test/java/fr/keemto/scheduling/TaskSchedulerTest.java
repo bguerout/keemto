@@ -116,7 +116,7 @@ public class TaskSchedulerTest {
         }
 
         @Override
-        public Object getTaskId() {
+        public String getTaskId() {
             return id;
         }
 

@@ -43,7 +43,7 @@ public class MailImporterTask implements Task {
     }
 
     @Override
-    public Object getTaskId() {
+    public String getTaskId() {
         return "exchange";
     }
 

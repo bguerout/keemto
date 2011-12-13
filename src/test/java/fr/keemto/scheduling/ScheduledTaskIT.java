@@ -16,36 +16,34 @@
 
 package fr.keemto.scheduling;
 
-import fr.keemto.core.Account;
-import fr.keemto.core.EventRepository;
-import fr.keemto.core.User;
-import fr.keemto.core.fetching.FetchingTask;
-import fr.keemto.core.fetching.IncrementalFetchingTask;
+import fr.keemto.config.CoreConfig;
+import fr.keemto.config.SchedulingConfig;
+import fr.keemto.core.Task;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:/META-INF/spring/*-config.xml"})
-public class ScheduledFetchingIT {
+@ContextConfiguration(classes = {CoreConfig.class, SchedulingConfig.class}, loader = AnnotationConfigContextLoader.class)
+public class ScheduledTaskIT {
 
     @Autowired
     private TaskScheduler scheduler;
 
     @Test
     public void shouldExecuteFetcherAsychronouslyWithDelay() throws Exception {
+
         CountDownLatch latch = new CountDownLatch(10);
-        User user = new User("bguerout");
-        FetchingTask countDownTask = new CountDownTask(latch, user);
+        Task countDownTask = new CountDownTask(latch);
 
         scheduler.scheduleTask(countDownTask);
         latch.await(2000, TimeUnit.MILLISECONDS);
@@ -53,13 +51,17 @@ public class ScheduledFetchingIT {
         assertThat(latch.getCount(), equalTo((long) 0));
     }
 
-    public class CountDownTask extends IncrementalFetchingTask {
+    public class CountDownTask implements Task {
 
         private final CountDownLatch latch;
 
-        public CountDownTask(CountDownLatch latch, User user) {
-            super(mock(Account.class), mock(EventRepository.class));
+        public CountDownTask(CountDownLatch latch) {
             this.latch = latch;
+        }
+
+        @Override
+        public String getTaskId() {
+            return "countdown";
         }
 
         @Override

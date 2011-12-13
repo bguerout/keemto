@@ -28,7 +28,7 @@ public class ScheduledTask implements Task {
     }
 
     @Override
-    public Object getTaskId() {
+    public String getTaskId() {
         return task.getTaskId();
     }
 

@@ -84,8 +84,8 @@ public class IncrementalFetchingTask implements FetchingTask {
     }
 
     @Override
-    public AccountKey getTaskId() {
-        return account.getKey();
+    public String getTaskId() {
+        return "" + account.getKey().hashCode(); //TODO is it a good idea to rely on hashcode
     }
 
     @Override

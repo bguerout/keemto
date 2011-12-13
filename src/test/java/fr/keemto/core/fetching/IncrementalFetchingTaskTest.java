@@ -17,6 +17,7 @@
 package fr.keemto.core.fetching;
 
 import fr.keemto.core.Account;
+import fr.keemto.core.AccountKey;
 import fr.keemto.core.Event;
 import fr.keemto.core.EventRepository;
 import org.junit.Before;
@@ -25,6 +26,8 @@ import org.springframework.dao.DataRetrievalFailureException;
 
 import java.util.ArrayList;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
@@ -75,4 +78,14 @@ public class IncrementalFetchingTaskTest {
         task.run();
     }
 
+    @Test
+    public void shouldUseAccountKeyHashCodeToCreateTaskId() throws Exception {
+
+        AccountKey key = mock(AccountKey.class);
+        when(account.getKey()).thenReturn(key);
+
+        String taskId = task.getTaskId();
+
+        assertThat(taskId, equalTo(""+key.hashCode()));
+    }
 }

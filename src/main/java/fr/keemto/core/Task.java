@@ -4,5 +4,5 @@ public interface Task extends Runnable {
 
     long getDelay();
 
-    Object getTaskId();
+    String getTaskId();
 }

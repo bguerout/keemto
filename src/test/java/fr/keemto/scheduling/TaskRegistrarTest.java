@@ -18,28 +18,22 @@ package fr.keemto.scheduling;
 
 import com.google.common.collect.Lists;
 import fr.keemto.core.Task;
-import fr.keemto.core.User;
-import fr.keemto.core.fetching.FetchingTask;
-import fr.keemto.core.fetching.FetchingTaskFactory;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashSet;
-import java.util.List;
 
 import static org.mockito.Mockito.*;
 
 public class TaskRegistrarTest {
 
     private TaskRegistrar registrar;
-    private FetchingTaskFactory fetchingTaskFactory;
     private TaskScheduler scheduler;
 
     @Before
     public void initBeforeTest() throws Exception {
-        fetchingTaskFactory = mock(FetchingTaskFactory.class);
         scheduler = mock(TaskScheduler.class);
-        registrar = new TaskRegistrar(fetchingTaskFactory, scheduler);
+        registrar = new TaskRegistrar(scheduler);
     }
 
     @Test
@@ -58,41 +52,12 @@ public class TaskRegistrarTest {
         when(task.getTaskId()).thenReturn("task-id");
         when(scheduler.checkIfTaskHasAlreadyBeenScheduled("task-id")).thenReturn(true);
 
-        registrar.registerTasks(Lists.newArrayList(task));
+        registrar.registerTaskForScheduling(task);
 
         verify(scheduler).cancelTask("task-id");
         verify(scheduler).scheduleTask(task);
     }
 
-
-    @Test
-    public void shouldRegisterFetchingTaskUsingFactory() throws Exception {
-        User user = new User("bguerout");
-
-        FetchingTask task = mock(FetchingTask.class);
-        List<FetchingTask> tasks = Lists.newArrayList(task);
-        when(fetchingTaskFactory.createTasks(user)).thenReturn(tasks);
-
-        registrar.registerFetchingTasksFor(Lists.newArrayList(user));
-
-        verify(scheduler, times(1)).scheduleTask(task);
-    }
-
-    @Test
-    public void shouldRegisterFetchingTaskForAllUsers() throws Exception {
-
-        User bguerout = new User("bguerout");
-        User stnevex = new User("stnevex");
-        FetchingTask bgueroutTask = mock(FetchingTask.class);
-        FetchingTask stnevexTask = mock(FetchingTask.class);
-        when(fetchingTaskFactory.createTasks(bguerout)).thenReturn(Lists.newArrayList(bgueroutTask));
-        when(fetchingTaskFactory.createTasks(stnevex)).thenReturn(Lists.newArrayList(stnevexTask));
-
-        registrar.registerFetchingTasksFor(Lists.newArrayList(bguerout, stnevex));
-
-        verify(scheduler).scheduleTask(bgueroutTask);
-        verify(scheduler).scheduleTask(stnevexTask);
-    }
 
 
 }

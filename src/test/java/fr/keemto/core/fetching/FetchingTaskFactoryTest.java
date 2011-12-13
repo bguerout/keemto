@@ -86,7 +86,7 @@ public class FetchingTaskFactoryTest {
         IncrementalFetchingTask task = fetchingTaskFactory.createIncrementalTask(key);
 
         assertThat(task, notNullValue());
-        assertThat(task.getTaskId(), equalTo(key));
+        assertThat(task.getTaskId(), equalTo(""+key.hashCode()));
     }
 
 }

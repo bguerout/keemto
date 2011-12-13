@@ -36,8 +36,17 @@
     </bean>
 
     <bean id="taskRegistrar" class="fr.keemto.scheduling.TaskRegistrar">
-        <constructor-arg ref="fetchingTaskFactory"/>
         <constructor-arg ref="taskScheduler"/>
+    </bean>
+
+    <bean id="taskLocator" class="fr.keemto.core.TaskLocator">
+        <constructor-arg ref="fetchingTaskFactory"/>
+        <constructor-arg ref="userRepository"/>
+        <constructor-arg>
+            <bean class="fr.keemto.core.config.TypedCollectionFactoryBean">
+                <property name="beanType" value="fr.keemto.core.Task"/>
+            </bean>
+        </constructor-arg>
     </bean>
 
 
