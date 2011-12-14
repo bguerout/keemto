@@ -46,12 +46,11 @@ public class JdbcEventRepositoryIT {
     private EventRepository repository;
     private Account twitterAccount;
     private User testUser;
-    private AccountKey key;
 
     @Before
     public void prepare() throws Exception {
         testUser = new User("stnevex", "John", "Doe", "stnevex@gmail.com");
-        key = new AccountKey("twitter", "293724331", testUser);
+        AccountKey key = new AccountKey("twitter", "293724331", testUser);
         //TODO we should use a custom account and not rely on twitter provider
         twitterAccount = new SocialAccount(key, mock(Fetcher.class),mock(Connection.class));
     }

@@ -17,7 +17,6 @@
 package fr.keemto.provider.social;
 
 import com.google.common.collect.Lists;
-import fr.keemto.core.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.social.connect.Connection;
@@ -30,12 +29,10 @@ import static org.mockito.Mockito.*;
 
 public class ConnectionFetcherTest {
 
-    private User user;
     private long since;
 
     @Before
     public void initBeforeTest() throws Exception {
-        user = new User("bguerout");
         since = System.currentTimeMillis();
     }
 

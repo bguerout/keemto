@@ -23,14 +23,13 @@ import static org.mockito.Mockito.when;
 public class YammerFetcherTest {
 
     private YammerFetcher fetcher;
-    private YammerTemplate api;
     private MessageOperations messageOperations;
     private Connection connection;
 
     @Before
     public void initBeforeTest() throws Exception {
 
-        api = mock(YammerTemplate.class);
+        YammerTemplate api = mock(YammerTemplate.class);
         messageOperations = mock(MessageOperations.class);
         fetcher = new YammerFetcher();
 

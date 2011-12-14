@@ -32,7 +32,6 @@ import static org.mockito.Mockito.when;
 public class FetchingTaskFactoryTest {
 
     private FetchingTaskFactory fetchingTaskFactory;
-    private EventRepository eventRepository;
     private List<Account> accounts;
     private final User user = new User("user");
     private AccountRegistry accountRegistry;
@@ -44,8 +43,7 @@ public class FetchingTaskFactoryTest {
         accounts.add(mock(Account.class));
         accountRegistry = mock(AccountRegistry.class);
 
-        eventRepository = mock(EventRepository.class);
-        fetchingTaskFactory = new FetchingTaskFactory(accountRegistry, eventRepository);
+        fetchingTaskFactory = new FetchingTaskFactory(accountRegistry, mock(EventRepository.class));
 
     }
 

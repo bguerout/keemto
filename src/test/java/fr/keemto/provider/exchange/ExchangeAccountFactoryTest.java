@@ -15,14 +15,11 @@ import static org.mockito.Mockito.mock;
 public class ExchangeAccountFactoryTest {
 
     private ExchangeAccountFactory factory;
-    private List recipients;
 
     @Before
     public void setUp() throws Exception {
         MailRepository mailRepository = mock(MailRepository.class);
-
-        recipients = mock(List.class);
-        factory = new ExchangeAccountFactory(mailRepository, recipients);
+        factory = new ExchangeAccountFactory(mailRepository, mock(List.class));
     }
 
     @Test
