@@ -4,14 +4,20 @@
 <head><title>Scheduled Tasks</title></head>
 <body>
 <div id="global-actions">
-    <c:url value="admin/tasks/refresh" var="refreshURL"/>
-    <a href="${refreshURL}">Refresh Fetching Tasks</a>
+    <c:url value="/admin/tasks/reset" var="refreshURL"/>
+    <form method="POST" action="${refreshURL}">
+        <input type="submit" value="Reset"/>
+    </form>
 </div>
 <div id="tasks">
     <c:forEach var="task" items="${requestScope['tasks']}">
         <div class="task">
-            <c:out value="${task}"/>
-            <a href="${task.taskId}">Run</a>
+            <c:url value="/admin/tasks/${task.taskId}" var="deleteTaskURL"/>
+            <form method="POST" action="${deleteTaskURL}">
+                <label>${task}</label>
+                <input type="hidden" name="_method" value="delete"/>
+                <input type="submit" value="Cancel"/>
+            </form>
         </div>
     </c:forEach>
 </div>

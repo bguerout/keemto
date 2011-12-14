@@ -6,9 +6,12 @@ import fr.keemto.scheduling.ScheduledTask;
 import fr.keemto.scheduling.TaskRegistrar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 import java.util.Set;
@@ -35,15 +38,16 @@ public class AdminController {
         return mav;
     }
 
-    @RequestMapping(value = "/tasks/refresh", method = RequestMethod.GET)
-    public ModelAndView refresh() {
+    @RequestMapping(value = "/tasks/reset", method = RequestMethod.POST)
+    public View refresh() {
         List<Task> tasks = taskLocator.findTasks();
         taskRegistrar.registerTasks(tasks);
-        return getScheduledTasks();
+        return new RedirectView();
     }
 
-
-    public ModelAndView cancel(String taskId) {
-        return null;
+    @RequestMapping(value = "/tasks/{taskId}", method = RequestMethod.DELETE)
+    public View cancel(@PathVariable String taskId) {
+        taskRegistrar.cancelTask(taskId);
+        return new RedirectView();
     }
 }

@@ -51,4 +51,7 @@ public class TaskRegistrar {
         taskScheduler.scheduleTask(task);
     }
 
+    public void cancelTask(String taskId) {
+        taskScheduler.cancelTask(taskId);
+    }
 }

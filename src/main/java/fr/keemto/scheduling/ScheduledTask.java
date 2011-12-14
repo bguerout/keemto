@@ -35,6 +35,7 @@ public class ScheduledTask implements Task {
     @Override
     public String toString() {
         return "ScheduledTask{" +
+                "id=" + getTaskId() +
                 "task=" + task +
                 '}';
     }

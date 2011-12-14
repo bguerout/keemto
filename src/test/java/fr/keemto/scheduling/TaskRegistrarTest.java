@@ -58,6 +58,14 @@ public class TaskRegistrarTest {
         verify(scheduler).scheduleTask(task);
     }
 
+    @Test
+    public void shouldCancelTaskById() throws Exception {
+
+        registrar.cancelTask("task-id");
+
+        verify(scheduler).cancelTask("task-id");
+    }
+
 
 
 }

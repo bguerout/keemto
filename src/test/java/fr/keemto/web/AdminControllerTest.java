@@ -8,12 +8,16 @@ import fr.keemto.scheduling.TaskRegistrar;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -48,17 +52,21 @@ public class AdminControllerTest {
         List<Task> tasks = new ArrayList<Task>();
         when(taskLocator.findTasks()).thenReturn(tasks);
 
-        ModelAndView scheduledTasks = controller.refresh();
+        View view = controller.refresh();
 
         verify(taskLocator).findTasks();
         verify(taskRegistrar).registerTasks(tasks);
-        assertThat(scheduledTasks.getViewName(), equalTo("tasks"));
+        assertThat(view, instanceOf(RedirectView.class));
+        assertThat(((RedirectView)view).getUrl(), nullValue());
     }
 
     @Test
     public void canCancelATask() throws Exception {
-        String taskId = "11";
 
-        ModelAndView mav = controller.cancel(taskId);
+        View view = controller.cancel("11");
+
+        verify(taskRegistrar).cancelTask("11");
+        assertThat(view, instanceOf(RedirectView.class));
+        assertThat(((RedirectView) view).getUrl(), nullValue());
     }
 }
