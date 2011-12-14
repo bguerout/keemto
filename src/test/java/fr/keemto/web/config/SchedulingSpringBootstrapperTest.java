@@ -1,7 +1,7 @@
 package fr.keemto.web.config;
 
 import fr.keemto.core.Task;
-import fr.keemto.core.TaskLocator;
+import fr.keemto.core.TaskRegistry;
 import fr.keemto.scheduling.TaskRegistrar;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,15 +15,15 @@ import static org.mockito.Mockito.*;
 
 public class SchedulingSpringBootstrapperTest {
 
-    private TaskLocator taskLocator;
+    private TaskRegistry taskRegistry;
     private TaskRegistrar taskRegistrar;
     private SchedulingSpringBootstrapper bootstrapper;
 
     @Before
     public void setUp() throws Exception {
         taskRegistrar = mock(TaskRegistrar.class);
-        taskLocator = mock(TaskLocator.class);
-        bootstrapper = new SchedulingSpringBootstrapper(taskRegistrar, taskLocator);
+        taskRegistry = mock(TaskRegistry.class);
+        bootstrapper = new SchedulingSpringBootstrapper(taskRegistrar, taskRegistry);
     }
 
     @Test
@@ -33,11 +33,11 @@ public class SchedulingSpringBootstrapperTest {
         webContext.setParent(new StaticApplicationContext());
         ContextRefreshedEvent refreshedEvent = new ContextRefreshedEvent(webContext);
         List<Task> tasks = new ArrayList<Task>();
-        when(taskLocator.findTasks()).thenReturn(tasks);
+        when(taskRegistry.findTasks()).thenReturn(tasks);
 
         bootstrapper.onApplicationEvent(refreshedEvent);
 
-        verify(taskLocator).findTasks();
+        verify(taskRegistry).findTasks();
         verify(taskRegistrar).registerTasks(tasks);
 
     }

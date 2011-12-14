@@ -12,9 +12,9 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 
-public class AccountRepositoryTest {
+public class AccountRegistryTest {
 
-    private AccountRepository accountRepository;
+    private AccountRegistry accountRegistry;
 
     private User user = new User("test");
 
@@ -22,7 +22,7 @@ public class AccountRepositoryTest {
     public void setUp() throws Exception {
 
         AccountFactory factory = mock(AccountFactory.class);
-        accountRepository = new AccountRepository(Lists.newArrayList(factory));
+        accountRegistry = new AccountRegistry(Lists.newArrayList(factory));
     }
 
     @Test
@@ -30,9 +30,9 @@ public class AccountRepositoryTest {
 
         AccountFactory factory1 = mock(AccountFactory.class);
         AccountFactory factory2 = mock(AccountFactory.class);
-        AccountRepository accountRepository = new AccountRepository(Lists.newArrayList(factory1, factory2));
+        AccountRegistry accountRegistry = new AccountRegistry(Lists.newArrayList(factory1, factory2));
 
-        accountRepository.findAccounts(user);
+        accountRegistry.findAccounts(user);
 
         verify(factory1).getAccounts(user);
         verify(factory2).getAccounts(user);
@@ -44,18 +44,18 @@ public class AccountRepositoryTest {
 
         AccountFactory factory3 = mock(AccountFactory.class);
 
-        accountRepository.addFactory(factory3);
+        accountRegistry.addFactory(factory3);
 
-        accountRepository.findAccounts(user);
+        accountRegistry.findAccounts(user);
         verify(factory3).getAccounts(user);
     }
 
     @Test
     public void shouldObtainAnEmtpyListWhenUserHasNoAccount() throws Exception {
 
-        AccountRepository accountRepository = new AccountRepository(new ArrayList<AccountFactory>());
+        AccountRegistry accountRegistry = new AccountRegistry(new ArrayList<AccountFactory>());
 
-        List<Account> accounts = accountRepository.findAccounts(user);
+        List<Account> accounts = accountRegistry.findAccounts(user);
 
         assertThat(accounts.isEmpty(), is(true));
 
@@ -66,7 +66,7 @@ public class AccountRepositoryTest {
 
         AccountKey invalidKey = new AccountKey("provider", "userId", user);
 
-        new AccountRepository(new ArrayList<AccountFactory>()).findAccount(invalidKey);
+        new AccountRegistry(new ArrayList<AccountFactory>()).findAccount(invalidKey);
 
 
     }
@@ -77,11 +77,11 @@ public class AccountRepositoryTest {
         Account account = mock(Account.class);
         AccountKey key = new AccountKey("provider", "userId", user);
         AccountFactory factory1 = mock(AccountFactory.class);
-        AccountRepository accountRepository = new AccountRepository(Lists.newArrayList(factory1));
+        AccountRegistry accountRegistry = new AccountRegistry(Lists.newArrayList(factory1));
         when(factory1.supports("provider")).thenReturn(true);
         when(factory1.getAccount(key)).thenReturn(account);
 
-        Account result = accountRepository.findAccount(key);
+        Account result = accountRegistry.findAccount(key);
 
 
         assertThat(result, equalTo(account));
@@ -94,10 +94,10 @@ public class AccountRepositoryTest {
 
         AccountKey key = new AccountKey("provider", "userId", user);
         AccountFactory factory1 = mock(AccountFactory.class);
-        AccountRepository accountRepository = new AccountRepository(Lists.newArrayList(factory1));
+        AccountRegistry accountRegistry = new AccountRegistry(Lists.newArrayList(factory1));
         when(factory1.supports("provider")).thenReturn(true);
 
-        accountRepository.revoke(key);
+        accountRegistry.revoke(key);
 
         verify(factory1).revoke(key);
     }

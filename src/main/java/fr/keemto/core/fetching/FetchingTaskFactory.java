@@ -27,12 +27,12 @@ public class FetchingTaskFactory {
 
     private static final Logger log = LoggerFactory.getLogger(FetchingTaskFactory.class);
 
-    private final AccountRepository accountRepository;
+    private final AccountRegistry accountRegistry;
     private final EventRepository eventRepository;
 
 
-    public FetchingTaskFactory(AccountRepository accountRepository, EventRepository eventRepository) {
-        this.accountRepository = accountRepository;
+    public FetchingTaskFactory(AccountRegistry accountRegistry, EventRepository eventRepository) {
+        this.accountRegistry = accountRegistry;
         this.eventRepository = eventRepository;
     }
 
@@ -40,7 +40,7 @@ public class FetchingTaskFactory {
     public List<FetchingTask> createTasks(User user) {
 
         List<FetchingTask> tasks = new ArrayList<FetchingTask>();
-        for (Account account : accountRepository.findAccounts(user)) {
+        for (Account account : accountRegistry.findAccounts(user)) {
             FetchingTask task = new IncrementalFetchingTask(account, eventRepository);
             log.debug("A new task has been created {} for user {}", task, user);
             tasks.add(task);
@@ -49,7 +49,7 @@ public class FetchingTaskFactory {
     }
 
     public IncrementalFetchingTask createIncrementalTask(AccountKey key) {
-        Account account = accountRepository.findAccount(key);
+        Account account = accountRegistry.findAccount(key);
         return new IncrementalFetchingTask(account, eventRepository);
     }
 }

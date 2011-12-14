@@ -8,15 +8,15 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskLocator {
+public class TaskRegistry {
 
-    private static final Logger log = LoggerFactory.getLogger(TaskLocator.class);
+    private static final Logger log = LoggerFactory.getLogger(TaskRegistry.class);
 
     private final UserRepository userRepository;
     private final List<Task> tasks;
     private final FetchingTaskFactory fetchingTaskFactory;
 
-    public TaskLocator(FetchingTaskFactory fetchingTaskFactory, UserRepository userRepository, List<Task> tasks) {
+    public TaskRegistry(FetchingTaskFactory fetchingTaskFactory, UserRepository userRepository, List<Task> tasks) {
         this.fetchingTaskFactory = fetchingTaskFactory;
         this.userRepository = userRepository;
         this.tasks = tasks;

@@ -35,24 +35,24 @@ public class FetchingTaskFactoryTest {
     private EventRepository eventRepository;
     private List<Account> accounts;
     private final User user = new User("user");
-    private AccountRepository accountRepository;
+    private AccountRegistry accountRegistry;
 
     @Before
     public void initBeforeTest() throws Exception {
 
         accounts = new ArrayList<Account>();
         accounts.add(mock(Account.class));
-        accountRepository = mock(AccountRepository.class);
+        accountRegistry = mock(AccountRegistry.class);
 
         eventRepository = mock(EventRepository.class);
-        fetchingTaskFactory = new FetchingTaskFactory(accountRepository, eventRepository);
+        fetchingTaskFactory = new FetchingTaskFactory(accountRegistry, eventRepository);
 
     }
 
     @Test
     public void shouldCreateTaskWithUser() throws Exception {
 
-        when(accountRepository.findAccounts(user)).thenReturn(accounts);
+        when(accountRegistry.findAccounts(user)).thenReturn(accounts);
 
         List<FetchingTask> tasks = fetchingTaskFactory.createTasks(user);
 
@@ -63,7 +63,7 @@ public class FetchingTaskFactoryTest {
     @Test
     public void shouldCreateTasksWithUser() throws Exception {
 
-        when(accountRepository.findAccounts(user)).thenReturn(accounts);
+        when(accountRegistry.findAccounts(user)).thenReturn(accounts);
 
         Account acc2 = mock(Account.class);
         accounts.add(acc2);
@@ -80,7 +80,7 @@ public class FetchingTaskFactoryTest {
 
         AccountKey key = new AccountKey("provider", "userId", new User("bguerout"));
         Account account = mock(Account.class);
-        when(accountRepository.findAccount(key)).thenReturn(account);
+        when(accountRegistry.findAccount(key)).thenReturn(account);
         when(account.getKey()).thenReturn(key);
 
         IncrementalFetchingTask task = fetchingTaskFactory.createIncrementalTask(key);

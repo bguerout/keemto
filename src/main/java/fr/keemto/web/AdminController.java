@@ -1,7 +1,7 @@
 package fr.keemto.web;
 
 import fr.keemto.core.Task;
-import fr.keemto.core.TaskLocator;
+import fr.keemto.core.TaskRegistry;
 import fr.keemto.scheduling.ScheduledTask;
 import fr.keemto.scheduling.TaskRegistrar;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +21,12 @@ import java.util.Set;
 public class AdminController {
 
     private final TaskRegistrar taskRegistrar;
-    private final TaskLocator taskLocator;
+    private final TaskRegistry taskRegistry;
 
     @Autowired
-    public AdminController(TaskRegistrar taskRegistrar, TaskLocator taskLocator) {
+    public AdminController(TaskRegistrar taskRegistrar, TaskRegistry taskRegistry) {
         this.taskRegistrar = taskRegistrar;
-        this.taskLocator = taskLocator;
+        this.taskRegistry = taskRegistry;
     }
 
     @RequestMapping(value = "/tasks", method = RequestMethod.GET)
@@ -40,7 +40,7 @@ public class AdminController {
 
     @RequestMapping(value = "/tasks/reset", method = RequestMethod.POST)
     public View refresh() {
-        List<Task> tasks = taskLocator.findTasks();
+        List<Task> tasks = taskRegistry.findTasks();
         taskRegistrar.registerTasks(tasks);
         return new RedirectView();
     }

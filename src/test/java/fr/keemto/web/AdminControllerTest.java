@@ -2,7 +2,7 @@ package fr.keemto.web;
 
 import com.google.common.collect.Sets;
 import fr.keemto.core.Task;
-import fr.keemto.core.TaskLocator;
+import fr.keemto.core.TaskRegistry;
 import fr.keemto.scheduling.ScheduledTask;
 import fr.keemto.scheduling.TaskRegistrar;
 import org.junit.Before;
@@ -24,14 +24,14 @@ import static org.mockito.Mockito.*;
 public class AdminControllerTest {
 
     private AdminController controller;
-    private TaskLocator taskLocator;
+    private TaskRegistry taskRegistry;
     private TaskRegistrar taskRegistrar;
 
     @Before
     public void setUp() throws Exception {
-        taskLocator = mock(TaskLocator.class);
+        taskRegistry = mock(TaskRegistry.class);
         taskRegistrar = mock(TaskRegistrar.class);
-        controller = new AdminController(taskRegistrar, taskLocator);
+        controller = new AdminController(taskRegistrar, taskRegistry);
     }
 
     @Test
@@ -50,11 +50,11 @@ public class AdminControllerTest {
     public void shouldRefreshTask() throws Exception {
 
         List<Task> tasks = new ArrayList<Task>();
-        when(taskLocator.findTasks()).thenReturn(tasks);
+        when(taskRegistry.findTasks()).thenReturn(tasks);
 
         View view = controller.refresh();
 
-        verify(taskLocator).findTasks();
+        verify(taskRegistry).findTasks();
         verify(taskRegistrar).registerTasks(tasks);
         assertThat(view, instanceOf(RedirectView.class));
         assertThat(((RedirectView)view).getUrl(), nullValue());

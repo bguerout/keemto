@@ -6,13 +6,13 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AccountRepository {
+public class AccountRegistry {
 
-    private static final Logger log = LoggerFactory.getLogger(AccountRepository.class);
+    private static final Logger log = LoggerFactory.getLogger(AccountRegistry.class);
 
     private final List<AccountFactory> factories;
 
-    public AccountRepository(List<AccountFactory> factories) {
+    public AccountRegistry(List<AccountFactory> factories) {
         this.factories = factories;
     }
 

@@ -39,7 +39,7 @@
         <constructor-arg ref="taskScheduler"/>
     </bean>
 
-    <bean id="taskLocator" class="fr.keemto.core.TaskLocator">
+    <bean id="taskLocator" class="fr.keemto.core.TaskRegistry">
         <constructor-arg ref="fetchingTaskFactory"/>
         <constructor-arg ref="userRepository"/>
         <constructor-arg>
