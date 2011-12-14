@@ -1,9 +1,9 @@
 --DATA
-insert into keemto_user (username, password, firstName, lastName, email)
- values ('stnevex', 'test', 'John', 'Doe','stnevex@gmail.com');
+insert into keemto_user (username, password, firstName, lastName, role, email)
+ values ('stnevex', 'test', 'John', 'Doe','ROLE_USER','stnevex@gmail.com');
 
-insert into keemto_user (username, password, firstName, lastName, email)
-  values ('bguerout', 'test', 'Benoit', 'Guerout','bguerout@xebia.fr');
+insert into keemto_user (username, password, firstName, lastName, role, email)
+  values ('bguerout', 'test', 'Benoit', 'Guerout','ROLE_ADMIN','bguerout@xebia.fr');
 
 insert into events (ts,message,username,providerId,providerUserId)
  values ('1','hello this is a test','stnevex','twitter','293724331');

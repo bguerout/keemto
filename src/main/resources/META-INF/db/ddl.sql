@@ -17,6 +17,7 @@ create table keemto_user (
     password varchar not null,
     firstName varchar not null,
     lastName varchar not null,
+    role varchar not null,
     email varchar,
     primary key (username)
  );

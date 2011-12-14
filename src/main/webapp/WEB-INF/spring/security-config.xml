@@ -26,7 +26,7 @@
     <security:access-denied-handler error-page="/403"/>
     <security:logout logout-url="/logout" delete-cookies="JSESSIONID"/>
 
-    <security:intercept-url pattern="/admin/**" access="permitAll" />
+    <security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
     <!-- API -->
     <security:intercept-url pattern="/api/login*" access="permitAll"/>
     <security:intercept-url pattern="/api/events*" access="permitAll" method="GET"/>
@@ -48,7 +48,7 @@
       <security:password-encoder ref="passwordEncoder"/>
       <security:jdbc-user-service data-source-ref="dataSource"
                                   users-by-username-query="select username, password, true from keemto_user where username = ?"
-                                  authorities-by-username-query="select username, 'ROLE_USER' from keemto_user where username = ?"/>
+                                  authorities-by-username-query="select username, role from keemto_user where username = ?"/>
     </security:authentication-provider>
   </security:authentication-manager>
 
