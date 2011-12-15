@@ -23,11 +23,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class UserControllerTest extends ControllerTestCase {
+public class UserAccountControllerTest extends ControllerTestCase {
 
-    private static final Logger log = LoggerFactory.getLogger(UserControllerTest.class);
+    private static final Logger log = LoggerFactory.getLogger(UserAccountControllerTest.class);
 
-    private UserController controller;
+    private UserAccountController controller;
 
     @Mock
     private AccountRegistry accountRegistry;
@@ -40,7 +40,7 @@ public class UserControllerTest extends ControllerTestCase {
         initMocks(this);
 
         user = new User("stnevex");
-        controller = new UserController(accountRegistry);
+        controller = new UserAccountController(accountRegistry);
 
         request.addHeader("Accept", "application/json");
         request.setUserPrincipal(new Principal() {

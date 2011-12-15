@@ -14,12 +14,12 @@ import java.util.List;
 
 @Controller
 @RequestMapping(value = "/api/users")
-public class UserController {
+public class UserAccountController {
 
     private final AccountRegistry accountRegistry;
 
     @Autowired
-    public UserController(AccountRegistry accountRegistry) {
+    public UserAccountController(AccountRegistry accountRegistry) {
         this.accountRegistry = accountRegistry;
     }
 

@@ -16,7 +16,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping(value = "/api/accounts")
-public class AccountController {
+public class RandomAccountController {
 
     public static final int MAX_RANDOM_ACCOUNTS = 5;
     private final SocialAccountFactory accountFactory;
@@ -24,7 +24,7 @@ public class AccountController {
     private int maxRandomAccount = MAX_RANDOM_ACCOUNTS;
 
     @Autowired
-    public AccountController(SocialAccountFactory accountFactory, UserRepository userRepository) {
+    public RandomAccountController(SocialAccountFactory accountFactory, UserRepository userRepository) {
         this.accountFactory = accountFactory;
         this.userRepository = userRepository;
     }

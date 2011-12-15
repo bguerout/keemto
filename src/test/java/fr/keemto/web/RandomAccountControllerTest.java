@@ -13,9 +13,9 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class AccountControllerTest extends ControllerTestCase {
+public class RandomAccountControllerTest extends ControllerTestCase {
 
-    private AccountController controller;
+    private RandomAccountController controller;
     private UserRepository userRepository;
     private SocialAccountFactory accountFactory;
     private Account account;
@@ -27,7 +27,7 @@ public class AccountControllerTest extends ControllerTestCase {
 
         accountFactory = mock(SocialAccountFactory.class);
         userRepository = mock(UserRepository.class);
-        controller = new AccountController(accountFactory, userRepository);
+        controller = new RandomAccountController(accountFactory, userRepository);
 
         request.addHeader("Accept", "application/json");
         request.setMethod("GET");
