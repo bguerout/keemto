@@ -80,7 +80,7 @@ public class UserAccountControllerTest extends ControllerTestCase {
         assertThat(connx.get("imageUrl").getValueAsText(), equalTo("http://twitter.com/stnevex.jpg"));
 
         JsonNode keyNode = connx.get("key");
-        assertThat(keyNode.get("id").getValueAsText(), equalTo("twitter-1111"));
+        assertThat(keyNode.get("id").getValueAsText(), equalTo("twitter-1111-stnevex"));
         assertThat(keyNode.get("providerId").getValueAsText(), equalTo("twitter"));
 
     }
@@ -104,7 +104,7 @@ public class UserAccountControllerTest extends ControllerTestCase {
     public void shouldDeleteConnection() throws Exception {
 
         request.setMethod("DELETE");
-        request.setRequestURI("/api/users/stnevex/accounts/twitter-1111");
+        request.setRequestURI("/api/users/stnevex/accounts/twitter-1111-stnevex");
         when(accountRegistry.findAccount(key)).thenReturn(account);
 
         handlerAdapter.handle(request, response, controller);
@@ -118,7 +118,7 @@ public class UserAccountControllerTest extends ControllerTestCase {
     public void shouldDeleteConnectionBySplittingKeyWithLastIndexOfMinus() throws Exception {
 
         request.setMethod("DELETE");
-        request.setRequestURI("/api/users/stnevex/accounts/linked-in-9999");
+        request.setRequestURI("/api/users/stnevex/accounts/linked-in-9999-stnevex");
         when(accountRegistry.findAccount(new AccountKey("linked-in", "9999", user))).thenReturn(account);
 
         handlerAdapter.handle(request, response, controller);

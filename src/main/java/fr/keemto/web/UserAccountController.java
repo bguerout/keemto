@@ -30,7 +30,7 @@ public class UserAccountController {
         return accountRegistry.findAccounts(user);
     }
 
-    @RequestMapping(value = {"/{userName}/accounts/{providerId}-{providerUserId}"}, method = RequestMethod.DELETE)
+    @RequestMapping(value = {"/{userName}/accounts/{providerId}-{providerUserId}-{username}"}, method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @ResponseBody
     public void revokeAccount(Principal principal, @PathVariable String providerId, @PathVariable String providerUserId) {

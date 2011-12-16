@@ -14,7 +14,7 @@ public class AccountKey {
     }
 
     public String getId() {
-        return getProviderId() + "-" + getProviderUserId();
+        return getProviderId() + "-" + getProviderUserId() + "-" + user.getUsername();
     }
 
     public String getProviderId() {
