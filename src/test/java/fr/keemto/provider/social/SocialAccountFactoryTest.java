@@ -15,8 +15,7 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 public class SocialAccountFactoryTest {
@@ -70,6 +69,24 @@ public class SocialAccountFactoryTest {
         assertThat(key.getProviderId(), equalTo("twitter"));
         assertThat(key.getUser(), equalTo(user));
     }
+
+
+    @Test
+    public void shouldUseACallbackFoRevocation() throws Exception {
+
+        User user = new User("user");
+        AccountKey key = new AccountKey("twitter", "@stnevex", user);
+        ConnectionRepository connectionRepository = mock(ConnectionRepository.class);
+        ConnectionKey connxKey = new ConnectionKey("twitter", "@stnevex");
+        when(usersConnectionRepository.createConnectionRepository("user")).thenReturn(connectionRepository);
+        when(connectionRepository.getConnection(connxKey)).thenReturn(new TestConnection("twitter", "@stnevex"));
+
+        Account account = accountFactory.getAccount(key);
+        account.revoke();
+
+        verify(connectionRepository).removeConnection(connxKey);
+    }
+
 
     @Test
     public void shouldObtainAnAccountWithManyConnections() throws Exception {

@@ -36,7 +36,8 @@ public class UserAccountController {
     public void revokeAccount(Principal principal, @PathVariable String providerId, @PathVariable String providerUserId) {
         User user = getCurrentUser(principal.getName());
         AccountKey key = new AccountKey(providerId, providerUserId, user);
-        accountRegistry.revoke(key);
+        Account account = accountRegistry.findAccount(key);
+        account.revoke();
     }
 
     private User getCurrentUser(String userName) {

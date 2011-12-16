@@ -9,7 +9,4 @@ public interface AccountFactory {
     Account getAccount(AccountKey key);
 
     boolean supports(String providerId);
-
-    //TODO revoke should be a Account responsability
-    void revoke(AccountKey key);
 }

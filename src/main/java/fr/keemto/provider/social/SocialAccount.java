@@ -3,7 +3,10 @@ package fr.keemto.provider.social;
 import fr.keemto.core.Account;
 import fr.keemto.core.AccountKey;
 import fr.keemto.core.Event;
+import fr.keemto.core.RevocationHanlder;
 import fr.keemto.core.fetching.Fetcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.social.connect.Connection;
 
 import java.util.ArrayList;
@@ -11,14 +14,18 @@ import java.util.List;
 
 public class SocialAccount implements Account {
 
+    private static final Logger log = LoggerFactory.getLogger(SocialAccount.class);
+
     private final AccountKey key;
     private final Fetcher<Connection<?>> fetcher;
+    private final RevocationHanlder revocationHanlder;
     private final Connection<?> connection;
 
-    public SocialAccount(AccountKey key, Fetcher<Connection<?>> fetcher, Connection<?> connection) {
+    public SocialAccount(AccountKey key, Fetcher<Connection<?>> fetcher, Connection<?> connection, RevocationHanlder revocationHanlder) {
         this.key = key;
         this.connection = connection;
         this.fetcher = fetcher;
+        this.revocationHanlder = revocationHanlder;
     }
 
     @Override
@@ -32,6 +39,11 @@ public class SocialAccount implements Account {
         return events;
     }
 
+    @Override
+    public void revoke() {
+        revocationHanlder.revoke(key);
+        log.info("Social Account {} has been revoked", key);
+    }
 
     @Override
     public String getDisplayName() {

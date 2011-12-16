@@ -13,12 +13,14 @@ public class TestAccount implements Account {
     private final String displayName;
     private final String profileUrl;
     private final String imageUrl;
+    private boolean hasBeenRevoked;
 
     public TestAccount(AccountKey key, String displayName, String profileUrl, String imageUrl) {
         this.key = key;
         this.displayName = displayName;
         this.profileUrl = profileUrl;
         this.imageUrl = imageUrl;
+        hasBeenRevoked = false;
     }
 
     @Override
@@ -46,4 +48,12 @@ public class TestAccount implements Account {
         return new ArrayList<Event>();
     }
 
+    @Override
+    public void revoke() {
+        hasBeenRevoked = true;
+    }
+
+    public boolean hasBeenRevoked() {
+        return hasBeenRevoked;
+    }
 }

@@ -40,9 +40,4 @@ public class ExchangeAccountFactory implements AccountFactory {
         }
         return false;
     }
-
-    @Override
-    public void revoke(AccountKey key) {
-        throw new UnsupportedOperationException();
-    }
 }

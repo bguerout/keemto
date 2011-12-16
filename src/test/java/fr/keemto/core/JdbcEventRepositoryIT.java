@@ -52,7 +52,7 @@ public class JdbcEventRepositoryIT {
         testUser = new User("stnevex", "John", "Doe", "stnevex@gmail.com");
         AccountKey key = new AccountKey("twitter", "293724331", testUser);
         //TODO we should use a custom account and not rely on twitter provider
-        twitterAccount = new SocialAccount(key, mock(Fetcher.class),mock(Connection.class));
+        twitterAccount = new SocialAccount(key, mock(Fetcher.class), mock(Connection.class), mock(RevocationHanlder.class));
     }
 
     @Test

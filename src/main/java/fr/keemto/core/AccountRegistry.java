@@ -31,12 +31,6 @@ public class AccountRegistry {
         return accountFactory.getAccount(key);
     }
 
-    public void revoke(AccountKey key) {
-        String providerId = key.getProviderId();
-        AccountFactory accountFactory = selectFactoryByProvider(providerId);
-        accountFactory.revoke(key);
-    }
-
     private AccountFactory selectFactoryByProvider(String providerId) {
         for (AccountFactory factory : factories) {
             if (factory.supports(providerId)) {

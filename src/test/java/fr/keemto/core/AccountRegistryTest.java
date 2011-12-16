@@ -88,18 +88,4 @@ public class AccountRegistryTest {
         verify(factory1).getAccount(key);
     }
 
-
-    @Test
-    public void shouldRevokeAccountForKey() throws Exception {
-
-        AccountKey key = new AccountKey("provider", "userId", user);
-        AccountFactory factory1 = mock(AccountFactory.class);
-        AccountRegistry accountRegistry = new AccountRegistry(Lists.newArrayList(factory1));
-        when(factory1.supports("provider")).thenReturn(true);
-
-        accountRegistry.revoke(key);
-
-        verify(factory1).revoke(key);
-    }
-
 }

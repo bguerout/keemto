@@ -2,10 +2,7 @@ package fr.keemto.provider.social;
 
 import com.google.common.collect.Lists;
 import fr.keemto.TestConnection;
-import fr.keemto.core.Account;
-import fr.keemto.core.AccountKey;
-import fr.keemto.core.Event;
-import fr.keemto.core.User;
+import fr.keemto.core.*;
 import fr.keemto.core.fetching.Fetcher;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,13 +20,16 @@ public class SocialAccountTest {
     private Account account;
     private Connection<?> connection;
     private Fetcher fetcher;
+    private RevocationHanlder revocationHanlder;
+    private AccountKey key;
 
     @Before
     public void prepare() throws Exception {
         fetcher = mock(Fetcher.class);
         connection = new TestConnection("twitter", "userId");
-        AccountKey key = new AccountKey("twitter", "userId", new User("bguerout"));
-        account = new SocialAccount(key, fetcher, connection);
+        revocationHanlder = mock(RevocationHanlder.class);
+        key = new AccountKey("twitter", "userId", new User("bguerout"));
+        account = new SocialAccount(key, fetcher, connection, revocationHanlder);
     }
 
     @Test
@@ -39,6 +39,14 @@ public class SocialAccountTest {
 
         verify(fetcher).fetch(connection, 200L);
 
+    }
+
+    @Test
+    public void shouldDelegateRevocationToHandler() throws Exception {
+
+        account.revoke();
+
+        verify(revocationHanlder).revoke(key);
     }
 
     @Test

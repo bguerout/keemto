@@ -69,6 +69,11 @@ public class ExchangeAccount implements Account {
     }
 
     @Override
+    public void revoke() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public AccountKey getKey() {
         return key;
     }

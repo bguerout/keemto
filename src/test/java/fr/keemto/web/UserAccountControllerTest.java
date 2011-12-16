@@ -19,7 +19,6 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -111,7 +110,7 @@ public class UserAccountControllerTest extends ControllerTestCase {
         handlerAdapter.handle(request, response, controller);
 
         assertThat(response.getStatus(), equalTo(204));
-        verify(accountRegistry).revoke(key);
+        assertThat(account.hasBeenRevoked(), is(true));
     }
 
 

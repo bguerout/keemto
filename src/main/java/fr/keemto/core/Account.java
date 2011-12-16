@@ -30,4 +30,6 @@ public interface Account {
 
     List<Event> fetch(long newerThan);
 
+    void revoke();
+
 }

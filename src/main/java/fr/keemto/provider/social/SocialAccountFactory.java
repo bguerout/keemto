@@ -1,10 +1,7 @@
 package fr.keemto.provider.social;
 
 
-import fr.keemto.core.Account;
-import fr.keemto.core.AccountFactory;
-import fr.keemto.core.AccountKey;
-import fr.keemto.core.User;
+import fr.keemto.core.*;
 import fr.keemto.core.fetching.Fetcher;
 import fr.keemto.core.fetching.FetcherLocator;
 import org.slf4j.Logger;
@@ -53,7 +50,7 @@ public class SocialAccountFactory implements AccountFactory {
         User user = key.getUser();
         ConnectionKey connectionKey = new ConnectionKey(key.getProviderId(), key.getProviderUserId());
         ConnectionRepository connectionRepository = getConnectionRepository(user);
-        Connection<?> connection = null;
+        Connection<?> connection;
         try {
             connection = connectionRepository.getConnection(connectionKey);
         } catch (NoSuchConnectionException e) {
@@ -67,17 +64,17 @@ public class SocialAccountFactory implements AccountFactory {
         return fetcherLocator.hasFetcherFor(providerId);
     }
 
-    @Override
-    public void revoke(AccountKey key) {
-        ConnectionRepository connectionRepository = getConnectionRepository(key.getUser());
-        connectionRepository.removeConnection(new ConnectionKey(key.getProviderId(), key.getProviderUserId()));
-        log.info("Social Account {} has been revoked", key);
-    }
 
     private Account createAccount(User user, Connection<?> connection) {
         Fetcher fetcher = findFetcherForConnection(connection);
         SocialAccountKey accountKey = new SocialAccountKey(connection.getKey(), user);
-        return new SocialAccount(accountKey, fetcher, connection);
+        return new SocialAccount(accountKey, fetcher, connection, new RevocationHanlder() {
+            @Override
+            public void revoke(AccountKey key) {
+                ConnectionRepository connectionRepository = getConnectionRepository(key.getUser());
+                connectionRepository.removeConnection(new ConnectionKey(key.getProviderId(), key.getProviderUserId()));
+            }
+        });
     }
 
     private Fetcher findFetcherForConnection(Connection<?> connection) {
