@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 
 public class SocialAccountFactoryTest {
 
-    private SocialAccountFactory accountFactory;
+    private SocialAccountRepository accountFactory;
     private FetcherLocator fetcherLocator;
     private UsersConnectionRepository usersConnectionRepository;
 
@@ -28,7 +28,7 @@ public class SocialAccountFactoryTest {
     public void prepare() throws Exception {
         usersConnectionRepository = mock(UsersConnectionRepository.class);
         fetcherLocator = mock(FetcherLocator.class);
-        accountFactory = new SocialAccountFactory(usersConnectionRepository, fetcherLocator);
+        accountFactory = new SocialAccountRepository(usersConnectionRepository, fetcherLocator);
     }
 
     @Test

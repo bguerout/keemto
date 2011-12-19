@@ -79,10 +79,10 @@
         </constructor-arg>
     </bean>
 
-    <bean id="accountRepository" class="fr.keemto.core.AccountRegistry">
+    <bean id="accountRepository" class="fr.keemto.core.AccountLocator">
         <constructor-arg>
             <bean class="fr.keemto.core.config.TypedCollectionFactoryBean">
-                <property name="beanType" value="fr.keemto.core.AccountFactory"/>
+                <property name="beanType" value="fr.keemto.core.AccountRepository"/>
             </bean>
         </constructor-arg>
     </bean>

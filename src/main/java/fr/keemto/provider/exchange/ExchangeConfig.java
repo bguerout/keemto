@@ -77,11 +77,11 @@ public class ExchangeConfig {
     }
 
     @Bean
-    public ExchangeAccountFactory mailAccountFactory(MailRepository mailRepository, @Value("${provider.ews.xebia.allowed.recipients}") String allowedRecipients) {
+    public ExchangeAccountRepository mailAccountRepository(MailRepository mailRepository, @Value("${provider.ews.xebia.allowed.recipients}") String allowedRecipients) {
 
         log.info("Registering mail account factory into account repository with allowed recipients {}", allowedRecipients);
         String[] recipients = StringUtils.split(allowedRecipients, ",");
-        return new ExchangeAccountFactory(mailRepository, Arrays.asList(recipients));
+        return new ExchangeAccountRepository(mailRepository, Arrays.asList(recipients));
 
     }
 }

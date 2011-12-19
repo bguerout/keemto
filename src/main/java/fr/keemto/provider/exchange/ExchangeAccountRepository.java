@@ -2,20 +2,20 @@ package fr.keemto.provider.exchange;
 
 import com.google.common.collect.Lists;
 import fr.keemto.core.Account;
-import fr.keemto.core.AccountFactory;
+import fr.keemto.core.AccountRepository;
 import fr.keemto.core.AccountKey;
 import fr.keemto.core.User;
 
 import java.util.List;
 
-public class ExchangeAccountFactory implements AccountFactory {
+public class ExchangeAccountRepository implements AccountRepository {
 
     private static final String PROVIDER_ID = "exchange";
 
     private final MailRepository mailRepository;
     private final List<String> allowedRecipients;
 
-    public ExchangeAccountFactory(MailRepository mailRepository, List<String> allowedRecipients) {
+    public ExchangeAccountRepository(MailRepository mailRepository, List<String> allowedRecipients) {
         this.mailRepository = mailRepository;
         this.allowedRecipients = allowedRecipients;
     }

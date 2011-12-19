@@ -15,15 +15,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class SocialAccountFactory implements AccountFactory {
+public class SocialAccountRepository implements AccountRepository {
 
-    private static final Logger log = LoggerFactory.getLogger(SocialAccountFactory.class);
+    private static final Logger log = LoggerFactory.getLogger(SocialAccountRepository.class);
 
     private final UsersConnectionRepository usersConnectionRepository;
     private final FetcherLocator fetcherLocator;
 
     @Autowired
-    public SocialAccountFactory(UsersConnectionRepository usersConnectionRepository, FetcherLocator fetcherLocator) {
+    public SocialAccountRepository(UsersConnectionRepository usersConnectionRepository, FetcherLocator fetcherLocator) {
         this.usersConnectionRepository = usersConnectionRepository;
         this.fetcherLocator = fetcherLocator;
     }

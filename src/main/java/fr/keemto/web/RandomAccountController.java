@@ -3,7 +3,7 @@ package fr.keemto.web;
 import fr.keemto.core.Account;
 import fr.keemto.core.User;
 import fr.keemto.core.UserRepository;
-import fr.keemto.provider.social.SocialAccountFactory;
+import fr.keemto.provider.social.SocialAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,12 +19,12 @@ import java.util.List;
 public class RandomAccountController {
 
     public static final int MAX_RANDOM_ACCOUNTS = 5;
-    private final SocialAccountFactory accountFactory;
+    private final SocialAccountRepository accountFactory;
     private final UserRepository userRepository;
     private int maxRandomAccount = MAX_RANDOM_ACCOUNTS;
 
     @Autowired
-    public RandomAccountController(SocialAccountFactory accountFactory, UserRepository userRepository) {
+    public RandomAccountController(SocialAccountRepository accountFactory, UserRepository userRepository) {
         this.accountFactory = accountFactory;
         this.userRepository = userRepository;
     }

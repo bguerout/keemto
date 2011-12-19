@@ -3,7 +3,7 @@ package fr.keemto.web;
 import fr.keemto.TestAccount;
 import fr.keemto.core.Account;
 import fr.keemto.core.AccountKey;
-import fr.keemto.core.AccountRegistry;
+import fr.keemto.core.AccountLocator;
 import fr.keemto.core.User;
 import org.codehaus.jackson.JsonNode;
 import org.junit.Before;
@@ -29,7 +29,7 @@ public class UserAccountControllerTest extends ControllerTestCase {
     private UserAccountController controller;
 
     @Mock
-    private AccountRegistry accountRegistry;
+    private AccountLocator accountLocator;
     private User user;
     private TestAccount account;
     private AccountKey key;
@@ -39,7 +39,7 @@ public class UserAccountControllerTest extends ControllerTestCase {
         initMocks(this);
 
         user = new User("stnevex");
-        controller = new UserAccountController(accountRegistry);
+        controller = new UserAccountController(accountLocator);
 
         request.addHeader("Accept", "application/json");
         request.setUserPrincipal(new Principal() {
@@ -66,7 +66,7 @@ public class UserAccountControllerTest extends ControllerTestCase {
         request.setRequestURI("/api/users/stnevex/accounts");
         List<Account> accounts = new ArrayList<Account>();
         accounts.add(account);
-        when(accountRegistry.findAccounts(user)).thenReturn(accounts);
+        when(accountLocator.findAccounts(user)).thenReturn(accounts);
 
         handlerAdapter.handle(request, response, controller);
 
@@ -90,7 +90,7 @@ public class UserAccountControllerTest extends ControllerTestCase {
 
         request.setMethod("GET");
         request.setRequestURI("/api/users/stnevex/accounts");
-        when(accountRegistry.findAccounts(user)).thenReturn(new ArrayList<Account>());
+        when(accountLocator.findAccounts(user)).thenReturn(new ArrayList<Account>());
 
         handlerAdapter.handle(request, response, controller);
 
@@ -105,7 +105,7 @@ public class UserAccountControllerTest extends ControllerTestCase {
 
         request.setMethod("DELETE");
         request.setRequestURI("/api/users/stnevex/accounts/twitter-1111-stnevex");
-        when(accountRegistry.findAccount(key)).thenReturn(account);
+        when(accountLocator.findAccount(key)).thenReturn(account);
 
         handlerAdapter.handle(request, response, controller);
 
@@ -119,7 +119,7 @@ public class UserAccountControllerTest extends ControllerTestCase {
 
         request.setMethod("DELETE");
         request.setRequestURI("/api/users/stnevex/accounts/linked-in-9999-stnevex");
-        when(accountRegistry.findAccount(new AccountKey("linked-in", "9999", user))).thenReturn(account);
+        when(accountLocator.findAccount(new AccountKey("linked-in", "9999", user))).thenReturn(account);
 
         handlerAdapter.handle(request, response, controller);
 
